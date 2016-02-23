@@ -1,0 +1,2 @@
+zip -r foo.zip *.js node_modules etc
+

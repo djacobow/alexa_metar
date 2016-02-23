@@ -1,0 +1,22 @@
+{
+  "name": "alexa_metar",
+  "version": "0.0.1",
+  "description": "Read ADDS METARs out loud on an Amazon Echo",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djacobow/alexa_metar.git"
+  },
+  "author": "Dave Jacobowitz (david.jacobowitz@gmail.com)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/djacobow/alexa_metar/issues"
+  },
+  "homepage": "https://github.com/djacobow/alexa_metar#readme",
+  "dependencies": {
+    "xml2js": "^0.4.16"
+  }
+}

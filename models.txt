@@ -1,0 +1,287 @@
+Interation:
+
+{
+  "intents": [
+    {
+      "intent": "app_HelpIntent",
+      "slots": []
+    },
+    {
+      "intent": "ph_RandIntent",
+      "slots": [
+        { "name": "count",
+          "type": "NUMBER"
+        }
+      ]
+    },
+    { "intent": "ph_LookupIntent",
+      "slots": [
+        { "name": "query",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "es_OverIntent",
+      "slots": [
+        {
+          "name": "count",
+          "type": "NUMBER"
+        },
+        {
+          "name": "unit",
+          "type": "TIMEUNIT"
+        }
+      ]
+    },
+    {
+      "intent": "es_LastIntent",
+      "slots": [
+        {
+          "name": "unit",
+          "type": "TIMEUNIT"
+        }
+      ]
+    },
+    {
+      "intent": "es_NowIntent"
+    },
+    {
+      "intent": "als_statsIntent"
+    },
+    
+    {
+      "intent": "cf_MenuIntent",
+      "slots": [
+        {
+        "name": "meal",
+        "type": "MEALTYPE"
+        },
+        {"name": "dow",
+         "type": "DOWTYPE"
+        }
+      ]
+    },
+    {
+      "intent": "adds_metarIntentThree",
+      "slots": [
+        {
+          "name": "sa",
+          "type": "ONELETTER"
+        },
+        { "name": "sb",
+         "type" : "ONELETTER"
+        },
+        {
+          "name": "sc",
+          "type": "ONELETTER"
+        }
+      ]
+    },
+    {
+      "intent": "adds_metarIntentFour",
+      "slots": [
+        {
+          "name": "sa",
+          "type": "ONELETTER"
+        },
+        { "name": "sb",
+         "type" : "ONELETTER"
+        },
+        {
+          "name": "sc",
+          "type": "ONELETTER"
+        },
+                {
+          "name": "sd",
+          "type": "ONELETTER"
+        }
+
+      ]
+    },
+    {
+      "intent": "adds_metarIntentName",
+      "slots": [
+        {
+          "name": "bob",
+          "type": "AMAZON.US_CITY"
+        }
+
+
+      ]
+    }
+
+    
+
+    
+  ]
+}
+
+
+
+custom slots:
+
+DOWTYPE
+
+sunday
+monday
+tuesday
+wednesday
+thursday
+friday
+saturday
+today
+tomorrow
+
+MEALTYPE
+
+breakfast
+lunch
+dinner
+
+ONELETTER
+
+alpha
+bravo
+delta
+echo
+foxtrot
+golf
+hotel
+india
+juliet
+kilo
+lima
+mike
+november
+oscar
+papa
+quebec
+romeo
+sierra
+tango
+uniform
+victor
+whiskey
+x-ray
+yankee
+zulu
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+niner
+fife
+tree
+
+TIMEUNIT
+
+minute
+minutes
+hour
+hours
+day
+days
+
+
+utterances
+
+app_HelpIntent help
+app_HelpIntent help me
+app_HelpIntent what can I ask you
+app_HelpIntent get help
+app_HelpIntent to help
+app_HelpIntent to help me
+app_HelpIntent what commands can I ask
+app_HelpIntent what commands can I say
+app_HelpIntent what can I do
+app_HelpIntent what can I use this for
+app_HelpIntent what questions can I ask
+app_HelpIntent what can you do
+app_HelpIntent what do you do
+app_HelpIntent how do I use you
+app_HelpIntent how can I use you
+app_HelpIntent what can you tell me
+
+ph_RandIntent roll {one |count} dice
+ph_RandIntent roll {ten |count} dice
+ph_RandIntent roll {one |count} dies
+ph_RandIntent roll {ten |count} dies
+ph_RandIntent roll {one |count} die
+
+
+ph_LookupIntent to look up {Adam Stone | query}
+ph_LookupIntent to lookup  {Adam Stone | query}
+ph_LookupIntent to find    {Adam Stone | query}
+ph_LookupIntent lookup     {Adam Stone | query}
+ph_LookupIntent lookup     {A D Stone | query}
+ph_LookupIntent lookup     {Jacobowitz | query}
+ph_LookupIntent lookup     {David Jacobowitz | query}
+ph_LookupIntent look up    {Adam Stone | query}
+ph_LookupIntent look up    {A D Stone | query}
+ph_LookupIntent look up    {Jacobowitz | query}
+ph_LookupIntent look up    {David Jacobowitz | query}
+ph_LookupIntent find       {Adam Stone | query}
+ph_LookupIntent find       {A D Stone | query}
+ph_LookupIntent find       {David Jacobowitz | query}
+ph_LookupIntent find       {Jacobowitz | query}
+
+
+es_OverIntent  tell me usage over the past {count} {unit}
+es_OverIntent  what was network use over the past {count} {unit}
+es_OverIntent  what was net use over the past {count} {unit}
+es_OverIntent  what was our net use for the last {count} {unit}
+es_OverIntent  what is our net use over the last {count} {unit}
+es_OverIntent  what is our network use for the last {count} {unit}
+es_LastIntent  what was net use for the last {unit}
+es_LastIntent  what was network use for the last {unit}
+es_LastIntent  what was net use over the last {unit}
+es_LastIntent  what was network use over he last {unit}
+es_LastIntent  what is net use for the last {unit}
+es_LastIntent  what is network use for the last {unit}
+es_LastIntent  what is net use over the last {unit}
+es_LastIntent  what is net use over the last {unit}
+es_NowIntent   what's our network use
+es_NowIntent   what's out net use
+es_NowIntent   what is our network use
+es_NowIntent   what is our net use
+
+cf_MenuIntent What's for {meal} {dow}
+cf_MenuIntent What's for {meal}
+cf_MenuIntent What's for {meal} on {dow}
+cf_MenuIntent What's on the menu
+cf_MenuIntent what is for {meal} {dow}
+cf_MenuIntent what is for {meal}
+cf_MenuIntent what is on the menu
+cf_MenuIntent what's hot
+
+
+als_statsIntent what is a l s beam status
+als_statsIntent to tell me a l s status
+als_statsIntent what is a l s status
+als_statsIntent a l s
+als_statsIntent what is beam status
+als_statsIntent is the beam on
+als_statsIntent to tell me beam status
+als_statsIntent beam status
+als_statsIntent what's the beam status
+
+adds_metarIntentThree read the atis at {sa} {sb} {sc}
+adds_metarIntentFour  read the atis at {sa} {sb} {sc} {sd}
+adds_metarIntentName  read the atis at {bob}
+adds_metarIntentThree read the atis in {sa} {sb} {sc}
+adds_metarIntentFour  read the atis in {sa} {sb} {sc} {sd}
+adds_metarIntentName  read the atis in {bob}
+
+adds_metarIntentThree tell me the weather at {sa} {sb} {sc}
+adds_metarIntentFour  tell me the weather at {sa} {sb} {sc} {sd}
+adds_metarIntentName  tell me the weather at {bob}
+adds_metarIntentThree tell me the weather in {sa} {sb} {sc}
+adds_metarIntentFour  tell me the weather in {sa} {sb} {sc} {sd}
+adds_metarIntentName  tell me the weather in {bob}
+
