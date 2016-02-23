@@ -1,4 +1,6 @@
-﻿/* DOD World Magnetic Model 2010-2015 
+﻿/* Note: modified to 2015 coefficients by Dave J */
+
+/* DOD World Magnetic Model 2010-2015 
 
 See bottom of file for info from original Fortran source code 
 
