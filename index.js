@@ -80,8 +80,8 @@ open_apps.prototype.intentHandlers = {
          }
          metar.getJSON(ctx, metar.processResult);
         } else {
-         var r = "could not find: " + n;
-         response.tellWithCard(r,"Not found",n);
+         var r = "I could not find the airport identifier for " + n;
+         response.tellWithCard(r,"ICAO Identifier Not Found",n);
 	}
     }
 };
