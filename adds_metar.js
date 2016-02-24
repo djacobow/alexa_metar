@@ -3,6 +3,19 @@
 var pause_med = '<break strength="medium"/>';
 
 var names = {
+ 'dubai'             : 'OMDB',
+ 'tokyo'             : 'RJTT',
+ 'london'            : 'EGLL',
+ 'hong kong'         : 'VHHH',
+ 'paris'             : 'LFPG',
+ 'istanbul'          : 'LTBA',
+ 'frankfurt'         : 'EDDF',
+ 'shanghai'          : 'ZSPD',
+ 'amsterdam'         : 'EHAM',
+ 'seoul'             : 'RKSI',
+ 'madrid'            : 'LEMD',
+ 'delhi'             : 'VIDP',
+ 'beijing'           : 'ZBAA',
  'atlanta'           : 'KATL',
  'los angeles'       : 'KLAX',
  'o\'hare'           : 'KORD',
@@ -193,7 +206,7 @@ function radioify(blobs) {
    case '9': nb = 'niner'; break;
    case '5': nb = 'fife'; break;
    case '3': nb = 'tree'; break;
-   case '4': nb = 'fow-er'; break;
+   // case '4': nb = 'fow-er'; break; // fow-er is too annoying. Nobody really says it.
    default: break;
   }
   new_blobs.push(nb);
@@ -386,6 +399,16 @@ function metar2text(metar) {
 
 function defined(x) { return typeof(x) !== 'undefined' };
 
+
+function reversePhonetics() {
+ var rp = {};
+ for (var phone in phonetics) {
+  rp[phonetics[phone]] = phone;
+ }
+ return rp;
+}
+
+
 function processResult(cbctx, data) {
  var metar = null;
  if (data.response && data.response.data[0] && data.response.data[0].METAR) {
@@ -400,7 +423,12 @@ function processResult(cbctx, data) {
 		  "METAR for " + metar.station_id,
 		  metar.raw_text[0]);
  } else {
-  cbctx.response_object.tellWithCard("Empty response","METAR info","Empty response");
+  var rp      = reversePhonetics();
+  var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()] });
+  var to_say = 'Empty response for ' +
+	        letters.join(' ');
+  cbctx.response_object.tellWithCard(to_say,"No METAR",
+		  "No response for " + cbctx.letters.join(''));
  }
 }
 
