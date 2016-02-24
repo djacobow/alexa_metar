@@ -125,9 +125,9 @@ var wordToLetter = function(word) {
  word = word.toLowerCase();
  var v = null;
  if (phonetics[word]) {
-  v = phonetics[word];
+  v = phonetics[word].toUpperCase();
  }
- return v.toUpperCase();
+ return v;
 };
 
 
@@ -157,14 +157,22 @@ var getJSON = function(cbctx, cb) {
   });
   res.on('end', function() {
    var xmlparser = new xml2js.Parser();
-   xmlparser.parseString(body,function(err,result) {
-     if (err) {
-       console.log('-err- : ' + err);
-       cb(cbctx,{});
-     } else {
-       return cb(cbctx,result);
-     }
-   });
+   if (body && body.length) {
+    try {
+     xmlparser.parseString(body,function(err,result) {
+       if (err) {
+         console.log('-err- : ' + err);
+         cb(cbctx,{});
+       } else {
+         return cb(cbctx,result);
+       }
+     });
+    }
+    catch(e) {
+     console.log('-caught err- : ' + e);
+     return cb(cbctx,{});
+    }
+   }
   });
  }).on('error', function(e){
   console.log('-err- : ' + e);
@@ -196,6 +204,7 @@ function radioify(blobs) {
 function metar2text(metar) {
  var text = '';
  var blobs = [];
+ blobs.push('<speak>');
  console.log(metar);
  var sta_dat = null;
  if (defined(metar.station_id)) {
@@ -370,6 +379,7 @@ function metar2text(metar) {
    altim_digits.forEach(function(digit) { blobs.push(digit); });
    blobs.push(pause_med);
  }
+ blobs.push('</speak>');
 
  return blobs;
 };
@@ -377,8 +387,11 @@ function metar2text(metar) {
 function defined(x) { return typeof(x) !== 'undefined' };
 
 function processResult(cbctx, data) {
- var metar = data.response.data[0].METAR[0];
- if (defined(metar)) {
+ var metar = null;
+ if (data.response && data.response.data[0] && data.response.data[0].METAR) {
+  metar = data.response.data[0].METAR[0];
+ }
+ if (defined(metar) && (metar !== null)) {
   var chunks = metar2text(metar);
   chunks     = radioify(chunks);
   console.log(chunks);
