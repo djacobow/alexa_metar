@@ -23,7 +23,7 @@ open_apps.prototype.eventHandlers.onSessionStarted = function (sessionStartedReq
 
 open_apps.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("-i- open_apps onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to the LBL App.";
+    var speechOutput = "Welcome to the METAR reader app.";
     // var repromptText = "Ask \"what's for breakfast Thursday?\" or \"Look up Samantha Bee.\"";
     response.ask(speechOutput /* , repromptText */);
 };
@@ -35,7 +35,7 @@ open_apps.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest
 };
 
 
-var help_text = "The LBL Alexa Skill lets you access some commonly-used public data at the lab. You can say \"What's for lunch?\" or \"lookup Paul Alivisatos\" or \"What is our network usage?\" or \"What is the beam status?\" We are always looking for more useful things for the app to do. Be sure to let I T know if you have a good idea!";
+var help_text = "The METAR reader skill lets you hear airport METARs read aloud as if they were ATIS reports. Say get Oakland or get oscar alpha kilo.";
 
 open_apps.prototype.intentHandlers = {
 
@@ -111,9 +111,9 @@ if (0) {
   'response_object': {
    'tellWithCard': dummyTellWithCard
   },
-  letters: [ metar.wordToLetter('sierra'),
-             metar.wordToLetter('echo'),
-	     metar.wordToLetter('alpha') ]
+  letters: [ metar.wordToLetter('alpha'),
+             metar.wordToLetter('alpha'),
+	     metar.wordToLetter('bravo') ]
  };
  metar.getJSON(fake_ctx, metar.processResult);
 }
