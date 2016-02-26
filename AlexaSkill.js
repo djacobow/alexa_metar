@@ -19,13 +19,18 @@ AlexaSkill.speechOutput = {
     SSML: 'SSML'
 }
 
+var pdb = require('./prefs');
+
 AlexaSkill.prototype.requestHandlers = {
     LaunchRequest: function (event, context, response) {
         this.eventHandlers.onLaunch.call(this, event.request, event.session, response);
     },
 
     IntentRequest: function (event, context, response) {
+        var user_info = pdb.getUserInfo(event.session.user.userId);
+	event.session.user_info = user_info;
         this.eventHandlers.onIntent.call(this, event.request, event.session, response);
+	pdb.setUserInfo(event.session.user.userId,user_info,function(){});
     },
 
     SessionEndedRequest: function (event, context) {

@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/djacobow/alexa_metar#readme",
   "dependencies": {
+    "async": "^1.5.2",
+    "aws-sdk": "^2.2.38",
     "xml2js": "^0.4.16"
   }
 }

@@ -16,20 +16,20 @@ open_apps.prototype = Object.create(AlexaSkill.prototype);
 open_apps.prototype.constructor = open_apps;
 
 open_apps.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("-i- open_apps onSessionStarted requestId: " + sessionStartedRequest.requestId
-        + ", sessionId: " + session.sessionId);
-    // any initialization logic goes here
+ console.log("-i- METAR_reader onSessionStarted requestId: " + 
+		 sessionStartedRequest.requestId + 
+		 ", sessionId: " + 
+		 session.sessionId);
 };
 
 open_apps.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("-i- open_apps onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+    console.log("-i- METAR_reader onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     var speechOutput = "Welcome to the METAR reader app.";
-    // var repromptText = "Ask \"what's for breakfast Thursday?\" or \"Look up Samantha Bee.\"";
     response.ask(speechOutput /* , repromptText */);
 };
 
 open_apps.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("-i- open_apps onSessionEnded requestId: " + sessionEndedRequest.requestId
+    console.log("-i- METAR_reader onSessionEnded requestId: " + sessionEndedRequest.requestId
         + ", sessionId: " + session.sessionId);
     // any cleanup logic goes here
 };
@@ -49,8 +49,8 @@ open_apps.prototype.intentHandlers = {
 
     adds_metarIntentThree: function(intent, session, response) {
         var ctx = {
-         'response_object' : response,
-         'letters' : [
+         response_object : response,
+         letters : [
 		 metar.wordToLetter(intent.slots.sa.value),
 		 metar.wordToLetter(intent.slots.sb.value),
 		 metar.wordToLetter(intent.slots.sc.value),
@@ -60,8 +60,9 @@ open_apps.prototype.intentHandlers = {
     },
     adds_metarIntentFour: function(intent, session, response) {
         var ctx = {
-         'response_object' : response,
-         'letters' : [
+         session: session,
+         response_object : response,
+         letters : [
 		 metar.wordToLetter(intent.slots.sa.value),
 		 metar.wordToLetter(intent.slots.sb.value),
 		 metar.wordToLetter(intent.slots.sc.value),
@@ -70,20 +71,56 @@ open_apps.prototype.intentHandlers = {
         }
         metar.getJSON(ctx, metar.processResult);
     },
+    adds_metarIntentDefault: function(intent, session, response) {
+        var da = session.user_info.preferences.default_airport;
+	if (da && (da !== null) && (da.length())) {
+         var ctx = {
+             session: session,
+             response_object: response,
+	     letters: da.split(''),
+	 }
+	 metar.getJSON(ctx, metar.processResult);
+	} else {
+         var r = "You do not have a default airport set. You can set one by saying: \"set default airport\" followed by the identifier, spoken in i kay oh phonetics.";
+         response.tellWithCard(d,'No default airport set',r); 
+	}
+    },
     adds_metarIntentName: function(intent, session, response) {
         var  n    = intent.slots.bob.value;
         var lu    = metar.findByName(n);
         if (lu.ok) {
          var ctx = {
-          'response_object' : response,
-          'letters' : lu.letters
+          session: session,
+          response_object : response,
+          letters : lu.letters
          }
          metar.getJSON(ctx, metar.processResult);
         } else {
          var r = "I could not find the airport identifier for " + n;
          response.tellWithCard(r,"ICAO Identifier Not Found",n);
 	}
-    }
+    },
+
+    setIntentIdentifierThree: function(intent,session,response) {
+        session.user_info.preferences.default_airport = 'K' +
+		metar.wordToLetter(intent.slots.sa.value) +
+		metar.wordToLetter(intent.slots.sb.value) +
+		metar.wordToLetter(intent.slots.sc.value);
+        response.tell('saving default airport saved');
+    },
+    setIntentIdentifierFour: function(intent,session,response) {
+        session.user_info.preferences.default_airport = 
+		metar.wordToLetter(intent.slots.sa.value) +
+		metar.wordToLetter(intent.slots.sb.value) +
+		metar.wordToLetter(intent.slots.sc.value) +
+		metar.wordToLetter(intent.slots.sd.value);
+        response.tell('saving default airport');
+    },
+    setIntentDirection: function(intent,session,response) {
+      var desired = intent.slots.direction.value;
+      session.user_info.preferences.wind_reference = desired;
+      response.tell('saving wind direction preference');
+    },
 };
 
 // Create the handler that responds to the Alexa Request.
