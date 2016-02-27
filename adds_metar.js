@@ -289,7 +289,19 @@ function numberToZeroPaddedArray(num,len) {
  return ns.split('');
 }
 
-function metar2text(metar) {
+function stringIs(str,compare) {
+ return (
+         str && 
+         (str !== 'undefined') && 
+	 (str !== 'null') && 
+	 str.length && 
+	 (str == compare)
+	);
+
+}
+
+
+function metar2text(metar,preferences) {
  var text = '';
  var blobs = [];
  blobs.push('<speak>');
@@ -318,9 +330,8 @@ function metar2text(metar) {
     blobs.push('automated');
    }
   }
-  console.log(cc)
  }
- if (defined(metar.metar_type) && (metar.metar_type[0] == 'SPECI')) {
+ if (stringIs(metar.metar_type,'SPECI')) {
   blobs.push('special');
  };
 
@@ -361,11 +372,23 @@ function metar2text(metar) {
     if (metar.raw_text[0].match(/\sVRB/)) {
       blobs.push('variable');
     } else {
-      var wind_dir_mag  = wind_dir_true + mag_var;
-      while (wind_dir_mag < 0)   wind_dir_mag += 360;
-      while (wind_dir_mag > 360) wind_dir_mag -= 360;
-      var wind_dir_int = Math.floor(wind_dir_mag + 0.5);
+      var wind_dir_pref  = mag_var;
+      var use_true = stringIs(preferences.wind_reference,'true');
+      if (use_true) {
+       // true wind directions are not appropriate in an ATIS 
+       // report, but are optionally available here
+       console.log('-d- reporting TRUE wind dir');
+       wind_dir_pref = wind_dir_true;
+      } else {
+       wind_dir_pref += wind_dir_true;
+      }
+      while (wind_dir_pref < 0)   wind_dir_pref += 360;
+      while (wind_dir_pref > 360) wind_dir_pref -= 360;
+      var wind_dir_int = Math.floor(wind_dir_pref + 0.5);
       blobs.push(numberToZeroPaddedArray(wind_dir_int,3).join(' '));
+      if (use_true) {
+        blobs.push('true');
+      }
     }
     blobs.push('at');
     blobs.push(metar.wind_speed_kt[0]);
@@ -491,8 +514,8 @@ function processResult(cbctx, data) {
   metar = data.response.data[0].METAR[0];
  }
  if (defined(metar) && (metar !== null)) {
-  console.log('_PLAN_A');
-  var chunks = metar2text(metar);
+  console.log('__PLAN_A__');
+  var chunks = metar2text(metar,cbctx.session.user_info.preferences);
   chunks     = radioify(chunks);
   var to_say = chunks.join(' ');
   console.log('Going to say: ' + to_say);
