@@ -5,7 +5,7 @@ var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff'; // n
 var AlexaSkill = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
 var metar      = require('./adds_metar')  // aviation METARs
 var pdb        = require('./prefs'); // saving user preferences
-
+var util       = require('./dutil');
 // open_apps is a child of AlexaSkill, overrides various methods
 var open_apps = function () {
     AlexaSkill.call(this, APP_ID);
@@ -126,7 +126,7 @@ open_apps.prototype.intentHandlers = {
     setAirport: function(intent, session, response) {
       logBasic('setAirport',session);
       var last_airport = session.user_info.stats.last_airport;
-      if (last_airport && (last_airport !== null) && (last_airport.length)) {
+      if (util.definedHasLength(last_airport)) {
         session.user_info.preferences.default_airport = last_airport;
 	console.log('__SET_AIRPORT_SAVING__');
 	console.log(session.user);
@@ -162,10 +162,10 @@ exports.handler = function (event, context) {
 // for testing locallly
 var dummyTellWithCard = function(a,b,c) {
     console.log("-d- saying        : " + a);
-    if (typeof b !== 'undefined') {
+    if (util.definedNonNull(b)) {
       console.log("-d- card title    : " + b);
     }
-    if (typeof c !== 'undefined') {
+    if (util.definedNonNull(c)) {
       console.log("-d- card contents : " + c);
     }
 };
@@ -178,7 +178,7 @@ var test_ctx = {
      user_info: {
        preferences: {
          default_airport: 'KLAX',
-         wind_reference: 'true',
+         wind_reference: 'magnetic',
        },
        stats: {
          last_airport: 'KO22',
@@ -194,9 +194,9 @@ var test_ctx = {
 
 if (0) {
   var slots = {
-   sa: { value: 'oscar' },
-   sb: { value: 'andover'} ,
-   sc: { value: 'king' },
+   sa: { value: 'e' },
+   sb: { value: 'w'} ,
+   sc: { value: 'r' },
   };
   var sr = metar.validateSlots(slots);
   test_ctx.letters = sr.letters;
