@@ -1,5 +1,7 @@
 "use strict";
 
+var pdb = require('./prefs');
+
 var pause_med = '<break strength="medium"/>';
 
 var names = {
@@ -18,8 +20,10 @@ var names = {
  'beijing'           : 'ZBAA',
  'atlanta'           : 'KATL',
  'los angeles'       : 'KLAX',
+ 'chicago'           : 'KORD',
  'o\'hare'           : 'KORD',
  'dallas fort worth' : 'KDFW',
+ 'dallas'            : 'KDFW',
  'new york'          : 'KJFK',
  'san francisco'     : 'KSFO',
  'charlotte'         : 'KDEN',
@@ -56,7 +60,6 @@ var names = {
  'san jose'          : 'KSJC',
  'john wayne'        : 'KSNA',
  'love'              : 'KDAL',
- 'dallas'            : 'KDAL',
  'sacramento'        : 'KSMF',
  'san antonio'       : 'KSAT',
  'pittsburgh'        : 'KPIT',
@@ -145,7 +148,6 @@ var wordToLetter = function(word) {
 
 
 var getJSON = function(cbctx, cb) {
-
  var letters      = cbctx.letters;
 
  var id           = '';
@@ -198,6 +200,70 @@ var getJSON = function(cbctx, cb) {
  });
 }
 
+var validateCity = function(slots) {
+ var name = slots.city.value.toLowerCase();
+ if (names[name]) {
+  return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
+}
+ return { mode: 'city', valid: false, letters: [], orig: name };
+};
+
+function validateSlots(slots) {
+ var response = {
+  letters: [],
+  orig: [],
+  valid: true,
+  mode: 'identifier'
+ };
+ var slot_names = ['sa','sb','sc','sd'];
+ slot_names.forEach(function(sn) {
+  var value = slots[sn] ? slots[sn].value : null;
+  if (defined(value) && (value !== null) && (value.length)) {
+   response.orig.push(value);
+   var letter = wordToLetter(value);
+   if (letter !== null) {
+    response.letters.push(letter.toUpperCase());
+   } else {
+    var char1 = value.substr(0,1);
+    if (char1.match(/^\d/)) {
+     response.letters.push(char1);
+    } else {
+     // only include below if we want to
+     // allow non-phonetics
+     response.letters.push(char1.toUpperCase());
+    }
+   }
+  }
+ });
+ if (response.letters.length < 3) {
+  response.valid = false;
+ } else if (response.letters.length == 3) {
+  response.letters.unshift('K');
+ }
+ console.log('__validate__');
+ console.log(response);
+ return response;
+};
+
+function validateDefaultAirport(user_info) {
+ console.log('-d- validateDefaultAirport');
+ console.log(user_info);
+ var da = user_info.preferences.default_airport;
+ var sr = {
+  mode: 'default_airport',
+  valid: false,
+ }
+ if (da && (da !== null) && (da.length)) {
+  sr.valid = true,
+  sr.letters =  da.split('')
+ } else {
+  sr.orig = 'Default Airport Not Set';
+  sr.letters = [];
+ };
+ console.log(sr);
+ return sr;
+};
+
 function radioify(blobs) {
  var new_blobs = [];
  blobs.forEach(function(blob) {
@@ -218,7 +284,7 @@ function metar2text(metar) {
  var text = '';
  var blobs = [];
  blobs.push('<speak>');
- console.log(metar);
+ // console.log(metar);
  var sta_dat = null;
  if (defined(metar.station_id)) {
   sta_dat = stations[metar.station_id];
@@ -408,42 +474,46 @@ function reversePhonetics() {
  return rp;
 }
 
-
 function processResult(cbctx, data) {
  var metar = null;
  if (data.response && data.response.data[0] && data.response.data[0].METAR) {
   metar = data.response.data[0].METAR[0];
  }
  if (defined(metar) && (metar !== null)) {
+  console.log('_PLAN_A');
   var chunks = metar2text(metar);
   chunks     = radioify(chunks);
-  console.log(chunks);
   var to_say = chunks.join(' ');
-  cbctx.response_object.tellWithCard({type: 'SSML', speech: to_say},
-		  "METAR for " + metar.station_id,
-		  metar.raw_text[0]);
+  console.log('Going to say: ' + to_say);
+  cbctx.session.user_info.stats.last_airport = metar.station_id[0];
+  console.log('__SAVING_UPDATE__');
+  console.log(cbctx.session.user);
+  console.log(cbctx.session.user_info);
+  pdb.setUserInfo(cbctx.session.user.userId,cbctx.session.user_info,function(e){
+   cbctx.response_object.tellWithCard({type: 'SSML', speech: to_say},
+    "METAR for " + metar.station_id,
+    metar.raw_text[0]);
+  });
  } else {
+  console.log('_PLAN_B');
   var rp      = reversePhonetics();
   var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()] });
   var to_say = 'Empty response for ' +
 	        letters.join(' ');
-  cbctx.response_object.tellWithCard(to_say,"No METAR",
-		  "No response for " + cbctx.letters.join(''));
+  cbctx.session.user_info.stats.last_airport = null;
+  pdb.setUserInfo(cbctx.session.user.userId,cbctx.session.user_info,function(){
+   cbctx.response_object.tellWithCard(to_say,"No METAR",
+   "No response for " + cbctx.letters.join(''));
+  });
  }
 }
-
-var findByName = function(name) {
- name = name.toLowerCase();
- if (names[name]) {
-  return { ok: true, letters: names[name].split('') };
- }
- return { ok: false, letters: [] };
-};
 
 module.exports = {
  getJSON: getJSON,
  processResult: processResult,
  wordToLetter: wordToLetter,
- findByName: findByName,
+ validateSlots: validateSlots,
+ validateDefaultAirport: validateDefaultAirport,
+ validateCity:  validateCity,
 };
 

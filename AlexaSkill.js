@@ -27,10 +27,13 @@ AlexaSkill.prototype.requestHandlers = {
     },
 
     IntentRequest: function (event, context, response) {
-        var user_info = pdb.getUserInfo(event.session.user.userId);
-	event.session.user_info = user_info;
-        this.eventHandlers.onIntent.call(this, event.request, event.session, response);
-	pdb.setUserInfo(event.session.user.userId,user_info,function(){});
+        var parent_this = this;
+        pdb.getUserInfo(event.session.user.userId,function(e,user_info) {
+         // this cb may receive an error, but user_info is always guaranteed
+	 // to be valid, even if it is a non-database default struct
+	 event.session.user_info = user_info;
+         parent_this.eventHandlers.onIntent.call(parent_this, event.request, event.session, response);
+	});
     },
 
     SessionEndedRequest: function (event, context) {
@@ -177,6 +180,13 @@ Response.prototype = (function () {
                 session: this._session,
                 output: speechOutput,
                 shouldEndSession: true
+            }));
+        },
+        tellNoEnd: function (speechOutput) {
+            this._context.succeed(buildSpeechletResponse({
+                session: this._session,
+                output: speechOutput,
+                shouldEndSession:false 
             }));
         },
         tellWithCard: function (speechOutput, cardTitle, cardContent) {

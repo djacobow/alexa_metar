@@ -1,125 +1,152 @@
 
 // App ID for the skill
 var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff'; // new -- me
-// var APP_ID = 'amzn1.echo-sdk-ams.app.9e6999ca-44ba-40cc-99cb-0ea73e96bfca'; // old -- lbl
 
 var AlexaSkill = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
 var metar      = require('./adds_metar')  // aviation METARs
+var pdb        = require('./prefs'); // saving user preferences
 
 // open_apps is a child of AlexaSkill, overrides various methods
 var open_apps = function () {
     AlexaSkill.call(this, APP_ID);
 };
 
+
+function logBasic(name,session) {
+ var chunks = [
+  '-i-',
+  name,
+  'requestId:',
+  session.requestId,
+  'sessionId:',
+  session.sessionId,
+  'userId:',
+  session.user.userId,
+ ];
+ console.log(chunks.join(' '));
+}
+
 // Extend AlexaSkill
 open_apps.prototype = Object.create(AlexaSkill.prototype);
 open_apps.prototype.constructor = open_apps;
 
 open_apps.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
- console.log("-i- METAR_reader onSessionStarted requestId: " + 
-		 sessionStartedRequest.requestId + 
-		 ", sessionId: " + 
-		 session.sessionId);
+ logBasic('onSessionStarted',session);
 };
 
 open_apps.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("-i- METAR_reader onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to the METAR reader app.";
-    response.ask(speechOutput /* , repromptText */);
+ logBasic('onLaunch',session);
+ var speechOutput = "Welcome to the mee-tar read app."
+ var repromptText = "Say something like get Cincinnati or get kilo oscar alpha kilo";
+ response.ask(speechOutput, repromptText);
 };
 
 open_apps.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("-i- METAR_reader onSessionEnded requestId: " + sessionEndedRequest.requestId
-        + ", sessionId: " + session.sessionId);
-    // any cleanup logic goes here
+ logBasic('onSessionEnded',session);
 };
 
 
-var help_text = "The METAR reader skill lets you hear airport METARs read aloud as if they were ATIS reports. Say get Oakland or get oscar alpha kilo.";
+var help_text = "\
+The me-tar reader skill lets you hear airport me-tar read aloud \
+as if they were ATIS reports. It works by city name or by three or four letter \
+airport identifier. You can say get Oakland or get juliet foxtrot kilo. You can  \
+also set a default airport. First request an airport by city or identifier. Then, \
+say \"set default\". Alexa will remember your default airport and from that  \
+point forward, you can just say \"get\" or \"get mee-tar\". \
+";
+
+function metarById(sr, session, response) {
+ if (sr.valid) {
+  var ctx = {
+   session: session,
+   response_object : response,
+   letters : sr.letters,
+  };
+  console.log(ctx.letters);
+  metar.getJSON(ctx, metar.processResult);
+ } else {
+  var was_city    = sr.mode == 'city';
+  var was_default = sr.mode == 'default_airport';
+
+  var ask = ''
+  if (was_city) {
+   ask = "I could not find the city " + sr.orig +
+	   " in my database. If you are sure it's correct, " +
+	   " lease contact the author " +
+	   " and suggest he add it.";
+  } else if (was_default) {
+   ask = "The default airport has not been set. Complete " +
+	   " a request first by identifier or city name, then " +
+	   " say \"set default\" to set the default airport.";
+  } else {
+   ask = "I couldn't make sense of your request. I heard " +
+	    sr.orig.join(' ');
+  }
+  response.ask(ask,
+   'Try again. Say "get" followed by a US city name or three ' +
+   ' or four letter identifier in eye-kay-oh phonetics.');
+ }
+};
+
 
 open_apps.prototype.intentHandlers = {
 
     "AMAZON.HelpIntent": function(intent, session, response) {
-       response.tell(help_text);
+      logBasic('AMAZON.HelpIntent',session);
+      response.tellNoEnd(help_text);
+    },
+    "AMAZON.StopIntent": function(intent, session, response) {
+      logBasic('AMAZON.StopIntent',session);
+      response.tell('stopping. goodbye');
+    },
+    "AMAZON.CancelIntent": function(intent, session, response) {
+      logBasic('AMAZON.CancelIntent',session);
+      response.tell('canceling. goodbye');
     },
 
-    app_HelpIntent: function (intent, session, response) {
-        response.tell(help_text);
+    metarThree: function(intent, session, response) {
+      logBasic('metarThree',session);
+      metarById(metar.validateSlots(intent.slots),session,response);
     },
 
-    adds_metarIntentThree: function(intent, session, response) {
-        var ctx = {
-         response_object : response,
-         letters : [
-		 metar.wordToLetter(intent.slots.sa.value),
-		 metar.wordToLetter(intent.slots.sb.value),
-		 metar.wordToLetter(intent.slots.sc.value),
-         ]
-        }
-        metar.getJSON(ctx, metar.processResult);
+    metarFour: function(intent, session, response) {
+      logBasic('metarFour',session);
+      metarById(metar.validateSlots(intent.slots),session,response);
     },
-    adds_metarIntentFour: function(intent, session, response) {
-        var ctx = {
-         session: session,
-         response_object : response,
-         letters : [
-		 metar.wordToLetter(intent.slots.sa.value),
-		 metar.wordToLetter(intent.slots.sb.value),
-		 metar.wordToLetter(intent.slots.sc.value),
-		 metar.wordToLetter(intent.slots.sd.value),
-         ]
-        }
-        metar.getJSON(ctx, metar.processResult);
-    },
-    adds_metarIntentDefault: function(intent, session, response) {
-        var da = session.user_info.preferences.default_airport;
-	if (da && (da !== null) && (da.length())) {
-         var ctx = {
-             session: session,
-             response_object: response,
-	     letters: da.split(''),
-	 }
-	 metar.getJSON(ctx, metar.processResult);
-	} else {
-         var r = "You do not have a default airport set. You can set one by saying: \"set default airport\" followed by the identifier, spoken in i kay oh phonetics.";
-         response.tellWithCard(d,'No default airport set',r); 
-	}
-    },
-    adds_metarIntentName: function(intent, session, response) {
-        var  n    = intent.slots.bob.value;
-        var lu    = metar.findByName(n);
-        if (lu.ok) {
-         var ctx = {
-          session: session,
-          response_object : response,
-          letters : lu.letters
-         }
-         metar.getJSON(ctx, metar.processResult);
-        } else {
-         var r = "I could not find the airport identifier for " + n;
-         response.tellWithCard(r,"ICAO Identifier Not Found",n);
-	}
+    metarCity: function(intent, session, response) {
+      logBasic('metarCity',session);
+      metarById(metar.validateCity(intent.slots),session,response);
     },
 
-    setIntentIdentifierThree: function(intent,session,response) {
-        session.user_info.preferences.default_airport = 'K' +
-		metar.wordToLetter(intent.slots.sa.value) +
-		metar.wordToLetter(intent.slots.sb.value) +
-		metar.wordToLetter(intent.slots.sc.value);
-        response.tell('saving default airport saved');
+    metarDeflt: function(intent, session, response) {
+      logBasic('metarDeflt',session);
+      metarById(metar.validateDefaultAirport(session.user_info),session,response);
     },
-    setIntentIdentifierFour: function(intent,session,response) {
-        session.user_info.preferences.default_airport = 
-		metar.wordToLetter(intent.slots.sa.value) +
-		metar.wordToLetter(intent.slots.sb.value) +
-		metar.wordToLetter(intent.slots.sc.value) +
-		metar.wordToLetter(intent.slots.sd.value);
-        response.tell('saving default airport');
+
+    setAirport: function(intent, session, response) {
+      logBasic('setAirport',session);
+      var last_airport = session.user_info.stats.last_airport;
+      if (last_airport && (last_airport !== null) && (last_airport.length)) {
+        session.user_info.preferences.default_airport = last_airport;
+	console.log('__SET_AIRPORT_SAVING__');
+	console.log(session.user);
+	console.log(session.user_info);
+        pdb.setUserInfo(session.user.userId,session.user_info,function(){
+         response.tell('default airport set to ' + last_airport);
+	});
+      } else {
+        response.tell('the previous query did not succeed. Query an airport first, then say"set default airport"');
+      }
     },
-    setIntentDirection: function(intent,session,response) {
-      var desired = intent.slots.direction.value;
+
+    setWindRef: function(intent,session,response) {
+      logBasic('setWindRef',session);
+      var desired = intent.slots.ref.value;
+      console.log('-d- new wind ref: ' + desired);
       session.user_info.preferences.wind_reference = desired;
-      response.tell('saving wind direction preference');
+      pdb.setUserInfo(session.user.userId,session.user_info,function(){
+       response.tell('saved wind direction preference to ' + desired);
+      });
     },
 };
 
@@ -143,29 +170,61 @@ var dummyTellWithCard = function(a,b,c) {
     }
 };
 
+var test_ctx = {
+   session: {
+     user: {
+       userId: 'bob',
+     },
+     user_info: {
+       preferences: {
+         default_airport: 'KLAX',
+         wind_reference: 'true',
+       },
+       stats: {
+         last_airport: 'KO22',
+         use_count: 3,
+         last_use: Math.floor(Date.now() / 1000),
+       },
+     },
+   },
+   response_object: {
+     tellWithCard: dummyTellWithCard,
+   },
+};
+
 if (0) {
- var fake_ctx = {
-  'response_object': {
-   'tellWithCard': dummyTellWithCard
-  },
-  letters: [ metar.wordToLetter('alpha'),
-             metar.wordToLetter('alpha'),
-	     metar.wordToLetter('bravo') ]
+  var slots = {
+   sa: { value: 'oscar' },
+   sb: { value: 'andover'} ,
+   sc: { value: 'king' },
+  };
+  var sr = metar.validateSlots(slots);
+  test_ctx.letters = sr.letters;
+  if (sr.valid) {
+   metar.getJSON(test_ctx, metar.processResult);
+  } else {
+   console.log('uh-oh');
+   console.log(sr);
+  }
+}
+
+
+if (0) {
+ var slots = {
+  city: { value: 'houston' },
  };
- metar.getJSON(fake_ctx, metar.processResult);
+ var sr    = metar.validateCity(slots);
+ test_ctx.letters = sr.letters;
+ if (sr.valid) {
+  metar.getJSON(test_ctx, metar.processResult);
+ }
 }
 
 if (0) {
- var  n    = 'houston';
- var lu    = metar.findByName(n);
- if (lu.ok) {
-  var fake_ctx = {
-   'response_object' : {
-    'tellWithCard': dummyTellWithCard
-   },
-   'letters' : lu.letters
-  };
-  metar.getJSON(fake_ctx, metar.processResult);
+ var sr    = metar.validateDefaultAirport(test_ctx.session.user_info);
+ test_ctx.letters = sr.letters;
+ if (sr.valid) {
+  metar.getJSON(test_ctx, metar.processResult);
  }
 }
 
