@@ -280,11 +280,20 @@ function radioify(blobs) {
  return new_blobs;
 };
 
+function numberToZeroPaddedArray(num,len) {
+ num = Math.floor(num);
+ var ns = num.toString();
+ while (ns.length < len) {
+  ns = '0' + ns;
+ }
+ return ns.split('');
+}
+
 function metar2text(metar) {
  var text = '';
  var blobs = [];
  blobs.push('<speak>');
- // console.log(metar);
+ console.log(metar);
  var sta_dat = null;
  if (defined(metar.station_id)) {
   sta_dat = stations[metar.station_id];
@@ -311,13 +320,17 @@ function metar2text(metar) {
   }
   console.log(cc)
  }
+ if (defined(metar.metar_type) && (metar.metar_type[0] == 'SPECI')) {
+  blobs.push('special');
+ };
+
  blobs.push('weather observation');
  if (defined(metar.observation_time)) {
    var otime = new Date(metar.observation_time);
    var hours = otime.getUTCHours();
    var minutes = otime.getUTCMinutes();
-   blobs.push(hours.toString());
-   blobs.push(minutes.toString());
+   blobs.push(numberToZeroPaddedArray(hours,2).join(' '));
+   blobs.push(numberToZeroPaddedArray(minutes,2).join(' '));
    blobs.push('zulu');
    blobs.push(pause_med);
  }
@@ -345,17 +358,15 @@ function metar2text(metar) {
    if (wind_speed_int == 0) {
     blobs.push('calm');
    } else {
-    var wind_dir_mag  = wind_dir_true + mag_var;
-    while (wind_dir_mag < 0)   wind_dir_mag += 360;
-    while (wind_dir_mag > 360) wind_dir_mag -= 360;
-    var wind_dir_int = Math.floor(wind_dir_mag + 0.5);
-    if (wind_dir_int < 10) {
-      blobs.push('0');
+    if (metar.raw_text[0].match(/\sVRB/)) {
+      blobs.push('variable');
+    } else {
+      var wind_dir_mag  = wind_dir_true + mag_var;
+      while (wind_dir_mag < 0)   wind_dir_mag += 360;
+      while (wind_dir_mag > 360) wind_dir_mag -= 360;
+      var wind_dir_int = Math.floor(wind_dir_mag + 0.5);
+      blobs.push(numberToZeroPaddedArray(wind_dir_int,3).join(' '));
     }
-    if (wind_dir_int < 100) {
-      blobs.push('0');
-    };
-    blobs.push.apply(blobs,wind_dir_int.toString().split(''));
     blobs.push('at');
     blobs.push(metar.wind_speed_kt[0]);
     if (metar.wind_gust_kt) {
