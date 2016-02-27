@@ -1,6 +1,7 @@
 "use strict";
 
 var pdb = require('./prefs');
+var util = require('./dutil');
 
 var pause_med = '<break strength="medium"/>';
 
@@ -140,7 +141,7 @@ var nowToMagYear = function() {
 var wordToLetter = function(word) {
  word = word.toLowerCase();
  var v = null;
- if (phonetics[word]) {
+ if (util.definedNonNull(phonetics[word])) {
   v = phonetics[word].toUpperCase();
  }
  return v;
@@ -172,7 +173,7 @@ var getJSON = function(cbctx, cb) {
   });
   res.on('end', function() {
    var xmlparser = new xml2js.Parser();
-   if (body && body.length) {
+   if (util.definedHasLength(body)) {
     try {
      xmlparser.parseString(body,function(err,result) {
        if (err) {
@@ -218,7 +219,7 @@ function validateSlots(slots) {
  var slot_names = ['sa','sb','sc','sd'];
  slot_names.forEach(function(sn) {
   var value = slots[sn] ? slots[sn].value : null;
-  if (defined(value) && (value !== null) && (value.length)) {
+  if (util.definedHasLength(value)) {
    response.orig.push(value);
    var letter = wordToLetter(value);
    if (letter !== null) {
@@ -253,7 +254,7 @@ function validateDefaultAirport(user_info) {
   mode: 'default_airport',
   valid: false,
  }
- if (da && (da !== null) && (da.length)) {
+ if (util.definedHasLength(da)) {
   sr.valid = true,
   sr.letters =  da.split('')
  } else {
@@ -289,17 +290,6 @@ function numberToZeroPaddedArray(num,len) {
  return ns.split('');
 }
 
-function stringIs(str,compare) {
- return (
-         str && 
-         (str !== 'undefined') && 
-	 (str !== 'null') && 
-	 str.length && 
-	 (str == compare)
-	);
-
-}
-
 
 function metar2text(metar,preferences) {
  var text = '';
@@ -307,7 +297,7 @@ function metar2text(metar,preferences) {
  blobs.push('<speak>');
  console.log(metar);
  var sta_dat = null;
- if (defined(metar.station_id)) {
+ if (util.definedNonNull(metar.station_id)) {
   sta_dat = stations[metar.station_id];
 
   if (sta_dat.name) {
@@ -323,20 +313,20 @@ function metar2text(metar,preferences) {
   blobs.push(pause_med);
  }
 
- if (defined(metar.quality_control_flags)) {
+ if (util.definedNonNull(metar.quality_control_flags)) {
   var cc = metar.quality_control_flags[0];
-  if (defined(cc) && defined(cc.auto_station)) {
-   if (cc.auto_station[0] == 'TRUE') {
+  if (util.definedHasLength(cc)) {
+   if (util.stringIs(cc.auto_station[0],'TRUE')) {
     blobs.push('automated');
    }
   }
  }
- if (stringIs(metar.metar_type,'SPECI')) {
+ if (util.stringIs(metar.metar_type,'SPECI')) {
   blobs.push('special');
  };
 
  blobs.push('weather observation');
- if (defined(metar.observation_time)) {
+ if (util.definedNonNull(metar.observation_time)) {
    var otime = new Date(metar.observation_time);
    var hours = otime.getUTCHours();
    var minutes = otime.getUTCMinutes();
@@ -346,13 +336,13 @@ function metar2text(metar,preferences) {
    blobs.push(pause_med);
  }
 
- if (defined(metar.visibility_statute_mi)) {
+ if (util.definedNonNull(metar.visibility_statute_mi)) {
   blobs.push('visibility');
   blobs.push(Math.floor(parseFloat(metar.visibility_statute_mi) + 0.5).toString());
    blobs.push(pause_med);
  }
 
- if (defined(metar.wind_dir_degrees) && defined(metar.wind_speed_kt)) {
+ if (util.definedNonNull(metar.wind_dir_degrees) && util.definedNonNull(metar.wind_speed_kt)) {
    blobs.push('wind');
    var wind_dir_true = parseFloat(metar.wind_dir_degrees[0]);
 
@@ -373,7 +363,7 @@ function metar2text(metar,preferences) {
       blobs.push('variable');
     } else {
       var wind_dir_pref  = mag_var;
-      var use_true = stringIs(preferences.wind_reference,'true');
+      var use_true = util.stringIs(preferences.wind_reference,'true');
       if (use_true) {
        // true wind directions are not appropriate in an ATIS 
        // report, but are optionally available here
@@ -400,7 +390,7 @@ function metar2text(metar,preferences) {
    blobs.push(pause_med);
  }
 
- if (defined(metar.wx_string)) {
+ if (util.definedNonNull(metar.wx_string)) {
    var wx = metar.wx_string.toString();
    var vicinity = false;
    if (wx.match(/^-/)) { blobs.push('light'); };
@@ -456,7 +446,7 @@ function metar2text(metar,preferences) {
    blobs.push(pause_med);
  }
 
- if (defined(metar.sky_condition)) {
+ if (util.definedNonNull(metar.sky_condition)) {
   blobs.push('sky condition');
   metar.sky_condition.forEach(function(layer) {
     var layer_type_short = layer['$'].sky_cover;
@@ -468,24 +458,34 @@ function metar2text(metar,preferences) {
 		     layer_type_short == 'OVC' ? 'overcast' : '';
     blobs.push(layer_type);
     if ((layer_type != 'clear') && (layer_type.length)) {
-      blobs.push(layer_base);
+      layer_base = parseInt(layer_base);
+      var layer_base_thousands = Math.floor(layer_base / 1000);
+      var layer_base_hundreds  = Math.floor((layer_base - layer_base_thousands*1000) / 100);
+      if (layer_base_thousands) {
+       blobs.push(layer_base_thousands.toString().split('').join(' '));
+       blobs.push('thousand');
+      }
+      if (layer_base_hundreds) {
+       blobs.push(layer_base_hundreds.toString());
+       blobs.push('hundred');
+      }
       blobs.push(pause_med);
     }
   });
  }
 
- if (defined(metar.temp_c)) {
+ if (util.definedNonNull(metar.temp_c)) {
     blobs.push('temperature');
     blobs.push(Math.floor(parseFloat(metar.temp_c) + 0.5).toString());
     blobs.push(pause_med);
  }
- if (defined(metar.dewpoint_c)) {
+ if (util.definedNonNull(metar.dewpoint_c)) {
     blobs.push('dewpoint');
     blobs.push(Math.floor(parseFloat(metar.dewpoint_c) + 0.5).toString());
     blobs.push(pause_med);
  }
 
- if (defined(metar.altim_in_hg)) {
+ if (util.definedNonNull(metar.altim_in_hg)) {
    var altim = Math.floor(0.5 + 100 * parseFloat(metar.altim_in_hg));
    var altim_digits = altim.toString().split('');
    blobs.push('altimeter');
@@ -496,8 +496,6 @@ function metar2text(metar,preferences) {
 
  return blobs;
 };
-
-function defined(x) { return typeof(x) !== 'undefined' };
 
 
 function reversePhonetics() {
@@ -513,7 +511,7 @@ function processResult(cbctx, data) {
  if (data.response && data.response.data[0] && data.response.data[0].METAR) {
   metar = data.response.data[0].METAR[0];
  }
- if (defined(metar) && (metar !== null)) {
+ if (util.definedNonNull(metar)) {
   console.log('__PLAN_A__');
   var chunks = metar2text(metar,cbctx.session.user_info.preferences);
   chunks     = radioify(chunks);
