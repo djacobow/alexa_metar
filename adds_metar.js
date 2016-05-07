@@ -281,15 +281,6 @@ function radioify(blobs) {
  return new_blobs;
 };
 
-function numberToZeroPaddedArray(num,len) {
- num = Math.floor(num);
- var ns = num.toString();
- while (ns.length < len) {
-  ns = '0' + ns;
- }
- return ns.split('');
-}
-
 
 function metar2text(metar,preferences) {
  var text = '';
@@ -328,10 +319,7 @@ function metar2text(metar,preferences) {
  blobs.push('weather observation');
  if (util.definedNonNull(metar.observation_time)) {
    var otime = new Date(metar.observation_time);
-   var hours = otime.getUTCHours();
-   var minutes = otime.getUTCMinutes();
-   blobs.push(numberToZeroPaddedArray(hours,2).join(' '));
-   blobs.push(numberToZeroPaddedArray(minutes,2).join(' '));
+   blobs.push(util.timeToDigits(otime).join(' '));
    blobs.push('zulu');
    blobs.push(pause_med);
  }
@@ -375,7 +363,7 @@ function metar2text(metar,preferences) {
       while (wind_dir_pref < 0)   wind_dir_pref += 360;
       while (wind_dir_pref > 360) wind_dir_pref -= 360;
       var wind_dir_int = Math.floor(wind_dir_pref + 0.5);
-      blobs.push(numberToZeroPaddedArray(wind_dir_int,3).join(' '));
+      blobs.push(util.numberToZeroPaddedArray(wind_dir_int,3).join(' '));
       if (use_true) {
         blobs.push('true');
       }

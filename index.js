@@ -123,6 +123,17 @@ open_apps.prototype.intentHandlers = {
       metarById(metar.validateDefaultAirport(session.user_info),session,response);
     },
 
+    getTime: function(intent, session, response) {
+      var now = new Date();
+      var r = 'The time is now ' + 
+	      util.numberToZeroPaddedString(now.getUTCHours(),2) + 
+	      ' ' + 
+	      util.numberToZeroPaddedString(now.getUTCMinutes(),2) +
+	      ' zulu'; 
+      // var r   = 'The time is now ' + util.timeToDigits(now).join(' ') + ' zulu';
+      response.tell(r);
+    },
+
     setAirport: function(intent, session, response) {
       logBasic('setAirport',session);
       var last_airport = session.user_info.stats.last_airport;
@@ -191,6 +202,19 @@ var test_ctx = {
      tellWithCard: dummyTellWithCard,
    },
 };
+
+
+if (0) {
+      var now = new Date();
+      var r = 'The time is now ' + 
+	      util.numberToZeroPaddedString(now.getUTCHours(),2) + 
+	      ' ' + 
+	      util.numberToZeroPaddedString(now.getUTCMinutes(),2) +
+	      ' zulu'; 
+      // var r   = 'The time is now ' + util.timeToDigits(now).join(' ') + ' zulu';
+      console.log(r);
+}
+
 
 if (0) {
   var slots = {
