@@ -3,11 +3,14 @@ Interation:
 {
   "intents": [
     {
-      "intent": "app_HelpIntent",
-      "slots": []
+      "intent": "AMAZON.HelpIntent"
+    },
+    { "intent": "AMAZON.StopIntent"
+    },
+    { "intent": "AMAZON.CancelIntent"
     },
     {
-      "intent": "adds_metarIntentThree",
+      "intent": "metarThree",
       "slots": [
         {
           "name": "sa",
@@ -23,7 +26,7 @@ Interation:
       ]
     },
     {
-      "intent": "adds_metarIntentFour",
+      "intent": "metarFour",
       "slots": [
         {
           "name": "sa",
@@ -44,20 +47,41 @@ Interation:
       ]
     },
     {
-      "intent": "adds_metarIntentName",
+      "intent": "metarCity",
       "slots": [
         {
-          "name": "bob",
+          "name": "city",
           "type": "AMAZON.US_CITY"
         }
 
 
       ]
+    },
+    {
+      "intent": "metarDeflt",
+      "slots": [
+      ]
+    },
+    {
+      "intent": "setAirport",
+      "slots": []
+    },
+    {
+      "intent": "setWindRef",
+      "slots": [
+        {
+         "name": "ref",
+         "type": "windreft"
+        }
+      ]
+    },
+    {
+      "intent": "getTime",
+      "slots": [
+      ]
     }
   ]
 }
-
-
 
 custom slots:
 
@@ -101,16 +125,76 @@ niner
 fife
 tree
 
+windreft:
+
+magnetic
+true
+
+
+
 utterances
 
-adds_metarIntentThree read the atis at {sa} {sb} {sc}
-adds_metarIntentFour  read the atis at {sa} {sb} {sc} {sd}
-adds_metarIntentName  read the atis at {bob}
-adds_metarIntentThree read the atis in {sa} {sb} {sc}
-adds_metarIntentFour  read the atis in {sa} {sb} {sc} {sd}
-adds_metarIntentName  read the atis in {bob}
+metarThree read the atis at    {sa} {sb} {sc}
+metarThree read the atis in    {sa} {sb} {sc}
+metarThree read the atis from  {sa} {sb} {sc}
+metarThree read the atis for   {sa} {sb} {sc}
+metarThree read the metar at   {sa} {sb} {sc}
+metarThree read the metar for  {sa} {sb} {sc}
+metarThree read the metar in   {sa} {sb} {sc}
+metarThree read the metar from {sa} {sb} {sc}
+metarThree get                 {sa} {sb} {sc}
+metarThree get the atis at     {sa} {sb} {sc}
+metarThree get the metar at    {sa} {sb} {sc}
 
-adds_metarIntentThree get {sa} {sb} {sc}
-adds_metarIntentFour  get {sa} {sb} {sc} {sd}
-adds_metarIntentName  get {bob}
+
+metarFour  read the atis at    {sa} {sb} {sc} {sd}
+metarFour  read the atis in    {sa} {sb} {sc} {sd}
+metarFour  read the atis from  {sa} {sb} {sc} {sd}
+metarFour  read the atis for   {sa} {sb} {sc} {sd}
+metarFour  read the metar at   {sa} {sb} {sc} {sd}
+metarFour  read the metar for  {sa} {sb} {sc} {sd}
+metarFour  read the metar in   {sa} {sb} {sc} {sd}
+metarFour  read the metar from {sa} {sb} {sc} {sd}
+metarFour  get                 {sa} {sb} {sc} {sd}
+metarFour  get the atis at     {sa} {sb} {sc} {sd}
+metarFour  get the metar at    {sa} {sb} {sc} {sd}
+
+
+metarCity  read the atis at    {city}
+metarCity  read the atis in    {city}
+metarCity  read the atis from  {city}
+metarCity  read the atis for   {city}
+metarCity  read the metar at   {city}
+metarCity  read the metar for  {city}
+metarCity  read the metar in   {city}
+metarCity  read the metar from {city}
+metarCity  get                 {city}
+metarCity  get the atis at     {city}
+metarCity  get the metar at    {city}
+
+metarDeflt get
+metarDeflt get the atis
+metarDeflt get the metar
+metarDeflt read
+metarDeflt read the atis
+metarDeflt read the metar
+metarDeflt read atis
+metarDeflt read metar
+
+setWindRef set wind reference {ref}
+setWindRef set wind {ref}
+
+setAirport set default airport
+setAirport set default
+setAirport set default station
+
+getTime get the time
+getTime time
+getTime the time
+getTime what time is it
+getTime get zulu time
+getTime get time zulu
+getTime what's the time
+getTime what's the time in zulu
+getTime what is the time
 
