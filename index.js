@@ -36,7 +36,7 @@ open_apps.prototype.eventHandlers.onSessionStarted = function (sessionStartedReq
 
 open_apps.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
  logBasic('onLaunch',session);
- var speechOutput = "Welcome to the mee-tar read app."
+ var speechOutput = "Welcome to the mee-tar reader app. I will read you airport weathr reports. You can say get San Francisco to get San Fancisco airport's weather, or get kilo oscar romeo delta, to get the weather for Chicago O'Hare."
  var repromptText = "Say something like get Cincinnati or get kilo oscar alpha kilo";
  response.ask(speechOutput, repromptText);
 };
@@ -72,7 +72,7 @@ function metarById(sr, session, response) {
   if (was_city) {
    ask = "I could not find the city " + sr.orig +
 	   " in my database. If you are sure it's correct, " +
-	   " lease contact the author " +
+	   " please contact the author " +
 	   " and suggest he add it.";
   } else if (was_default) {
    ask = "The default airport has not been set. Complete " +
@@ -82,9 +82,11 @@ function metarById(sr, session, response) {
    ask = "I couldn't make sense of your request. I heard " +
 	    sr.orig.join(' ');
   }
-  response.ask(ask,
-   'Try again. Say "get" followed by a US city name or three ' +
-   ' or four letter identifier in eye-kay-oh phonetics.');
+  repromptText = 'Please try again. Say "get" followed by a US city name or ' +
+         'three or four letter indentifier using eye-kay-oh phonetics.';
+  ask += repromptText;
+
+  response.ask(ask,repromptText);
  }
 };
 

@@ -81,6 +81,7 @@ var names = {
  'burbank'           : 'KBUR',
  'palo alto'         : 'KPAO',
  'south lake tahoe'  : 'KTVL',
+ 'riverside'         : 'KRAL',
 };
 
 var phonetics = {
