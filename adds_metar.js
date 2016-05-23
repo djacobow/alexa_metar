@@ -59,11 +59,12 @@ var names = {
  'wasington dc'      : 'KDCA',
  'national'          : 'KDCA',
  'reagan'            : 'KDCA',
- 'honolulu'          : 'KHNL',
+ 'honolulu'          : 'PHNL',
  'san diego'         : 'KSAN',
  'portland'          : 'KPDX',
  'lambert'           : 'KSTL',
  'st louis'          : 'KSTL',
+ 'corpus christi'    : 'KCRP',
  'hobby'             : 'KHOU',
  'nashville'         : 'KBNA',
  'austin'            : 'KAUS',
@@ -78,11 +79,13 @@ var names = {
  'miami'             : 'KMIA',
  'san jose'          : 'KSJC',
  'john wayne'        : 'KSNA',
+ 'anaheim'           : 'KSNA',
  'love'              : 'KDAL',
  'long beach'        : 'KLGB',
  'sacramento'        : 'KSMF',
  'san antonio'       : 'KSAT',
  'pittsburgh'        : 'KPIT',
+ 'lexington'         : 'KLEX',
  'cleveland'         : 'KCLE',
  'indianapolis'      : 'KIND',
  'milwaukee'         : 'KMKE',
@@ -104,6 +107,11 @@ var names = {
  'palo alto'         : 'KPAO',
  'south lake tahoe'  : 'KTVL',
  'riverside'         : 'KRAL',
+ 'santa ana'         : 'KRAL',
+ 'bakersfield'       : 'KBFL',
+ 'tampa'             : 'KTPA',
+
+
 };
 
 var phonetics = {
@@ -543,7 +551,7 @@ function processResult(cbctx, data) {
   var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()] });
   var to_say = 'The weather server returned an empty response for ' +
 	        letters.join(' ') +
-	       'This could mean the identifier is invalid, or simply ' +
+	       '. This could mean the identifier is invalid, or simply ' +
 	       'that the server is having trouble right now. Perhaps try ' +
 	       'again in a few minutes.';
   cbctx.session.user_info.stats.last_airport = null;
