@@ -1,3 +1,8 @@
+# use it live
+
+This skill is live on Amazon right now. (as of 6/2016). It is called
+"Airpot METAR Reader" and is free.
+
 # alexa_metar
 
 This is a node.js implementation of a simple Alexa / Echo app designed to deploy on Lambda,
