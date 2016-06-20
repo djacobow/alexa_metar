@@ -6,6 +6,9 @@ var util = require('./dutil');
 var pause_med = '<break strength="medium"/>';
 
 var names = {
+ 'teterboro'         : 'KTEB',
+ 'westchester'       : 'KHPN',
+ 'caldwell'          : 'KCDW',
  'dubai'             : 'OMDB',
  'tokyo'             : 'RJTT',
  'london'            : 'EGLL',
@@ -488,8 +491,8 @@ function metar2text(metar,preferences) {
        blobs.push(layer_base_hundreds.toString());
        blobs.push('hundred');
       }
-      blobs.push(pause_med);
     }
+    blobs.push(pause_med);
   });
  }
 
