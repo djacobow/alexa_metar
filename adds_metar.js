@@ -1,3 +1,5 @@
+/*jshint node:true */
+/*jshint -W097 */
 "use strict";
 
 var pdb = require('./prefs');
@@ -162,15 +164,15 @@ var phonetics = {
 var AlexaSkill    = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
 var https         = require('https');
 var xml2js        = require('xml2js');
-var WorldMagModel = require('./WorldMagneticModel')
-var wmm           = new WorldMagModel;
+var WorldMagModel = require('./WorldMagneticModel');
+var wmm           = new WorldMagModel();
 var stations      = require('./stations.js');
 
 var nowToMagYear = function() {
  var now = new Date();
  var start = new Date("January 1, 2015 00:00:00 GMT");
  return (2015 + (now - start) / (1000*60*60*24*365.25));
-}
+};
 
 var wordToLetter = function(word) {
  word = word.toLowerCase();
@@ -181,6 +183,36 @@ var wordToLetter = function(word) {
  return v;
 };
 
+function metersToWords(b,m) {
+    if (m >= 5000) {
+        b.push(Math.floor(m/1000 + 0.5).toString());
+        b.push('kilometers');
+    } else {
+        b.push(Math.floor(m/100 * 0.5) * 100).toString();
+        b.push('meters');
+    }
+}
+
+function milesToWords(b,m) {
+    if (m >= 3) {
+        b.push(Math.floor(m + 0.5).toString());
+    } else {
+        var quarters = Math.floor(m*4 + 0.5);
+        var wholes   = Math.floor(quarters/4);
+        quarters -= wholes * 4;
+        b.push(wholes);
+        if (quarters) {
+            b.push('and');
+            if (quarters == 1) {
+                b.push('one quarter');
+            } else if (quarters == 2) {
+                b.push('one half');
+            } else if (quarters == 3) {
+                b.push('three quarters');
+            }
+        }
+    }
+}
 
 var getJSON = function(cbctx, cb) {
  var letters      = cbctx.letters;
@@ -233,13 +265,18 @@ var getJSON = function(cbctx, cb) {
   cbctx.response_object.tellWithCard(msg,"query taking Too long",msg);
   return;
  });
-}
+};
 
 var validateCity = function(slots) {
- var name = slots.city.value.toLowerCase();
- if (names[name]) {
-  return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
-}
+ var name = "none provided";
+ try {
+  name = slots.city.value.toLowerCase();
+  if (names[name]) {
+   return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
+  }
+ } catch (e) {
+  console.log(e);
+ }
  return { mode: 'city', valid: false, letters: [], orig: name };
 };
 
@@ -252,7 +289,11 @@ function validateSlots(slots) {
  };
  var slot_names = ['sa','sb','sc','sd'];
  slot_names.forEach(function(sn) {
-  var value = slots[sn] ? slots[sn].value : null;
+  var value = null;
+  try {
+   value = slots[sn] ? slots[sn].value : null;
+  } catch(e) {
+  }
   if (util.definedHasLength(value)) {
    response.orig.push(value);
    var letter = wordToLetter(value);
@@ -278,7 +319,7 @@ function validateSlots(slots) {
  console.log('__validate__');
  console.log(response);
  return response;
-};
+}
 
 function validateDefaultAirport(user_info) {
  console.log('-d- validateDefaultAirport');
@@ -287,17 +328,17 @@ function validateDefaultAirport(user_info) {
  var sr = {
   mode: 'default_airport',
   valid: false,
- }
+ };
  if (util.definedHasLength(da)) {
-  sr.valid = true,
-  sr.letters =  da.split('')
+  sr.valid = true;
+  sr.letters = da.split('');
  } else {
   sr.orig = 'Default Airport Not Set';
   sr.letters = [];
- };
+ }
  console.log(sr);
  return sr;
-};
+}
 
 function radioify(blobs) {
  var new_blobs = [];
@@ -313,7 +354,7 @@ function radioify(blobs) {
   new_blobs.push(nb);
  });
  return new_blobs;
-};
+}
 
 
 function metar2text(metar,preferences) {
@@ -348,7 +389,8 @@ function metar2text(metar,preferences) {
  }
  if (util.stringIs(metar.metar_type,'SPECI')) {
   blobs.push('special');
- };
+ }
+
 
  blobs.push('weather observation');
  if (util.definedNonNull(metar.observation_time)) {
@@ -360,7 +402,11 @@ function metar2text(metar,preferences) {
 
  if (util.definedNonNull(metar.visibility_statute_mi)) {
   blobs.push('visibility');
-  blobs.push(Math.floor(parseFloat(metar.visibility_statute_mi) + 0.5).toString());
+  if (util.stringIs(preferences.distance_unit,'kilometers')) {
+   metersToWords(blobs, metar.visibility_statute_mi * 1609.34);
+  } else {
+   milesToWords(blobs, metar.visibility_statute_mi);
+  }
    blobs.push(pause_med);
  }
 
@@ -378,7 +424,7 @@ function metar2text(metar,preferences) {
    }
 
    var wind_speed_int = parseInt(metar.wind_speed_kt[0]);
-   if (wind_speed_int == 0) {
+   if (wind_speed_int === 0) {
     blobs.push('calm');
    } else {
     if (metar.raw_text[0].match(/\sVRB/)) {
@@ -415,42 +461,42 @@ function metar2text(metar,preferences) {
  if (util.definedNonNull(metar.wx_string)) {
    var wx = metar.wx_string.toString();
    var vicinity = false;
-   if (wx.match(/^-/)) { blobs.push('light'); };
-   if (wx.match(/^\+/)) { blobs.push('heavy'); };
-   if (wx.match(/VC/)) { vicinity = true; };
-   if (wx.match(/MI/)) { blobs.push('shallow'); };
-   if (wx.match(/PR/)) { blobs.push('partial'); };
-   if (wx.match(/BC/)) { blobs.push('patches'); };
-   if (wx.match(/DR/)) { blobs.push('drifting'); };
-   if (wx.match(/BL/)) { blobs.push('blowing'); };
-   if (wx.match(/SH/)) { blobs.push('showers'); };
-   if (wx.match(/TS/)) { blobs.push('thunderstorm'); };
-   if (wx.match(/FZ/)) { blobs.push('freezing'); };
+   if (wx.match(/^-/)) { blobs.push('light'); }
+   if (wx.match(/^\+/)) { blobs.push('heavy'); }
+   if (wx.match(/VC/)) { vicinity = true; }
+   if (wx.match(/MI/)) { blobs.push('shallow'); }
+   if (wx.match(/PR/)) { blobs.push('partial'); }
+   if (wx.match(/BC/)) { blobs.push('patches'); }
+   if (wx.match(/DR/)) { blobs.push('drifting'); }
+   if (wx.match(/BL/)) { blobs.push('blowing'); }
+   if (wx.match(/SH/)) { blobs.push('showers'); }
+   if (wx.match(/TS/)) { blobs.push('thunderstorm'); }
+   if (wx.match(/FZ/)) { blobs.push('freezing'); }
 
-   if (wx.match(/DZ/)) { blobs.push('drizzle'); };
-   if (wx.match(/RA/)) { blobs.push('rain'); };
-   if (wx.match(/SN/)) { blobs.push('snow'); };
-   if (wx.match(/SG/)) { blobs.push('snow grains'); };
-   if (wx.match(/IC/)) { blobs.push('ice crystals'); };
-   if (wx.match(/PL/)) { blobs.push('ice pellets'); };
-   if (wx.match(/GR/)) { blobs.push('hail'); };
-   if (wx.match(/GS/)) { blobs.push('small hail'); };
-   if (wx.match(/UP/)) { blobs.push('unknown precipitation'); };
+   if (wx.match(/DZ/)) { blobs.push('drizzle'); }
+   if (wx.match(/RA/)) { blobs.push('rain'); }
+   if (wx.match(/SN/)) { blobs.push('snow'); }
+   if (wx.match(/SG/)) { blobs.push('snow grains'); }
+   if (wx.match(/IC/)) { blobs.push('ice crystals'); }
+   if (wx.match(/PL/)) { blobs.push('ice pellets'); }
+   if (wx.match(/GR/)) { blobs.push('hail'); }
+   if (wx.match(/GS/)) { blobs.push('small hail'); }
+   if (wx.match(/UP/)) { blobs.push('unknown precipitation'); }
 
-   if (wx.match(/BR/)) { blobs.push('mist'); };
-   if (wx.match(/FG/)) { blobs.push('fog'); };
-   if (wx.match(/FU/)) { blobs.push('smoke'); };
-   if (wx.match(/VA/)) { blobs.push('volcanic ash'); };
-   if (wx.match(/DU/)) { blobs.push('widepread dust'); };
-   if (wx.match(/SA/)) { blobs.push('sand'); };
-   if (wx.match(/HZ/)) { blobs.push('haze'); };
-   if (wx.match(/PY/)) { blobs.push('spray'); };
+   if (wx.match(/BR/)) { blobs.push('mist'); }
+   if (wx.match(/FG/)) { blobs.push('fog'); }
+   if (wx.match(/FU/)) { blobs.push('smoke'); }
+   if (wx.match(/VA/)) { blobs.push('volcanic ash'); }
+   if (wx.match(/DU/)) { blobs.push('widepread dust'); }
+   if (wx.match(/SA/)) { blobs.push('sand'); }
+   if (wx.match(/HZ/)) { blobs.push('haze'); }
+   if (wx.match(/PY/)) { blobs.push('spray'); }
 
-   if (wx.match(/PO/)) { blobs.push('well developed dust swirls'); };
-   if (wx.match(/SQ/)) { blobs.push('squalls'); };
-   if (wx.match(/FC/)) { blobs.push('funnel cloud'); };
-   if (wx.match(/SS/)) { blobs.push('sand storm'); };
-   if (wx.match(/DS/)) { blobs.push('dust storm'); };
+   if (wx.match(/PO/)) { blobs.push('well developed dust swirls'); }
+   if (wx.match(/SQ/)) { blobs.push('squalls'); }
+   if (wx.match(/FC/)) { blobs.push('funnel cloud'); }
+   if (wx.match(/SS/)) { blobs.push('sand storm'); }
+   if (wx.match(/DS/)) { blobs.push('dust storm'); }
 
    if (vicinity) blobs.push('in the vicinity');
 
@@ -471,8 +517,8 @@ function metar2text(metar,preferences) {
  if (util.definedNonNull(metar.sky_condition)) {
   blobs.push('sky condition');
   metar.sky_condition.forEach(function(layer) {
-    var layer_type_short = layer['$'].sky_cover;
-    var layer_base = layer['$'].cloud_base_ft_agl;
+    var layer_type_short = layer.$.sky_cover;
+    var layer_base = layer.$.cloud_base_ft_agl;
     var layer_type = layer_type_short == 'CLR' ? 'clear' :
 	             layer_type_short == 'FEW' ? 'few clouds' :
 	             layer_type_short == 'SCT' ? 'scattered' :
@@ -508,16 +554,27 @@ function metar2text(metar,preferences) {
  }
 
  if (util.definedNonNull(metar.altim_in_hg)) {
-   var altim = Math.floor(0.5 + 100 * parseFloat(metar.altim_in_hg));
-   var altim_digits = altim.toString().split('');
-   blobs.push('altimeter');
+   var altim;
+   var altim_digits;
+   if (util.stringIs(preferences.pressure_unit,'millibar')) {
+       altim = Math.floor(0.5 + 33.8639 * parseFloat(metar.altim_in_hg));
+       altim_digits = altim.toString().split('');
+       blobs.push('q');
+       blobs.push('n');
+       blobs.push('h');
+   } else {
+       altim = Math.floor(0.5 + 100 * parseFloat(metar.altim_in_hg));
+       altim_digits = altim.toString().split('');
+       blobs.push('altimeter');
+   }
    altim_digits.forEach(function(digit) { blobs.push(digit); });
    blobs.push(pause_med);
  }
+
  blobs.push('</speak>');
 
  return blobs;
-};
+}
 
 
 function reversePhonetics() {
@@ -533,11 +590,12 @@ function processResult(cbctx, data) {
  if (data.response && data.response.data[0] && data.response.data[0].METAR) {
   metar = data.response.data[0].METAR[0];
  }
+ var to_say;
  if (util.definedNonNull(metar)) {
   console.log('__PLAN_A__');
   var chunks = metar2text(metar,cbctx.session.user_info.preferences);
   chunks     = radioify(chunks);
-  var to_say = chunks.join(' ');
+  to_say = chunks.join(' ');
   console.log('Going to say: ' + to_say);
   cbctx.session.user_info.stats.last_airport = metar.station_id[0];
   console.log('__SAVING_UPDATE__');
@@ -551,8 +609,8 @@ function processResult(cbctx, data) {
  } else {
   console.log('_PLAN_B');
   var rp      = reversePhonetics();
-  var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()] });
-  var to_say = 'The weather server returned an empty response for ' +
+  var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
+  to_say = 'The weather server returned an empty response for ' +
 	        letters.join(' ') +
 	       '. This could mean the identifier is invalid, or simply ' +
 	       'that the server is having trouble right now. Perhaps try ' +

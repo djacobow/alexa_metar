@@ -3,7 +3,7 @@
 var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff'; // new -- me
 
 var AlexaSkill = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
-var metar      = require('./adds_metar')  // aviation METARs
+var metar      = require('./adds_metar');  // aviation METARs
 var pdb        = require('./prefs'); // saving user preferences
 var util       = require('./dutil');
 // open_apps is a child of AlexaSkill, overrides various methods
@@ -46,11 +46,10 @@ open_apps.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest
 };
 
 
-var help_text = "\
-The airport weather skill lets you hear airport me-tars read aloud \
-as if they were ATIS reports. It works by city name or by three or four letter \
-airport identifier. You can say get Oakland or get juliet foxtrot kilo.  \
-";
+var help_text = 
+"The airport weather skill lets you hear airport me-tars read aloud " +
+"as if they were ATIS reports. It works by city name or by three or four letter " +
+"airport identifier. You can say get Oakland or get juliet foxtrot kilo.  ";
 
 function metarById(sr, session, response) {
  if (sr.valid) {
@@ -65,12 +64,16 @@ function metarById(sr, session, response) {
   var was_city    = sr.mode == 'city';
   var was_default = sr.mode == 'default_airport';
 
-  var ask = ''
+  var ask = '';
   if (was_city) {
-   ask = "I could not find the city " + sr.orig +
+   if (sr.org === 'none_provided') {
+    ask = "I could not find the city " + sr.orig +
 	   " in my database. If you are sure it's correct, " +
 	   " please contact the author " +
 	   " and suggest he add it.";
+   } else {
+    ask = "It looks like you didn't name a city for me to look up. ";
+   }
   } else if (was_default) {
    ask = "The default airport has not been set. Complete " +
 	   " a request first by identifier or city name, then " +
@@ -85,7 +88,7 @@ function metarById(sr, session, response) {
 
   response.ask(ask,repromptText);
  }
-};
+}
 
 
 open_apps.prototype.intentHandlers = {
@@ -149,6 +152,26 @@ open_apps.prototype.intentHandlers = {
       }
     },
 
+    setDistUnit: function(intent,session,response) {
+      logBasic('setDistUnit',session);
+      var desired = intent.slots.dist.value;
+      console.log('-d- new dist unit: ' + desired);
+      session.user_info.preferences.distance_unit = desired;
+      pdb.setUserInfo(session.user.userId,session.user_info,function(){
+       response.tell('saved distance units preference to ' + desired);
+      });
+    },
+
+    setPressUnit: function(intent,session,response) {
+      logBasic('setDistUnit',session);
+      var desired = intent.slots.pressure.value;
+      console.log('-d- new press unit: ' + desired);
+      session.user_info.preferences.pressure_unit = desired;
+      pdb.setUserInfo(session.user.userId,session.user_info,function(){
+       response.tell('saved pressure units preference to ' + desired);
+      });
+    },
+
     setWindRef: function(intent,session,response) {
       logBasic('setWindRef',session);
       var desired = intent.slots.ref.value;
@@ -189,6 +212,8 @@ var test_ctx = {
        preferences: {
          default_airport: 'KLAX',
          wind_reference: 'magnetic',
+         pressure_unit: 'hPa',
+         distance_unit: 'km',
        },
        stats: {
          last_airport: 'KO22',
@@ -217,9 +242,10 @@ if (0) {
 
 if (0) {
   var slots = {
-   sa: { value: 'e' },
-   sb: { value: 'w'} ,
-   sc: { value: 'r' },
+   sa: { value: 'k' },
+   sb: { value: 's'} ,
+   sc: { value: 'f' },
+   sd: { value: 'o' },
   };
   var sr = metar.validateSlots(slots);
   test_ctx.letters = sr.letters;
