@@ -38,4 +38,15 @@ often includes non-weather related airport information.
   aloud in ATIS
 - returns that as a 'tell' command for Alexa
 
+## extra features
+
+- If you fly in Europe, you might want your report in kilometers and millibars.
+
+"Alexa, ask airport weather to set visibility to kilometers."
+"Alexa, ask airport weather to set altimeter to millibars."
+
+- If you want the wind direction in the metar without a correction for
+magnetic variation:
+
+"Alexa, ask airport weather to set wind reference to true."
 
