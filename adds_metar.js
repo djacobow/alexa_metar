@@ -6,7 +6,8 @@
 var pdb = require('./prefs');
 var util = require('./dutil');
 
-var pause = '<break strength="x-strong"/>';
+var s_pause = '<break time="100ms"/>';
+var m_pause = '<break time="200ms"/>';
 
 var names         = require('./airports_by_city.js');
 var AlexaSkill    = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
@@ -241,7 +242,7 @@ function metar2text(metar,preferences) {
             blobs.push.apply(blobs,id.split(''));
         }
         blobs.push('airport');
-        blobs.push(pause);
+        blobs.push(m_pause);
     }
 
 
@@ -270,7 +271,7 @@ function metar2text(metar,preferences) {
         var otime = new Date(metar.observation_time);
         blobs.push(util.timeToDigits(otime).join(' '));
         blobs.push('zulu');
-        blobs.push(pause);
+        blobs.push(m_pause);
     }
 
 
@@ -287,7 +288,7 @@ function metar2text(metar,preferences) {
         } else {
             milesToWords(blobs, parseFloat(metar.visibility_statute_mi));
         }
-        blobs.push(pause);
+        blobs.push(m_pause);
     }
 
 
@@ -345,7 +346,7 @@ function metar2text(metar,preferences) {
                blobs.push(metar.wind_gust_kt[0]);
            }
        }
-       blobs.push(pause);
+       blobs.push(m_pause);
    }
 
 
@@ -403,7 +404,7 @@ function metar2text(metar,preferences) {
             blobs.push('ended');
             blobs.push(ended[1]);
         }
-        blobs.push(pause);
+        blobs.push(m_pause);
    }
 
 
@@ -432,8 +433,9 @@ function metar2text(metar,preferences) {
                     blobs.push('hundred');
                 }
             }
-            blobs.push(pause);
+            blobs.push(s_pause);
         });
+        blobs.push(s_pause);
     }
 
 
@@ -441,12 +443,12 @@ function metar2text(metar,preferences) {
         if (util.definedNonNull(metar.temp_c)) {
             blobs.push('temperature');
             blobs.push(Math.floor(parseFloat(metar.temp_c) + 0.5).toString());
-            blobs.push(pause);
+            blobs.push(m_pause);
         }
         if (util.definedNonNull(metar.dewpoint_c)) {
             blobs.push('dewpoint');
             blobs.push(Math.floor(parseFloat(metar.dewpoint_c) + 0.5).toString());
-            blobs.push(pause);
+            blobs.push(m_pause);
     }
 
 
@@ -473,7 +475,7 @@ function metar2text(metar,preferences) {
             blobs.push('altimeter');
         }
         altim_digits.forEach(function(digit) { blobs.push(digit); });
-        blobs.push(pause);
+        blobs.push(m_pause);
     }
 
     // adding the period helps alexa determine the ending inflection 
