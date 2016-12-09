@@ -145,7 +145,9 @@ open_apps.prototype.intentHandlers = {
 	console.log(session.user);
 	console.log(session.user_info);
         pdb.setUserInfo(session.user.userId,session.user_info,function(){
-         response.tell('default airport set to ' + last_airport);
+         var rstring = 'default aiport set to ';
+         last_airport.split('').forEach(function(l) { rstring += l + ' '; });
+         response.tell(rstring);
 	});
       } else {
         response.tell('the previous query did not succeed. Query an airport first, then say"set default airport"');
@@ -158,17 +160,17 @@ open_apps.prototype.intentHandlers = {
       console.log('-d- new dist unit: ' + desired);
       session.user_info.preferences.distance_unit = desired;
       pdb.setUserInfo(session.user.userId,session.user_info,function(){
-       response.tell('saved distance units preference to ' + desired);
+       response.tell('I set your visibilty units preference to ' + desired);
       });
     },
 
     setPressUnit: function(intent,session,response) {
-      logBasic('setDistUnit',session);
+      logBasic('setPressUnit',session);
       var desired = intent.slots.pressure.value;
       console.log('-d- new press unit: ' + desired);
       session.user_info.preferences.pressure_unit = desired;
       pdb.setUserInfo(session.user.userId,session.user_info,function(){
-       response.tell('saved pressure units preference to ' + desired);
+       response.tell('I set your altimeter units preference to ' + desired);
       });
     },
 
@@ -178,7 +180,7 @@ open_apps.prototype.intentHandlers = {
       console.log('-d- new wind ref: ' + desired);
       session.user_info.preferences.wind_reference = desired;
       pdb.setUserInfo(session.user.userId,session.user_info,function(){
-       response.tell('saved wind direction preference to ' + desired);
+       response.tell('I set your wind reference preference to ' + desired);
       });
     },
 };
@@ -212,8 +214,8 @@ var test_ctx = {
        preferences: {
          default_airport: 'KLAX',
          wind_reference: 'magnetic',
-         pressure_unit: 'hPa',
-         distance_unit: 'km',
+         pressure_unit: 'inches',
+         distance_unit: 'kilometers',
        },
        stats: {
          last_airport: 'KO22',
@@ -243,9 +245,9 @@ if (0) {
 if (0) {
   var slots = {
    sa: { value: 'k' },
-   sb: { value: 's'} ,
-   sc: { value: 'f' },
-   sd: { value: 'o' },
+   sb: { value: 'b'} ,
+   sc: { value: 'o' },
+   sd: { value: 'i' },
   };
   var sr = metar.validateSlots(slots);
   test_ctx.letters = sr.letters;

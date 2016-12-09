@@ -8,6 +8,7 @@ var util = require('./dutil');
 var pause_med = '<break strength="medium"/>';
 
 var names = {
+ 'boise'             : 'KBOI',
  'teterboro'         : 'KTEB',
  'westchester'       : 'KHPN',
  'caldwell'          : 'KCDW',
@@ -188,12 +189,13 @@ function metersToWords(b,m) {
         b.push(Math.floor(m/1000 + 0.5).toString());
         b.push('kilometers');
     } else {
-        b.push(Math.floor(m/100 * 0.5) * 100).toString();
+        b.push(Math.floor(m/100 + 0.5) * 100).toString();
         b.push('meters');
     }
 }
 
 function milesToWords(b,m) {
+    console.log('m is: ' + m);
     if (m >= 3) {
         b.push(Math.floor(m + 0.5).toString());
     } else {
@@ -402,10 +404,14 @@ function metar2text(metar,preferences) {
 
  if (util.definedNonNull(metar.visibility_statute_mi)) {
   blobs.push('visibility');
-  if (util.stringIs(preferences.distance_unit,'kilometers')) {
-   metersToWords(blobs, metar.visibility_statute_mi * 1609.34);
+  var use_km = util.stringIs(preferences.distance_unit,'kilometers') ||
+               util.stringIs(preferences.distance_unit,'kilometer') ||
+               util.stringIs(preferences.distance_unit,'km') ||
+               false;
+  if (use_km) {
+   metersToWords(blobs, parseFloat(metar.visibility_statute_mi) * 1609.34);
   } else {
-   milesToWords(blobs, metar.visibility_statute_mi);
+   milesToWords(blobs, parseFloat(metar.visibility_statute_mi));
   }
    blobs.push(pause_med);
  }
@@ -556,7 +562,13 @@ function metar2text(metar,preferences) {
  if (util.definedNonNull(metar.altim_in_hg)) {
    var altim;
    var altim_digits;
-   if (util.stringIs(preferences.pressure_unit,'millibar')) {
+   var use_mb = util.stringIs(preferences.pressure_unit,'millibar') ||
+                util.stringIs(preferences.pressure_unit,'millibars') ||
+                util.stringIs(preferences.pressure_unit,'hectopascal') ||
+                util.stringIs(preferences.pressure_unit,'hectopascals') ||
+                false;
+
+   if (use_mb) {
        altim = Math.floor(0.5 + 33.8639 * parseFloat(metar.altim_in_hg));
        altim_digits = altim.toString().split('');
        blobs.push('q');
