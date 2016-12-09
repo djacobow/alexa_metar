@@ -1,4 +1,4 @@
-Interation:
+Interaction:
 
 {
   "intents": [
@@ -67,6 +67,24 @@ Interation:
       "slots": []
     },
     {
+      "intent": "setDistUnit",
+      "slots": [
+        {
+         "name": "dist",
+         "type": "distt"
+        }
+      ]
+    },
+    {
+      "intent": "setPressUnit",
+      "slots": [
+        {
+         "name": "pressure",
+         "type": "presst"
+        }
+      ]
+    },
+        {
       "intent": "setWindRef",
       "slots": [
         {
@@ -130,9 +148,19 @@ windreft:
 magnetic
 true
 
+distt:
+
+kilometers
+miles
+
+presst:
+millibars
+millibar
+hecopascal
+inches
 
 
-utterances
+Utterances:
 
 metarThree read the atis at    {sa} {sb} {sc}
 metarThree read the atis in    {sa} {sb} {sc}
@@ -176,17 +204,41 @@ metarDeflt get
 metarDeflt get default
 metarDeflt get default atis
 metarDeflt get default metar
+metarDeflt get default weather
+metarDeflt get default station
 metarDeflt get local
 metarDeflt get local atis
 metarDeflt get local metar
-
+metarDeflt get local weather
+metarDeflt get local station
+metarDeflt get the local atis
+metarDeflt get the local metar
+metarDeflt get the local station
+metarDeflt get the local weather
+metarDeflt for metar
+metarDeflt for atis
+metarDeflt for local atis
+metarDeflt for local metar
+metarDeflt for local weather
 
 setWindRef set wind reference {ref}
 setWindRef set wind {ref}
 
+setDistUnit set distance {dist}
+setDistUnit set distance to {dist}
+setDistUnit set visibility {dist}
+setDistUnit set visibility to {dist}
+
+setPressUnit set altimeter {pressure}
+setPressUnit set altimeter to {pressure}
+setPressUnit set pressure {pressure}
+setPressUnit set pressure to {pressure}
+
 setAirport set default airport
 setAirport set default
 setAirport set default station
+setAirport set local airport
+setAirport set local
 
 getTime get the time
 getTime time
@@ -200,5 +252,4 @@ getTime what is the time
 getTime report zulu time
 getTime report u t c time
 getTime report the time
-
 
