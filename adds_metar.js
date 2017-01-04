@@ -223,7 +223,6 @@ function radioify(blobs) {
 
 function metar2text(metar,preferences) {
     var blobs = [];
-    blobs.push('<speak>');
     console.log(metar);
 
     // Get the airport name if we have it in our database,
@@ -482,8 +481,6 @@ function metar2text(metar,preferences) {
     // of the 'sentence'
     blobs.push('.');
 
-    blobs.push('</speak>');
-
     return blobs;
 }
 
@@ -510,7 +507,20 @@ function processResult(cbctx, data) {
         var chunks = metar2text(metar,cbctx.session.user_info.preferences);
         chunks     = radioify(chunks);
         to_say = chunks.join(' ');
+
+        var prefs = cbctx.session.user_info.preferences;
+        if (prefs && prefs.repeat) {
+            var times = prefs.repeat;
+            var several = Array.apply(null, Array(times)).map(function() {
+                return to_say;
+            });
+            to_say = several.join(' <break time="2000ms"/> ');
+        }
+
+        to_say = ['<speak>',to_say,'</speak>'].join(' ');
+
         console.log('Going to say: ' + to_say);
+
         cbctx.session.user_info.stats.last_airport = metar.station_id[0];
         console.log('__SAVING_UPDATE__');
         console.log(cbctx.session.user);
