@@ -441,7 +441,10 @@ function metar2text(metar,preferences) {
     // temperature && dewpoint, ATIS is always "c", but I've
     // gotten requests for 'F' so I've added that as an option
     var use_f = util.stringIs(preferences.temp_unit,'fahrenheit') ||
-                util.stringIs(preferences.temp_unit,'f');
+                util.stringIs(preferences.temp_unit,'Fahrenheit') ||
+                util.stringIs(preferences.temp_unit,'f') ||
+                util.stringIs(preferences.temp_unit,'F') ||
+                false;
     if (util.definedNonNull(metar.temp_c)) {
         blobs.push('temperature');
         var tp = parseFloat(metar.temp_c);
