@@ -187,7 +187,7 @@ airport_wx_app.prototype.intentHandlers = {
 	        console.log(session.user);
 	        console.log(session.user_info);
             pdb.setUserInfo(session.user.userId,session.user_info,function() {
-                var rstring = 'I set your default aiport set to ';
+                var rstring = 'I set your default airport set to ';
                 last_airport.split('').forEach(function(l) {
                     rstring += l + ' ';
                 });
