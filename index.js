@@ -1,6 +1,6 @@
 
 // App ID for the skill
-var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff'; 
+var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff';
 
 var AlexaSkill = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
 var metar      = require('./adds_metar'); // aviation METARs
@@ -31,12 +31,12 @@ function logBasic(name,session) {
 // Extend AlexaSkill
 airport_wx_app.prototype = Object.create(AlexaSkill.prototype);
 airport_wx_app.prototype.constructor = airport_wx_app;
-airport_wx_app.prototype.eventHandlers.onSessionStarted = 
+airport_wx_app.prototype.eventHandlers.onSessionStarted =
     function (sessionStartedRequest, session) {
         logBasic('onSessionStarted',session);
 };
 
-airport_wx_app.prototype.eventHandlers.onLaunch = 
+airport_wx_app.prototype.eventHandlers.onLaunch =
     function (launchRequest, session, response) {
         logBasic('onLaunch',session);
         var speechOutput = 'Welcome to the mee-tar reader app. I will read you airport weather reports. You can say "get San Francisco" to get the weather at San Fancisco airport. You can say "get kilo oscar romeo delta" to get the weather for at Chicago O\'Hare airport.';
@@ -44,13 +44,13 @@ airport_wx_app.prototype.eventHandlers.onLaunch =
         response.ask(speechOutput, repromptText);
 };
 
-airport_wx_app.prototype.eventHandlers.onSessionEnded = 
+airport_wx_app.prototype.eventHandlers.onSessionEnded =
     function (sessionEndedRequest, session) {
         logBasic('onSessionEnded',session);
 };
 
 
-var help_text = 
+var help_text =
 "The airport weather skill lets you hear airport me-tars red aloud " +
 "as if they were ATIS reports. It works by city name or by three or " +
 "four letter airport identifier. You can say get Oakland or get juliet " +
@@ -86,7 +86,7 @@ function metarById(sr, session, response) {
              ask = "I couldn't make sense of your request. I heard " +
 	         sr.orig.join(' ');
          }
-         repromptText = 
+         repromptText =
             'Please try again. Say: get, followed by a US city name or ' +
             'three or four letter identifier using the eye-kay-oh phonetic ' +
             'alphabet.';
@@ -112,6 +112,11 @@ function prefSetter(type,intent,session,pdb,response) {
             'slot_name': 'ref',
             'pref_name': 'wind_reference',
             'read_name': 'wind reference'
+        },
+        'temp': {
+            'slot_name': 'temperature',
+            'pref_name': 'temp_unit',
+            'read_name': 'temperature unit'
         },
     };
 
@@ -163,11 +168,11 @@ airport_wx_app.prototype.intentHandlers = {
     // a simple intent for getting the time in zulu
     getTime: function(intent, session, response) {
         var now = new Date();
-        var r = 'The time is now ' + 
-	            util.numberToZeroPaddedString(now.getUTCHours(),2) + 
-	            ' ' + 
+        var r = 'The time is now ' +
+	            util.numberToZeroPaddedString(now.getUTCHours(),2) +
+	            ' ' +
 	            util.numberToZeroPaddedString(now.getUTCMinutes(),2) +
-	            ' zulu'; 
+	            ' zulu';
         response.tell(r);
     },
 
@@ -183,14 +188,37 @@ airport_wx_app.prototype.intentHandlers = {
 	        console.log(session.user_info);
             pdb.setUserInfo(session.user.userId,session.user_info,function() {
                 var rstring = 'I set your default aiport set to ';
-                last_airport.split('').forEach(function(l) { 
-                    rstring += l + ' '; 
+                last_airport.split('').forEach(function(l) {
+                    rstring += l + ' ';
                 });
                 response.tell(rstring);
 	       });
         } else {
             response.tell('the previous query did not succeed. Query an ' +
                 'airport first, then say "set default airport" ');
+        }
+    },
+
+
+    setRepeat: function(intent,session,response) {
+        logBasic('setRepeat',session);
+        var repeat_count = 1;
+        try {
+            repeat_count = parseInt(intent.slots.repeat_count.value);
+        } catch (e) {
+        }
+        if ((repeat_count < 1) ||
+            (repeat_count > 10)) {
+            var rstring = 'The supported range for repeat counts is from one' +
+                ' to ten, inclusive. Try again with a value in that range.';
+            response.tell(rstring);
+        } else {
+            session.user_info.preferences.repeat = repeat_count;
+            pdb.setUserInfo(session.user.userId,session.user_info,function() {
+                var rstring = 'I set your repeat count to ';
+                rstring += repeat_count.toString() + ' ';
+                response.tell(rstring);
+            });
         }
     },
 
@@ -203,6 +231,9 @@ airport_wx_app.prototype.intentHandlers = {
     },
     setWindRef: function(intent,session,response) {
         prefSetter('wdir',intent,session,pdb,response);
+    },
+    setTempUnit: function(intent,session,response) {
+        prefSetter('temp',intent,session,pdb,response);
     },
 };
 
@@ -240,7 +271,9 @@ if (require.main == module) {
                     wind_reference: 'magnetic',
                     // pressure_unit: 'millibar',
                     // distance_unit: 'kilometers',
-                    temp_unit: 'f',
+                    repeat: 2,
+                    // temp_unit: 'f',
+
                 },
                 stats: {
                     last_airport: 'KO22',
@@ -272,7 +305,6 @@ if (require.main == module) {
         }
     }
 
-    
     if (1) {
         var slots = {
             sa: { value: 'p' },
@@ -290,7 +322,6 @@ if (require.main == module) {
         }
     }
 
-    
     if (1) {
         var slots = {
             city: { value: 'houston' },
