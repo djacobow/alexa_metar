@@ -238,8 +238,9 @@ if (require.main == module) {
                 preferences: {
                     default_airport: 'KLAX',
                     wind_reference: 'magnetic',
-                    pressure_unit: 'millibar',
-                    distance_unit: 'kilometers',
+                    // pressure_unit: 'millibar',
+                    // distance_unit: 'kilometers',
+                    temp_unit: 'f',
                 },
                 stats: {
                     last_airport: 'KO22',
@@ -271,7 +272,25 @@ if (require.main == module) {
         }
     }
 
+    
+    if (1) {
+        var slots = {
+            sa: { value: 'p' },
+            sb: { value: 'a'} ,
+            sc: { value: 'f' },
+            sd: { value: 'a' },
+        };
+        var sr = metar.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            metar.getXML(test_ctx, metar.processResult);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
 
+    
     if (1) {
         var slots = {
             city: { value: 'houston' },
