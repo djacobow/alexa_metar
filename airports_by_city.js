@@ -155,6 +155,8 @@ var names = {
     'santa ana'         : 'KRAL',
     'bakersfield'       : 'KBFL',
     'tampa'             : 'KTPA',
+    'portsmouth'        : 'KPSM',
+    'bangor'            : 'KBGR',
 };
 
 module.exports = names;
