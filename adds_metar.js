@@ -33,7 +33,7 @@ var wordToLetter = function(word) {
 };
 
 // This is hopefully consistent with European usage, where
-// visibilities in excess of 5km are read as km, and 
+// visibilities in excess of 5km are read as km, and
 // less than that are read as meters.
 function metersToWords(b,m) {
     if (m >= 5000) {
@@ -80,7 +80,7 @@ var getXML = function(cbctx, cb) {
     }
     id += letters.join('');
 
-    var url = 
+    var url =
        'https://www.aviationweather.gov/adds/dataserver_current/httpparam' +
 	   '?dataSource=metars' +
 	   '&requestType=retrieve' +
@@ -118,7 +118,7 @@ var getXML = function(cbctx, cb) {
 
 
     req.setTimeout(5000, function() {
-        console.log('-err- :  request timed out'); 
+        console.log('-err- :  request timed out');
         var msg = 'Query from a d d s is taking too long. Try again later.';
         cbctx.response_object.tellWithCard(msg,"query taking Too long",msg);
         return;
@@ -277,7 +277,7 @@ function metar2text(metar,preferences) {
     // report the visibility information
     if (util.definedNonNull(metar.visibility_statute_mi)) {
         blobs.push('visibility');
-        var use_km = 
+        var use_km =
             util.stringIs(preferences.distance_unit,'kilometers') ||
             util.stringIs(preferences.distance_unit,'kilometer') ||
             util.stringIs(preferences.distance_unit,'km') ||
@@ -293,7 +293,7 @@ function metar2text(metar,preferences) {
 
     // report the wind. There are several variations in phraseology for this,
     // so this is a bit more complicated than one might imagine.
-    if (util.definedNonNull(metar.wind_dir_degrees) && 
+    if (util.definedNonNull(metar.wind_dir_degrees) &&
         util.definedNonNull(metar.wind_speed_kt)) {
         blobs.push('wind');
         // METARs have true directions
@@ -318,7 +318,7 @@ function metar2text(metar,preferences) {
                var wind_dir_pref  = mag_var;
                var use_true = util.stringIs(preferences.wind_reference,'true');
                if (use_true) {
-                   // true wind directions are generally not appropriate 
+                   // true wind directions are generally not appropriate
                    // in an ATIS report, but because I have to calculate starting
                    // from true, I make it optional for the user to get a true
                    // direction.
@@ -438,16 +438,40 @@ function metar2text(metar,preferences) {
     }
 
 
-    // temperature && dewpoint, always "c"
-        if (util.definedNonNull(metar.temp_c)) {
-            blobs.push('temperature');
-            blobs.push(Math.floor(parseFloat(metar.temp_c) + 0.5).toString());
-            blobs.push(m_pause);
+    // temperature && dewpoint, ATIS is always "c", but I've
+    // gotten requests for 'F' so I've added that as an option
+    var use_f = util.stringIs(preferences.temp_unit,'fahrenheit') ||
+                util.stringIs(preferences.temp_unit,'f');
+    if (util.definedNonNull(metar.temp_c)) {
+        blobs.push('temperature');
+        var tp = parseFloat(metar.temp_c);
+        if (use_f) {
+            tp = Math.floor((tp * 9.0 / 5.0) + 32.5);
+            if (tp < 0) blobs.push('minus');
+        } else {
+            tp = Math.floor(tp + 0.5);
         }
-        if (util.definedNonNull(metar.dewpoint_c)) {
-            blobs.push('dewpoint');
-            blobs.push(Math.floor(parseFloat(metar.dewpoint_c) + 0.5).toString());
-            blobs.push(m_pause);
+        blobs.push(Math.abs(tp).toString());
+        if (use_f) {
+            blobs.push('fahrenheit');
+        }
+        blobs.push(m_pause);
+    }
+
+    if (util.definedNonNull(metar.dewpoint_c)) {
+        blobs.push('dewpoint');
+        var dp = parseFloat(metar.dewpoint_c);
+        if (use_f) {
+            dp = Math.floor((dp * 9.0 / 5.0) + 32.5);
+            if (dp < 0) blobs.push('minus');
+        } else {
+            dp = Math.floor(dp + 0.5);
+        }
+        blobs.push(Math.abs(dp).toString());
+        if (use_f) {
+            blobs.push('fahrenheit');
+        }
+        blobs.push(m_pause);
     }
 
 
@@ -455,7 +479,7 @@ function metar2text(metar,preferences) {
     if (util.definedNonNull(metar.altim_in_hg)) {
         var altim;
         var altim_digits;
-        var use_mb = 
+        var use_mb =
             util.stringIs(preferences.pressure_unit,'millibar') ||
             util.stringIs(preferences.pressure_unit,'millibars') ||
             util.stringIs(preferences.pressure_unit,'hectopascal') ||
@@ -477,7 +501,7 @@ function metar2text(metar,preferences) {
         blobs.push(m_pause);
     }
 
-    // adding the period helps alexa determine the ending inflection 
+    // adding the period helps alexa determine the ending inflection
     // of the 'sentence'
     blobs.push('.');
 
@@ -495,8 +519,8 @@ function reversePhonetics() {
 
 function processResult(cbctx, data) {
     var metar = null;
-    if (data.response && 
-        data.response.data[0] && 
+    if (data.response &&
+        data.response.data[0] &&
         data.response.data[0].METAR) {
         metar = data.response.data[0].METAR[0];
     }
