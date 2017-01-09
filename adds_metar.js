@@ -450,10 +450,10 @@ function metar2text(metar,preferences) {
         var tp = parseFloat(metar.temp_c);
         if (use_f) {
             tp = Math.floor((tp * 9.0 / 5.0) + 32.5);
-            if (tp < 0) blobs.push('minus');
         } else {
             tp = Math.floor(tp + 0.5);
         }
+        if (tp < 0) blobs.push('minus');
         blobs.push(Math.abs(tp).toString());
         if (use_f) {
             blobs.push('fahrenheit');
@@ -470,6 +470,7 @@ function metar2text(metar,preferences) {
         } else {
             dp = Math.floor(dp + 0.5);
         }
+        if (dp < 0) blobs.push('minus');
         blobs.push(Math.abs(dp).toString());
         if (use_f) {
             blobs.push('fahrenheit');

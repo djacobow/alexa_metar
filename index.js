@@ -341,5 +341,23 @@ if (require.main == module) {
             metar.getXML(test_ctx, metar.processResult);
         }
     }
+
+    if (1) {
+        var slots = {
+            sa: { value: 'k' },
+            sb: { value: 's'} ,
+            sc: { value: 'b' },
+            sd: { value: 'n' },
+        };
+        var sr = metar.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            metar.getXML(test_ctx, metar.processResult);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
 }
 
