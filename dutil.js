@@ -21,6 +21,27 @@ function definedHasLength(x) {
     );
 }
 
+function stringIsIgnoreCase(str,compare) {
+    return (
+        (typeof str !== 'undefined') &&
+        str &&
+	    (str !== '') &&
+	    str.length &&
+	    (str.toLowerCase() == compare.toLowerCase())
+    );
+}
+
+function stringInIgnoreCase(str, ary) {
+ if (!str) return false;
+ if (str === undefined) return false;
+ if (!ary.length) return false;
+ var lcstr = str.toLowerCase();
+ for (var i=0; i<ary.length; i++) {
+  if (ary[i].toLowerCase() == lcstr) return true;
+ }
+ return false;
+}
+
 function stringIs(str,compare) {
     return (
         (typeof str !== 'undefined') && 
@@ -99,6 +120,8 @@ module.exports = {
     definedHasLength:         definedHasLength,
     definedNonNull:           definedNonNull,
     stringIs:                 stringIs,
+    stringIsIgnoreCase:       stringIsIgnoreCase,
+    stringInIgnoreCase:       stringInIgnoreCase,
     timeToDigits:             timeToDigits,
     numberToZeroPaddedArray:  numberToZeroPaddedArray,
     numberToZeroPaddedString: numberToZeroPaddedString,
