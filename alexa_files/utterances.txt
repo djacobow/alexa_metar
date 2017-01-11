@@ -1,0 +1,176 @@
+metarThree to read the atis at    {sa} {sb} {sc}
+metarThree to read the atis in    {sa} {sb} {sc}
+metarThree to read the atis from  {sa} {sb} {sc}
+metarThree to read the atis for   {sa} {sb} {sc}
+metarThree to read the metar at   {sa} {sb} {sc}
+metarThree to read the metar for  {sa} {sb} {sc}
+metarThree to read the metar in   {sa} {sb} {sc}
+metarThree to read the metar from {sa} {sb} {sc}
+metarThree to get                 {sa} {sb} {sc}
+metarThree to get the atis at     {sa} {sb} {sc}
+metarThree to get the metar at    {sa} {sb} {sc}
+
+metarThree read the atis at    {sa} {sb} {sc}
+metarThree read the atis in    {sa} {sb} {sc}
+metarThree read the atis from  {sa} {sb} {sc}
+metarThree read the atis for   {sa} {sb} {sc}
+metarThree read the metar at   {sa} {sb} {sc}
+metarThree read the metar for  {sa} {sb} {sc}
+metarThree read the metar in   {sa} {sb} {sc}
+metarThree read the metar from {sa} {sb} {sc}
+metarThree get                 {sa} {sb} {sc}
+metarThree get the atis at     {sa} {sb} {sc}
+metarThree get the metar at    {sa} {sb} {sc}
+
+
+metarFour  to read the atis at    {sa} {sb} {sc} {sd}
+metarFour  to read the atis in    {sa} {sb} {sc} {sd}
+metarFour  to read the atis from  {sa} {sb} {sc} {sd}
+metarFour  to read the atis for   {sa} {sb} {sc} {sd}
+metarFour  to read the metar at   {sa} {sb} {sc} {sd}
+metarFour  to read the metar for  {sa} {sb} {sc} {sd}
+metarFour  to read the metar in   {sa} {sb} {sc} {sd}
+metarFour  to read the metar from {sa} {sb} {sc} {sd}
+metarFour  to get                 {sa} {sb} {sc} {sd}
+metarFour  to get the atis at     {sa} {sb} {sc} {sd}
+metarFour  to get the metar at    {sa} {sb} {sc} {sd}
+
+metarFour  read the atis at    {sa} {sb} {sc} {sd}
+metarFour  read the atis in    {sa} {sb} {sc} {sd}
+metarFour  read the atis from  {sa} {sb} {sc} {sd}
+metarFour  read the atis for   {sa} {sb} {sc} {sd}
+metarFour  read the metar at   {sa} {sb} {sc} {sd}
+metarFour  read the metar for  {sa} {sb} {sc} {sd}
+metarFour  read the metar in   {sa} {sb} {sc} {sd}
+metarFour  read the metar from {sa} {sb} {sc} {sd}
+metarFour  get                 {sa} {sb} {sc} {sd}
+metarFour  get the atis at     {sa} {sb} {sc} {sd}
+metarFour  get the metar at    {sa} {sb} {sc} {sd}
+
+metarCity  to read the atis at    {city}
+metarCity  to read the atis in    {city}
+metarCity  to read the atis from  {city}
+metarCity  to read the atis for   {city}
+metarCity  to read the metar at   {city}
+metarCity  to read the metar for  {city}
+metarCity  to read the metar in   {city}
+metarCity  to read the metar from {city}
+metarCity  to get                 {city}
+metarCity  to get the atis at     {city}
+metarCity  to get the metar at    {city}
+
+metarCity  read the atis at    {city}
+metarCity  read the atis in    {city}
+metarCity  read the atis from  {city}
+metarCity  read the atis for   {city}
+metarCity  read the metar at   {city}
+metarCity  read the metar for  {city}
+metarCity  read the metar in   {city}
+metarCity  read the metar from {city}
+metarCity  get                 {city}
+metarCity  get the atis at     {city}
+metarCity  get the metar at    {city}
+
+metarDeflt to get default
+metarDeflt to get default atis
+metarDeflt to get default metar
+metarDeflt to get default weather
+metarDeflt to get default station
+metarDeflt to get local
+metarDeflt to get local atis
+metarDeflt to get local metar
+metarDeflt to get local weather
+metarDeflt to get local station
+metarDeflt to get the local atis
+metarDeflt to get the local metar
+metarDeflt to get the local station
+metarDeflt to get the local weather
+metarDeflt for metar
+metarDeflt for atis
+metarDeflt for local atis
+metarDeflt for local metar
+metarDeflt for local weather
+
+metarDeflt get default
+metarDeflt get default atis
+metarDeflt get default metar
+metarDeflt get default weather
+metarDeflt get default station
+metarDeflt get local
+metarDeflt get local atis
+metarDeflt get local metar
+metarDeflt get local weather
+metarDeflt get local station
+metarDeflt get the local atis
+metarDeflt get the local metar
+metarDeflt get the local station
+metarDeflt get the local weather
+metarDeflt for metar
+metarDeflt for atis
+metarDeflt for local atis
+metarDeflt for local metar
+metarDeflt for local weather
+
+setWindRef set wind reference {ref}
+setWindRef set wind {ref}
+setWindRef to set wind reference {ref}
+setWindRef to set wind {ref}
+
+setDistUnit set distance {dist}
+setDistUnit set distance to {dist}
+setDistUnit set visibility {dist}
+setDistUnit set visibility to {dist}
+setDistUnit to set distance {dist}
+setDistUnit to set distance to {dist}
+setDistUnit to set visibility {dist}
+setDistUnit to set visibility to {dist}
+
+setPressUnit set altimeter {pressure}
+setPressUnit set altimeter to {pressure}
+setPressUnit set pressure {pressure}
+setPressUnit set pressure to {pressure}
+setPressUnit to set altimeter {pressure}
+setPressUnit to set altimeter to {pressure}
+setPressUnit to set pressure {pressure}
+setPressUnit to set pressure to {pressure}
+
+setTempUnit to set temp to {temperature}
+setTempUnit to set temperature to {temperature}
+setTempUnit set temp to {temperature}
+setTempUnit set temperature to {temperature}
+
+setRepeat to set repeat to {repeat_count}
+setRepeat set repeat to {repeat_count}
+setRepeat to set repetitions to {repeat_count}
+setRepeat set repetitions to {repeat_count}
+setRepeat repeat {repeat_count} times
+setRepeat to repeat {repeat_count} times
+
+setAirport set default airport
+setAirport set default station
+setAirport set local airport
+setAirport set local station
+setAirport to set default airport
+setAirport to set default station
+setAirport to set local airport
+setAirport to set local station
+
+getTime get the time
+getTime time
+getTime the time
+getTime what time is it
+getTime get zulu time
+getTime get time zulu
+getTime what's the time
+getTime what's the time in zulu
+getTime what is the time
+getTime report zulu time
+getTime report u t c time
+getTime report the time
+
+getTime to get the time
+getTime to get zulu time
+getTime to get time zulu
+getTime to report zulu time
+getTime to report u t c time
+getTime to report the time

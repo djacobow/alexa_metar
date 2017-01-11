@@ -1,0 +1,120 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    { "intent": "AMAZON.StopIntent"
+    },
+    { "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "metarThree",
+      "slots": [
+        {
+          "name": "sa",
+          "type": "ONELETTER"
+        },
+        { "name": "sb",
+         "type" : "ONELETTER"
+        },
+        {
+          "name": "sc",
+          "type": "ONELETTER"
+        }
+      ]
+    },
+    {
+      "intent": "metarFour",
+      "slots": [
+        {
+          "name": "sa",
+          "type": "ONELETTER"
+        },
+        { "name": "sb",
+         "type" : "ONELETTER"
+        },
+        {
+          "name": "sc",
+          "type": "ONELETTER"
+        },
+                {
+          "name": "sd",
+          "type": "ONELETTER"
+        }
+
+      ]
+    },
+    {
+      "intent": "metarCity",
+      "slots": [
+        {
+          "name": "city",
+          "type": "AMAZON.US_CITY"
+        }
+
+
+      ]
+    },
+    {
+      "intent": "metarDeflt",
+      "slots": [
+      ]
+    },
+    {
+      "intent": "setAirport",
+      "slots": []
+    },
+    {
+      "intent": "setDistUnit",
+      "slots": [
+        {
+         "name": "dist",
+         "type": "distt"
+        }
+      ]
+    },
+    {
+      "intent": "setPressUnit",
+      "slots": [
+        {
+         "name": "pressure",
+         "type": "presst"
+        }
+      ]
+    },
+    {
+      "intent": "setTempUnit",
+      "slots": [
+        {
+         "name": "temperature",
+         "type": "tempt"
+        }
+      ]
+    },
+    {
+      "intent": "setRepeat",
+      "slots": [
+        {
+         "name": "repeat_count",
+         "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    
+    {
+      "intent": "setWindRef",
+      "slots": [
+        {
+         "name": "ref",
+         "type": "windreft"
+        }
+      ]
+    },
+    {
+      "intent": "getTime",
+      "slots": [
+      ]
+    }
+  ]
+}
+
