@@ -1,7 +1,8 @@
 # use it live
 
 This skill is live on Amazon right now. (as of 6/2016). It is called
-"Airpot METAR Reader" and is free.
+"Dave's Airport METAR Reader" and is free. It may be slightly behind
+this repo at any given time.
 
 # alexa_metar
 
@@ -16,7 +17,7 @@ if he were listening on ATIS.
 
 METAR == METeorological Report
 
-ATIS  == Auomatic Terminal Information Service
+ATIS  == Automatic Terminal Information Service
 
 METAR is an airport (or other weather station) weather report in a very concise format,
 intended to be printed and read on the ground.
@@ -44,6 +45,7 @@ often includes non-weather related airport information.
 
 "Alexa, ask airport weather to set visibility to kilometers."
 "Alexa, ask airport weather to set altimeter to millibars."
+"Alexa, ask airport weather to set temperature to Fahrenheit."
 
 - If you want the wind direction in the metar without a correction for
 magnetic variation:
