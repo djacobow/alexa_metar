@@ -84,7 +84,9 @@ var getCached = function(cbctx, cb) {
 
     pdb.sta_get(id,function(ferr,fdata) {
         if (ferr) {
-            if (ferr !== 'too_old') console.error('Cache return err: ' + ferr);
+            if (!util.stringInIgnoreCase(ferr,['too_old','no_items_returned'])) {
+                console.error('-w- getCached return error: ' + ferr);
+            }
             return getXML(cbctx, id, cb);
         } else {
             return cb(cbctx,fdata);
@@ -113,7 +115,7 @@ var getXML = function(cbctx, id, cb) {
                 try {
                     xmlparser.parseString(body,function(err,result) {
                         if (err) {
-                            console.log('-err- : ' + err);
+                            console.error('-err- : getXML : ' + err);
                             return cb(cbctx,{});
                         } else {
                             if (do_not_cache) return cb(cbctx, result);
@@ -125,18 +127,18 @@ var getXML = function(cbctx, id, cb) {
                     });
                 }
                 catch(e) {
-                    console.log('-caught err- : ' + e);
+                    console.error('-err- : getXML : ' + e);
                     return cb(cbctx,{});
                 }
            }
        });
     }).on('error', function(e) {
-        console.log('-err- : ' + e);
+        console.log('-err- : getXML : ' + e);
     });
 
 
     req.setTimeout(5000, function() {
-        console.log('-err- :  request timed out');
+        console.log('-err- : getXML : request timed out');
         var msg = 'Query from a d d s is taking too long. Try again later.';
         cbctx.response_object.tellWithCard(msg,"query taking Too long",msg);
         return;
@@ -151,7 +153,7 @@ var validateCity = function(slots) {
             return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
         }
     } catch (e) {
-        console.log(e);
+        console.error('-err- : validateCity : ' + e);
     }
     return { mode: 'city', valid: false, letters: [], orig: name };
 };
@@ -196,8 +198,6 @@ function validateSlots(slots) {
         response.letters.unshift('K');
     }
 
-    // console.log('__validate__');
-    // console.log(response);
     return response;
 }
 
@@ -322,9 +322,8 @@ function metar2text(metar,preferences) {
         if (sta_dat) {
             mag_var = wmm.declination(sta_dat.elev,sta_dat.lat,sta_dat.lon,
 		    nowToMagYear());
-            // console.log("mag var: " + mag_var);
         } else {
-            console.log('warn: did not calculate mag var; wind is true');
+            console.log('-warn- : metar2text : did not calculate mag var; wind is true');
        }
 
        var wind_speed_int = parseInt(metar.wind_speed_kt[0]);
@@ -341,7 +340,6 @@ function metar2text(metar,preferences) {
                    // in an ATIS report, but because I have to calculate starting
                    // from true, I make it optional for the user to get a true
                    // direction.
-                   console.log('-d- reporting TRUE wind dir');
                    wind_dir_pref = wind_dir_true;
                } else {
                    wind_dir_pref += wind_dir_true;
@@ -534,7 +532,7 @@ function reversePhonetics() {
 
 function processResult(cbctx, data) {
     if (false) {
-        console.log('DATA IS');
+        console.log('processResult DATA IS');
         console.log(JSON.stringify(data,null,2));
     }
     var metar = null;
@@ -546,7 +544,7 @@ function processResult(cbctx, data) {
 
     var to_say = '';
     if (util.definedNonNull(metar)) {
-        console.log('__METAR_OK__');
+        console.log('-d- processResult : __METAR_OK__');
         var chunks = metar2text(metar,cbctx.session.user_info.preferences);
         chunks     = radioify(chunks);
         to_say = chunks.join(' ');
@@ -562,11 +560,11 @@ function processResult(cbctx, data) {
 
         to_say = ['<speak>',to_say,'</speak>'].join(' ');
 
-        console.log('Going to say: ' + to_say);
+        console.log('-d- processResult : Going to say: ' + to_say);
 
         cbctx.session.user_info.stats.last_airport = metar.station_id[0];
         if (false) {
-            console.log('__SAVING_UPDATE__');
+            console.log('-d- processResult __SAVING_UPDATE__');
             console.log(cbctx.session.user);
             console.log(cbctx.session.user_info);
         }
@@ -582,7 +580,7 @@ function processResult(cbctx, data) {
                         }
         );
     } else {
-        console.log('__METAR_NOT_OK__');
+        console.log('-d- processResult : __METAR_NOT_OK__');
         var rp      = reversePhonetics();
         var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
         to_say = 'The weather server returned an empty response for ' +

@@ -1,3 +1,7 @@
+/*jshint devel: true */
+/*jshint strict: global */
+/*jshint node: true */
+
 /**
     Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
@@ -17,7 +21,7 @@ function AlexaSkill(appId) {
 AlexaSkill.speechOutput = {
     PLAIN_TEXT: 'PlainText',
     SSML: 'SSML'
-}
+};
 
 var pdb = require('./prefs');
 
@@ -95,8 +99,7 @@ AlexaSkill.prototype.execute = function (event, context) {
 
         // Validate that this request originated from authorized source.
         if (this._appId && event.session.application.applicationId !== this._appId) {
-            console.log("The applicationIds don't match : " + event.session.application.applicationId + " and "
-                + this._appId);
+            console.log("The applicationIds don't match : " + event.session.application.applicationId + " and " + this._appId);
             throw "Invalid applicationId";
         }
 
@@ -146,12 +149,12 @@ Response.prototype = (function () {
                 outputRepromptSpeech = {
                     type: options.reprompt.type,
                     ssml: options.reprompt.speech
-                }
+                };
             } else {
                 outputRepromptSpeech = {
                     type: options.reprompt.type || 'PlainText',
                     text: options.reprompt.speech || options.reprompt
-                }
+                };
             }
             alexaResponse.reprompt = {
                     outputSpeech: outputRepromptSpeech

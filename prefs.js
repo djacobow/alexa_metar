@@ -54,7 +54,7 @@ function sta_get(id,cb) {
         var res = d.Items[0];
         if (!res.store_date) return cb('missing_date',null);
         if (res.store_date < five_minutes_ago) return cb('too_old',null);
-        if (true) console.log(id + ' in cache');
+        if (true) console.log(id + ' valid in cache');
         return cb(null,res.wdata);
     });
 
@@ -86,7 +86,7 @@ function sta_store(id,data,cb) {
     var docClient = new aws.DynamoDB.DocumentClient();
     docClient.put(p,function(e,d) {
         if (e) {
-            console.error('-err- unable to put',
+            console.error('-err- unable to put station data ',
                 JSON.stringify(e,null,2));
             console.error(
                 JSON.stringify(p,null,2)
@@ -113,7 +113,7 @@ function setUserInfo(userId,info,cb) {
         var docClient = new aws.DynamoDB.DocumentClient();
         docClient.put(p,function(e,d) {
             if (e) {
-                console.error('-err- unable to put',
+                console.error('-err- unable to put user info data ',
 		        JSON.stringify(e,null,2));
             } else {
                 if (false) {
@@ -152,7 +152,7 @@ function getUserInfo(userId,cb) {
                     return cb('err',user_info);
             } else {
                 if (d.Count > 0) {
-                    console.log('-info- query returned result(s)');
+                    // console.log('-info- query returned result(s)');
                     if (d.Count > 1)  console.log('-warn- multiple users matched query');
                     user_info = d.Items[0];
                     console.log(user_info);

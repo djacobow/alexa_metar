@@ -13,18 +13,17 @@ var airport_wx_app = function () {
 };
 
 
-function logBasic(name,session) {
+function logBasic(name,session,message) {
+    if ((message === undefined) || (!message)) message = null;
     var chunks = [
-        '-i-',
         name,
-        'requestId:',
-        session.requestId,
         'sessionId:',
         session.sessionId,
         'userId:',
         session.user.userId,
+        message ? JSON.stringify(message,null,2) : ''
     ];
-    console.log(chunks.join(' '));
+    console.log(chunks.join(' | '));
 }
 
 
@@ -39,7 +38,7 @@ airport_wx_app.prototype.eventHandlers.onSessionStarted =
 airport_wx_app.prototype.eventHandlers.onLaunch =
     function (launchRequest, session, response) {
         logBasic('onLaunch',session);
-        var speechOutput = 'Welcome to the mee-tar reader app. I will read you airport weather reports. You can say "get San Francisco" to get the weather at San Fancisco airport. You can say "get kilo oscar romeo delta" to get the weather for at Chicago O\'Hare airport.';
+        var speechOutput = 'Welcome to the mee-tar reader app. I will read you airport weather reports. You can say "get San Francisco" to get the weather at San Fancisco airport. You can say "get kilo oscar romeo delta" to get the weather for at Chicago O\'Hare airport. Please note that the data I read is advisory and you should consult official sources for a legal weather briefing.';
         var repromptText = "Say a major US city name or a three or four letter airport identifier.";
         response.ask(speechOutput, repromptText);
 };
@@ -63,7 +62,6 @@ function metarById(sr, session, response) {
             response_object : response,
             letters : sr.letters,
         };
-        // console.log(ctx.letters);
         metar.getCached(ctx, metar.processResult);
     } else {
         var was_city    = sr.mode == 'city';
@@ -87,7 +85,7 @@ function metarById(sr, session, response) {
 	         sr.orig.join(' ');
          }
          repromptText =
-            'Please try again. Say: get, followed by a US city name or ' +
+            'Please try again. Say: get, followed by a US or UK city name or ' +
             'three or four letter identifier using the eye-kay-oh phonetic ' +
             'alphabet.';
          ask += ' '  + repromptText;
@@ -169,19 +167,19 @@ airport_wx_app.prototype.intentHandlers = {
 
     // The "main" intents for getting the weather
     metarThree: function(intent, session, response) {
-        logBasic('metarThree',session);
+        logBasic('metarThree',session,intent);
         metarById(metar.validateSlots(intent.slots),session,response);
     },
     metarFour: function(intent, session, response) {
-        logBasic('metarFour',session);
+        logBasic('metarFour',session,intent);
         metarById(metar.validateSlots(intent.slots),session,response);
     },
     metarCity: function(intent, session, response) {
-        logBasic('metarCity',session);
+        logBasic('metarCity',session,intent);
         metarById(metar.validateCity(intent.slots),session,response);
     },
     metarDeflt: function(intent, session, response) {
-        logBasic('metarDeflt',session);
+        logBasic('metarDeflt',session,intent);
         metarById(metar.validateDefaultAirport(session.user_info),session,response);
     },
 
@@ -200,11 +198,11 @@ airport_wx_app.prototype.intentHandlers = {
     // an intent for setting and storing the user's preferred default
     // airport
     setAirport: function(intent, session, response) {
-        logBasic('setAirport',session);
+        logBasic('setAirport',session,intent);
         var last_airport = session.user_info.stats.last_airport;
         if (util.definedHasLength(last_airport)) {
             session.user_info.preferences.default_airport = last_airport;
-	        console.log('__SET_AIRPORT_SAVING__');
+	        console.log('-d- __setAirport SAVING');
 	        console.log(session.user);
 	        console.log(session.user_info);
             pdb.setUserInfo(session.user.userId,session.user_info,function() {
@@ -222,7 +220,7 @@ airport_wx_app.prototype.intentHandlers = {
 
 
     setRepeat: function(intent,session,response) {
-        logBasic('setRepeat',session);
+        logBasic('setRepeat',session,intent);
         var repeat_count = 1;
         try {
             repeat_count = parseInt(intent.slots.repeat_count.value);
@@ -245,15 +243,19 @@ airport_wx_app.prototype.intentHandlers = {
 
     // preference setters
     setDistUnit: function(intent,session,response) {
+        logBasic('setDistUnit',session,intent);
         prefSetter('dist',intent,session,pdb,response);
     },
     setPressUnit: function(intent,session,response) {
+        logBasic('setPressUnit',session,intent);
         prefSetter('press',intent,session,pdb,response);
     },
     setWindRef: function(intent,session,response) {
+        logBasic('setWindRef',session,intent);
         prefSetter('wdir',intent,session,pdb,response);
     },
     setTempUnit: function(intent,session,response) {
+        logBasic('setTempUnit',session,intent);
         prefSetter('temp',intent,session,pdb,response);
     },
 };
