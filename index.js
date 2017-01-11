@@ -64,7 +64,7 @@ function metarById(sr, session, response) {
             letters : sr.letters,
         };
         // console.log(ctx.letters);
-        metar.getXML(ctx, metar.processResult);
+        metar.getCached(ctx, metar.processResult);
     } else {
         var was_city    = sr.mode == 'city';
         var was_default = sr.mode == 'default_airport';
@@ -95,28 +95,42 @@ function metarById(sr, session, response) {
     }
 }
 
+function joinWithAnd(a) {
+    if (a.length > 1) {
+        return a.slice(0,a.length-2).join(' , ') + ' and ' + a[a.length-1];
+    } else if (a.length > 0) {
+        return a[0];
+    } else {
+        return '';
+    }
+}
+
 // helper for setting stored preferences
 function prefSetter(type,intent,session,pdb,response) {
     var types = {
         'dist': {
             'slot_name': 'dist',
             'pref_name': 'distance_unit',
-            'read_name': 'visibility unit'
+            'read_name': 'visibility unit',
+            'legal': ['kilometers', 'miles' ],
         },
         'press': {
             'slot_name': 'pressure',
             'pref_name': 'pressure_unit',
-            'read_name': 'altimeter unit'
+            'read_name': 'altimeter unit',
+            'legal': ['millibar', 'millibars', 'hectopascal','inches'],
         },
         'wdir': {
             'slot_name': 'ref',
             'pref_name': 'wind_reference',
-            'read_name': 'wind reference'
+            'read_name': 'wind reference',
+            'legal': ['magnetic','true'],
         },
         'temp': {
             'slot_name': 'temperature',
             'pref_name': 'temp_unit',
-            'read_name': 'temperature unit'
+            'read_name': 'temperature unit',
+            'legal': ['fahrenheit','f','celsius','centigrade','c'],
         },
     };
 
@@ -124,10 +138,17 @@ function prefSetter(type,intent,session,pdb,response) {
     var desired = intent.slots[config.slot_name].value;
     console.log('-d- new ' + type + ' unit: ' + desired);
     session.user_info.preferences[config.pref_name] = desired;
-    pdb.setUserInfo(session.user.userId,session.user_info,function() {
-        response.tell('I set your ' + config.read_name + ' preference ' +
-            'to ' + desired);
-    });
+    if (util.stringInIgnoreCase(desired, config.legal)) {
+        pdb.setUserInfo(session.user.userId,session.user_info,function() {
+            response.tell('I set your ' + config.read_name + ' preference ' +
+                'to ' + desired);
+        });
+    } else {
+        response.tell('I did not set your preference because ' + desired +
+            ' is not a valid value for ' + config.read_name + 
+            '. The acceptable choices are ' + joinWithAnd(config.legal) +
+            '.');
+    }
 }
 
 airport_wx_app.prototype.intentHandlers = {
@@ -251,7 +272,7 @@ if (require.main == module) {
     // -------------- for testing ----------------
     // for testing locallly
     var dummyTellWithCard = function(a,b,c) {
-        console.log("-d- saying        : " + a);
+        console.log("-d- saying        : " + JSON.stringify(a));
         if (util.definedNonNull(b)) {
             console.log("-d- card title    : " + b);
         }
@@ -298,7 +319,7 @@ if (require.main == module) {
         var sr = metar.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getXML(test_ctx, metar.processResult);
+            metar.getCached(test_ctx, metar.processResult);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -315,7 +336,7 @@ if (require.main == module) {
         var sr = metar.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getXML(test_ctx, metar.processResult);
+            metar.getCached(test_ctx, metar.processResult);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -329,7 +350,7 @@ if (require.main == module) {
         var sr    = metar.validateCity(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getXML(test_ctx, metar.processResult);
+            metar.getCached(test_ctx, metar.processResult);
         }
     }
 
@@ -338,7 +359,7 @@ if (require.main == module) {
         var sr    = metar.validateDefaultAirport(test_ctx.session.user_info);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getXML(test_ctx, metar.processResult);
+            metar.getCached(test_ctx, metar.processResult);
         }
     }
 
@@ -352,7 +373,7 @@ if (require.main == module) {
         var sr = metar.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getXML(test_ctx, metar.processResult);
+            metar.getCached(test_ctx, metar.processResult);
         } else {
             console.log('uh-oh');
             console.log(sr);

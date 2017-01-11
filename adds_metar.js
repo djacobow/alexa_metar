@@ -3,6 +3,8 @@
 /*jshint esversion: 6 */
 "use strict";
 
+var do_not_cache = false;
+
 var pdb = require('./prefs');
 var util = require('./dutil');
 
@@ -50,7 +52,6 @@ function metersToWords(b,m) {
 // and less than will be reported in quarter mile increment.
 // No unit is uttered.
 function milesToWords(b,m) {
-    console.log('m is: ' + m);
     if (m >= 3) {
         b.push(Math.floor(m + 0.5).toString());
     } else {
@@ -71,14 +72,27 @@ function milesToWords(b,m) {
     }
 }
 
-var getXML = function(cbctx, cb) {
+var getCached = function(cbctx, cb) {
     var letters      = cbctx.letters;
-
     var id           = '';
     if (letters.length < 4) {
         id = 'K';
     }
     id += letters.join('');
+
+    if (do_not_cache) return getXML(cbctx, id, cb);
+
+    pdb.sta_get(id,function(ferr,fdata) {
+        if (ferr) {
+            if (ferr !== 'too_old') console.error('Cache return err: ' + ferr);
+            return getXML(cbctx, id, cb);
+        } else {
+            return cb(cbctx,fdata);
+        }
+    });
+};
+
+var getXML = function(cbctx, id, cb) {
 
     var url =
        'https://www.aviationweather.gov/adds/dataserver_current/httpparam' +
@@ -102,7 +116,11 @@ var getXML = function(cbctx, cb) {
                             console.log('-err- : ' + err);
                             return cb(cbctx,{});
                         } else {
-                            return cb(cbctx,result);
+                            if (do_not_cache) return cb(cbctx, result);
+
+                            pdb.sta_store(id,result,function(serr) {
+                                return cb(cbctx,result);
+                            });
                         }
                     });
                 }
@@ -185,8 +203,11 @@ function validateSlots(slots) {
 
 
 function validateDefaultAirport(user_info) {
-    console.log('-d- validateDefaultAirport');
-    console.log(user_info);
+    if (false) {
+        console.log('-d- validateDefaultAirport');
+        console.log(user_info);
+    }
+
     var da = user_info.preferences.default_airport;
     var sr = { mode: 'default_airport', valid: false, };
 
@@ -197,7 +218,7 @@ function validateDefaultAirport(user_info) {
         sr.orig = 'Default Airport Not Set';
         sr.letters = [];
     }
-    console.log(sr);
+    if (true) console.log(sr);
     return sr;
 }
 
@@ -223,7 +244,7 @@ function radioify(blobs) {
 
 function metar2text(metar,preferences) {
     var blobs = [];
-    console.log(metar);
+    // console.log(metar);
 
     // Get the airport name if we have it in our database,
     // otherwise just say the identifier.
@@ -278,10 +299,8 @@ function metar2text(metar,preferences) {
     if (util.definedNonNull(metar.visibility_statute_mi)) {
         blobs.push('visibility');
         var use_km =
-            util.stringIs(preferences.distance_unit,'kilometers') ||
-            util.stringIs(preferences.distance_unit,'kilometer') ||
-            util.stringIs(preferences.distance_unit,'km') ||
-            false;
+            util.stringInIgnoreCase(preferences.distance_unit,
+                                    ['kilometer','kilometers','km']);
         if (use_km) {
             metersToWords(blobs, parseFloat(metar.visibility_statute_mi) * 1609.34);
         } else {
@@ -303,7 +322,7 @@ function metar2text(metar,preferences) {
         if (sta_dat) {
             mag_var = wmm.declination(sta_dat.elev,sta_dat.lat,sta_dat.lon,
 		    nowToMagYear());
-            console.log("mag var: " + mag_var);
+            // console.log("mag var: " + mag_var);
         } else {
             console.log('warn: did not calculate mag var; wind is true');
        }
@@ -316,7 +335,7 @@ function metar2text(metar,preferences) {
                blobs.push('variable');
            } else {
                var wind_dir_pref  = mag_var;
-               var use_true = util.stringIs(preferences.wind_reference,'true');
+               var use_true = util.stringIsIgnoreCase(preferences.wind_reference,'true');
                if (use_true) {
                    // true wind directions are generally not appropriate
                    // in an ATIS report, but because I have to calculate starting
@@ -440,11 +459,7 @@ function metar2text(metar,preferences) {
 
     // temperature && dewpoint, ATIS is always "c", but I've
     // gotten requests for 'F' so I've added that as an option
-    var use_f = util.stringIs(preferences.temp_unit,'fahrenheit') ||
-                util.stringIs(preferences.temp_unit,'Fahrenheit') ||
-                util.stringIs(preferences.temp_unit,'f') ||
-                util.stringIs(preferences.temp_unit,'F') ||
-                false;
+    var use_f = util.stringInIgnoreCase(preferences.temp_unit,['fahrenheit','f']);
     if (util.definedNonNull(metar.temp_c)) {
         blobs.push('temperature');
         var tp = parseFloat(metar.temp_c);
@@ -484,11 +499,7 @@ function metar2text(metar,preferences) {
         var altim;
         var altim_digits;
         var use_mb =
-            util.stringIs(preferences.pressure_unit,'millibar') ||
-            util.stringIs(preferences.pressure_unit,'millibars') ||
-            util.stringIs(preferences.pressure_unit,'hectopascal') ||
-            util.stringIs(preferences.pressure_unit,'hectopascals') ||
-            false;
+            util.stringInIgnoreCase(preferences.pressure_unit,['millibar','millibars','hectopascal','hectopascals']);
 
         if (use_mb) {
             altim = Math.floor(0.5 + 33.8639 * parseFloat(metar.altim_in_hg));
@@ -522,6 +533,10 @@ function reversePhonetics() {
 }
 
 function processResult(cbctx, data) {
+    if (false) {
+        console.log('DATA IS');
+        console.log(JSON.stringify(data,null,2));
+    }
     var metar = null;
     if (data.response &&
         data.response.data[0] &&
@@ -531,7 +546,7 @@ function processResult(cbctx, data) {
 
     var to_say = '';
     if (util.definedNonNull(metar)) {
-        console.log('__PLAN_A__');
+        console.log('__METAR_OK__');
         var chunks = metar2text(metar,cbctx.session.user_info.preferences);
         chunks     = radioify(chunks);
         to_say = chunks.join(' ');
@@ -550,9 +565,12 @@ function processResult(cbctx, data) {
         console.log('Going to say: ' + to_say);
 
         cbctx.session.user_info.stats.last_airport = metar.station_id[0];
-        console.log('__SAVING_UPDATE__');
-        console.log(cbctx.session.user);
-        console.log(cbctx.session.user_info);
+        if (false) {
+            console.log('__SAVING_UPDATE__');
+            console.log(cbctx.session.user);
+            console.log(cbctx.session.user_info);
+        }
+
         pdb.setUserInfo(cbctx.session.user.userId,
                         cbctx.session.user_info,
                         function(e) {
@@ -564,7 +582,7 @@ function processResult(cbctx, data) {
                         }
         );
     } else {
-        console.log('_PLAN_B');
+        console.log('__METAR_NOT_OK__');
         var rp      = reversePhonetics();
         var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
         to_say = 'The weather server returned an empty response for ' +
@@ -584,7 +602,7 @@ function processResult(cbctx, data) {
 }
 
 module.exports = {
-    getXML:                 getXML,
+    getCached:              getCached,
     processResult:          processResult,
     wordToLetter:           wordToLetter,
     validateSlots:          validateSlots,

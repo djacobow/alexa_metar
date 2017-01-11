@@ -8,8 +8,12 @@ var aws   = require('aws-sdk');
 
 var config = {
     aws_credentials: './aws_config.json',
-    db: {
+    pref_db: {
         table_name: 'METAR_preferences',
+    },
+    cache_db: {
+        table_name: 'weathercache',
+        max_age: 3 * 60,
     },
     default_userinfo: {
         preferences: {
@@ -26,13 +30,79 @@ var config = {
 // set up to use database
 aws.config.loadFromPath(config.aws_credentials);
 
+function sta_get(id,cb) {
+    var p = {
+        TableName: config.cache_db.table_name,
+        KeyConditionExpression: "#id = :staid",
+        ExpressionAttributeNames: {
+            "#id": "station"
+        },
+        ExpressionAttributeValues: {
+            ":staid" :  id,
+        },
+    };
+
+    var docClient = new aws.DynamoDB.DocumentClient();
+    var five_minutes_ago = Math.floor(Date.now() / 1000) -
+        config.cache_db.max_age;
+
+    docClient.query(p,function(e,d) {
+        if (e) console.error(JSON.stringify(e,null,2));
+        if (e)               return cb('query_err',null);
+        if (!d.Items)        return cb('no_items_key');
+        if (!d.Items.length) return cb('no_items_returned');
+        var res = d.Items[0];
+        if (!res.store_date) return cb('missing_date',null);
+        if (res.store_date < five_minutes_ago) return cb('too_old',null);
+        if (true) console.log(id + ' in cache');
+        return cb(null,res.wdata);
+    });
+
+}
+
+function sta_store(id,data,cb) {
+
+    // Get around the RIDICULOUS limitation in dynamodb that it cannot
+    // store empty strings. Why? Who knows?! It's the dumbest thing
+    // ever!
+    if (data.response &&
+        data.response.errors &&
+        data.response.errors.length &&
+        !data.response.errors[0].length) delete data.response.errors;
+    if (data.response &&
+        data.response.warnings &&
+        data.response.warnings.length &&
+        !data.response.warnings[0].length) delete data.response.warnings;
+
+    var p = {
+        TableName: config.cache_db.table_name,
+        Item: {
+            station: id,
+            wdata: data,
+            store_date: Math.floor(Date.now() / 1000),
+        },
+    };
+
+    var docClient = new aws.DynamoDB.DocumentClient();
+    docClient.put(p,function(e,d) {
+        if (e) {
+            console.error('-err- unable to put',
+                JSON.stringify(e,null,2));
+            console.error(
+                JSON.stringify(p,null,2)
+            );
+        }
+        cb(e);
+    });
+}
+
 
 function setUserInfo(userId,info,cb) {
     if (userId && (userId !== null)) {
         info.stats.use_count++;
         info.stats.last_use = Math.floor(Date.now() / 1000);
         var p = {
-            TableName: config.db.table_name,
+            TableName: config.pref_db.table_name,
             Item: {
                 userId: userId,
                 stats: info.stats,
@@ -46,13 +116,16 @@ function setUserInfo(userId,info,cb) {
                 console.error('-err- unable to put',
 		        JSON.stringify(e,null,2));
             } else {
-                console.log('-info- successfully updated ' + userId);
-                console.log(p);
+                if (false) {
+                    console.log('-info- successfully updated ' + userId);
+                    console.log(p);
+                }
             }
-            cb(e);
+            return cb(e);
         });
     } else {
         console.error('no valid user id');
+        return cb('no_valud_user_id');
     }
 }
 
@@ -61,7 +134,7 @@ function getUserInfo(userId,cb) {
     var user_info = config.default_userinfo;
     if (userId && (userId !== null)) {
         var p = {
-            TableName: config.db.table_name,
+            TableName: config.pref_db.table_name,
             KeyConditionExpression: "#id = :userid",
             ExpressionAttributeNames: {
                 "#id": "userId"
@@ -101,6 +174,8 @@ function getUserInfo(userId,cb) {
 module.exports = {
     getUserInfo: getUserInfo,
     setUserInfo: setUserInfo,
+    sta_store: sta_store,
+    sta_get: sta_get,
 };
 
 
