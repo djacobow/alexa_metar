@@ -193,10 +193,10 @@ Response.prototype = (function () {
             }));
         },
         tellWithCard: function (speechOutput, cardTitle, cardContent) {
-            console.log("TELLING WITH CARD");
-	    console.log("saying: " + speechOutput);
-	    console.log("card name: " + cardTitle);
-	    console.log("card data: " + cardContent);
+            var x = { saying: speechOutput, 
+                      cardTitle: cardTitle,
+                      cardCotent: cardContent};
+            console.log("TELLING WITH CARD: " + JSON.stringify(x,null,2));
             this._context.succeed(buildSpeechletResponse({
                 session: this._session,
                 output: speechOutput,
