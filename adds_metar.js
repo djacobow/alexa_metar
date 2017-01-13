@@ -255,6 +255,9 @@ function metar2text(metar,preferences) {
         if (sta_dat.name) {
             var n = sta_dat.name.replace('intnl','international');
             n = n.replace('intl','international');
+            n = n.replace(/air\w+/,' ');
+            n = n.replace('arpt',' ');
+            n = n.replace('apt',' ');
             n = n.replace('/',' ');
             blobs.push(n);
         } else {
@@ -560,7 +563,7 @@ function processResult(cbctx, data) {
 
         to_say = ['<speak>',to_say,'</speak>'].join(' ');
 
-        console.log('-d- processResult : Going to say: ' + to_say);
+        // console.log('-d- processResult : Going to say: ' + to_say);
 
         cbctx.session.user_info.stats.last_airport = metar.station_id[0];
         if (false) {

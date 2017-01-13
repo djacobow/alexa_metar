@@ -17,22 +17,19 @@ function logBasic(name,session,message) {
     if ((message === undefined) || (!message)) message = null;
     var chunks = [
         name,
-        'sessionId:',
-        session.sessionId,
-        'userId:',
-        session.user.userId,
+        'sessionId: ' + session.sessionId,
         message ? JSON.stringify(message,null,2) : ''
     ];
     console.log(chunks.join(' | '));
 }
-
 
 // Extend AlexaSkill
 airport_wx_app.prototype = Object.create(AlexaSkill.prototype);
 airport_wx_app.prototype.constructor = airport_wx_app;
 airport_wx_app.prototype.eventHandlers.onSessionStarted =
     function (sessionStartedRequest, session) {
-        logBasic('onSessionStarted',session);
+        logBasic('onSessionStarted',session, 'userId: ' + session.user.userId);
+
 };
 
 airport_wx_app.prototype.eventHandlers.onLaunch =
@@ -274,13 +271,13 @@ if (require.main == module) {
     // -------------- for testing ----------------
     // for testing locallly
     var dummyTellWithCard = function(a,b,c) {
-        console.log("-d- saying        : " + JSON.stringify(a));
-        if (util.definedNonNull(b)) {
-            console.log("-d- card title    : " + b);
-        }
-        if (util.definedNonNull(c)) {
-            console.log("-d- card contents : " + c);
-        }
+        console.log('dummyTellWithCard');
+        var x = {
+            'saying': a,
+            'title': b,
+            'contents': c,
+        };
+        console.log(JSON.stringify(x,null,2));
     };
 
     var test_ctx = {
