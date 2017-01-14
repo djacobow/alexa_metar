@@ -256,14 +256,15 @@ function metar2text(metar,preferences) {
         sta_dat = stations[metar.station_id];
 
         if (sta_dat.name) {
-            var n = sta_dat.name.replace('intnl','international');
-            n = n.replace('intl','international');
-            n = n.replace(/\bafb\b/,'air force base');
-            n = n.replace(/\bairp\w+/,' ');
-            n = n.replace('arpt',' ');
-            n = n.replace('apt',' ');
-            n = n.replace(/\barp\b/,' ');
-            n = n.replace('/',' ');
+            var n = sta_dat.name.replace('intnl','international')
+                .replace('\bintl\b','international')
+                .replace('\bint\b','international')
+                .replace(/\bafb\b/,'air force base')
+                .replace(/\bairp\w+/,' ')
+                .replace('arpt',' ')
+                .replace('apt',' ')
+                .replace(/\barp\b/,' ')
+                .replace('/',' ');
             blobs.push(n);
         } else {
             var id      = "" + metar.station_id;
