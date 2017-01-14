@@ -18939,7 +18939,7 @@ var station_data = {
   'country': 'US',
   'icao': 'KAVP',
   'lon': -75.7166666666667,
-  'name': 'avoca/wilkes b.',
+  'name': 'avoca/wilkes barre',
   'metar': 'X',
   'elev': 0.291,
   'iata': 'AVP ',
