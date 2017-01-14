@@ -67,9 +67,9 @@ function metarById(sr, session, response) {
          if (was_city) {
              if (sr.orig && (sr.orig !== 'none provided')) {
                  ask = "I could not find the city " + sr.orig +
-	                   " in my database. If you are sure it's correct, " +
-	                   " please contact the author " +
-	                   " and suggest he add it.";
+	                   " in my database. That is probably my fault. I am " +
+                       " working on expanding my database, but it is limited " +
+                       " to the largest airports right now. ";
              } else {
                  ask = "It looks like you didn't name a city for me to look up. ";
              }
