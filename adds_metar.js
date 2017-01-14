@@ -154,6 +154,8 @@ var validateCity = function(slots) {
             .replace('airport','');
         if (names[name]) {
             return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
+        } else {
+            console.log('validateCity() airport_not_found: ' + name);
         }
     } catch (e) {
         console.error('-err- : validateCity : ' + e);
