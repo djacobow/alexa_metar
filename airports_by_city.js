@@ -2,6 +2,18 @@
 // This is a list of many (but by no means enough)
 // airports by city. This is for the city-based 
 // lookup function.
+//
+// This list is indexed by what people say, which is
+// itself filtered by the AMAZON.US_CITIES or 
+// AMAZON.UK_CITIES slot. As such, it is probbly
+// that many of these, particularly the international
+// ones, can never be accessed because the utterances
+// would be filtered already.
+//
+// There are duplications in this list to try to 
+// capture some of the varying way people will refer
+// to airports, such as airports that serve more than
+// one city.
 
 var US = true;
 
@@ -399,6 +411,7 @@ var names = {
     'boston'            : 'KBOS', //MA boston
     'botovo'            : 'ULWC', //   botovo/cherepove
     'bou-saada'         : 'DAAD', //   bou-saada
+    'boulder'           : 'KBVU',
     'bouake'            : 'DIBK', //   bouake (civ/mil)
     'bournemouth'       : 'EGHH', //   bournemouth airp
     'bowling green'     : 'KBWG', //KY bowling gree
@@ -727,11 +740,6 @@ var names = {
     'cuzco'             : 'SPZO', //   cuzco/velazco as
     'cylde'             : 'CYCY', //NU cylde airport
     'cypress hills'     : 'CWVP', //SK cypress hills pa
-
-// ------
-// -- only gotten through b's so far 
-// ------
-
     'da nang'           : 'VVDN', //   da nang intl arp
     'daggett'           : 'KDAG', //CA daggett
     'dakar'             : 'GOOY', //   dakar/yoff
@@ -740,110 +748,124 @@ var names = {
     'dalhart'           : 'KDHT', //TX dalhart
     'dalian/dairen/lu'  : 'ZYTL', //   dalian/dairen/lu
     'dallas fort worth' : 'KDFW',
-    'dallas'            : 'KDFW',
-    'dallas/ft'         : 'KDFW', //TX dallas/ft worth
-    'dallas/love'       : 'KDAL', //TX dallas/love fld
+    'dallas'            : 'KDFW', //TX dallas/ft worth
+    'fort worth'        : 'KDFW', //TX dallas/ft worth
+    'dallas love'       : 'KDAL', //TX dallas/love fld
     'damascus'          : 'OSDI', //   damascus (civ/mi
     'danville'          : 'KDAN', //VA danville
-    'dar'               : 'HTDA', //   dar es salaam ar
-    'dar-el-beida/hou'  : 'DAAG', //   dar-el-beida/hou
+    'dar es salaam'     : 'HTDA', //   dar es salaam ar
+    'dar el beida'      : 'DAAG', //   dar-el-beida/hou
     'dartowek'          : 'EPDA', //   dartowek naval
     'darwin'            : 'YPDN', //   darwin (civ/mil)
     'dashoguz'          : 'UTAT', //   dashoguz
     'dauphin'           : 'CYDN', //MB dauphin airport
-    'davao/francisco'   : 'RPMD', //   davao/francisco
-    'david/enrique'     : 'MPDA', //   david/enrique m
+    'davao'             : 'RPMD', //   davao/francisco
+    'david'             : 'MPDA', //   david/enrique m
     'davis/tucson'      : 'KDMA', //AZ davis/tucson
     'dawson creek'      : 'CYDQ', //BC dawson creek arp
     'dawson'            : 'CYDA', //YT dawson airport
     'dax/seyresse'      : 'LFBY', //   dax/seyresse
     'dayton'            : 'KDAY', //OH dayton
     'daytona'           : 'KDAB', //FL daytona beach
-    'de'                : 'EHKD', //   de kooy (navy)
+    'daytona beach'     : 'KDAB', //FL daytona beach
+    'de kooy'           : 'EHKD', //   de kooy (navy)
     'deadhorse'         : 'PASC', //AK deadhorse
-    'dease'             : 'CYDL', //BC dease lake
-    'deblin-irena'      : 'EPDE', //   deblin-irena
+    'dease lake'        : 'CYDL', //BC dease lake
+    'deblin irena'      : 'EPDE', //   deblin-irena
     'debrecen'          : 'LHDC', //   debrecen airport
     'decatur'           : 'KDEC', //IL decatur
-    'decimomannu(it-a'  : 'LIED', //   decimomannu(it-a
+    'decimomannu'       : 'LIED', //   decimomannu(it-a
     'deelen'            : 'EHDL', //   deelen rnlafb
-    'deer'              : 'CYDF', //NL deer lake airpor
+    'deer lake'         : 'CYDF', //NL deer lake airpor
     'del bajio'         : 'MMLO', //   del bajio/leon
     'del rio'           : 'KDRT', //TX del rio
     'delhi'             : 'VIDP',
-    'delta'             : 'PABI', //AK delta junction
+    'delta junctoin'    : 'PABI', //AK delta junction
     'deming'            : 'KDMN', //NM deming
     'denver'            : 'KDEN', //CO denver (dia)
-    'denver/arapahoe'   : 'KAPA', //CO denver/arapahoe
-    'depati'            : 'WIPK', //   depati amir
-    'dera'              : 'OPDG', //   dera ghazi
-    'des'               : 'KDSM', //IA des moines
-    'desert'            : 'KDRA', //NV desert r/mercury
-    'desierto'          : 'SCAT', //   desierto atacama
+    'arapahoe'          : 'KAPA', //CO denver/arapahoe
+    'depati amir'       : 'WIPK', //   depati amir
+    'dera ghazi'        : 'OPDG', //   dera ghazi
+    'des moines'        : 'KDSM', //IA des moines
+    'desert rock'       : 'KDRA', //NV desert r/mercury
+    'mercury'           : 'KDRA', //NV desert r/mercury
+    'desierto atacama'  : 'SCAT', //   desierto atacama
     'detroit'           : 'KDTW',
-    'detroit/city'      : 'KDET', //MI detroit/city air
-    'detroit/wayne'     : 'KDTW', //MI detroit/wayne
-    'detroit/willow'    : 'KYIP', //MI detroit/willow
-    'devils'            : 'KDVL', //ND devils lake
+    'detroit city'      : 'KDET', //MI detroit/city air
+    'detroit wayne county' : 'KDTW', //MI detroit/wayne
+    'detroit willow'    : 'KYIP', //MI detroit/willow
+    'devils lake'       : 'KDVL', //ND devils lake
     'dhahran'           : 'OEDR', //   dhahran intl (mi
     'dhaka'             : 'VGHS', //   dhaka
     'dickinson'         : 'KDIK', //ND dickinson
-    'diego'             : 'FJDG', //   diego garcia
-    'diego-suarez/ant'  : 'FMNA', //   diego-suarez/ant
+    'diego garcia'      : 'FJDG', //   diego garcia
+    'antisiranana'      : 'FMNA', //   diego-suarez/ant
     'diepholz'          : 'ETND', //   diepholz (ger-af
-    'dijon/longvic(fa'  : 'LFSD', //   dijon/longvic(fa
+    'longvic'           : 'LFSD', //   dijon/longvic(fa
     'dilli'             : 'WPDL', //   dilli arpt/timor
     'dillingham'        : 'PADL', //AK dillingham
-    'dinard/pleurtuit'  : 'LFRD', //   dinard/pleurtuit
-    'dire'              : 'HADR', //   dire dawa (mil/c
+    'dinard'            : 'LFRD', //   dinard/pleurtuit
+    'dire dawa'         : 'HADR', //   dire dawa (mil/c
     'dishforth'         : 'EGXD', //   dishforth raf
-    'diyarbakir(civ/a'  : 'LTCC', //   diyarbakir(civ/a
-    'djanet/tiska'      : 'DAAJ', //   djanet/tiska
+    'diyarbakir'        : 'LTCC', //   diyarbakir(civ/a
+    'djanet'            : 'DAAJ', //   djanet/tiska
     'djerba'            : 'DTTJ', //   djerba mellita
     'dnipropetrovsk'    : 'UKDD', //   dnipropetrovsk
     'dobbins'           : 'KMGE', //GA dobbins afb/mari
-    'dodge'             : 'KDDC', //KS dodge city
+    'dodge city'        : 'KDDC', //KS dodge city
     'doha'              : 'OTBD', //   doha intl airpor
-    'dole'              : 'LFGJ', //   dole tavaux
-    'don'               : 'SADD', //   don torcuato arp
+    'dole tavaux'       : 'LFGJ', //   dole tavaux
+    'don torcuato'      : 'SADD', //   don torcuato arp
     'donaueschingen'    : 'EDTD', //   donaueschingen
     'doncaster'         : 'EGCN', //   doncaster sheffi
+    'doncaster sheffield' : 'EGCN', //   doncaster sheffi
     'donegal'           : 'EIDL', //   donegal arpt
     'donetsk'           : 'UKCC', //   donetsk
     'dortmund/wickede'  : 'EDLW', //   dortmund/wickede
     'dothan'            : 'KDHN', //AL dothan
     'douala'            : 'FKKD', //   douala (civ/mil)
-    'double'            : 'KAEG', //NM double eagle ii
+    'double eagle'      : 'KAEG', //NM double eagle ii
     'douglas'           : 'KDUG', //AZ douglas bisbee
+    'bisbee'            : 'KDUG', //AZ douglas bisbee
+    'dover delaware'    : 'KDOV', //DE dover afb
+    'dover air force base'    : 'KDOV', //DE dover afb
     'dover'             : 'KDOV', //DE dover afb
-    'dr'                : 'MDJB', //   dr balaguer intl
-    'dresden/klotzsch'  : 'EDDC', //   dresden/klotzsch
+    'santo domingo'     : 'MDJB', //   dr balaguer intl
+    'la isabela'        : 'MDJB', //   dr balaguer intl
+    'dresden'           : 'EDDC', //   dresden/klotzsch
     'driggs'            : 'KDIJ', //ID driggs reed mem
     'dryden'            : 'CYHD', //ON dryden airport
-    'du'                : 'KDUJ', //PA du bois
+    'du bois'           : 'KDUJ', //PA du bois
     'dubai'             : 'OMDB', //   dubai intl airpo
     'dubbo'             : 'YSDU', //   dubbo
     'dubendorf'         : 'LSMD', //   dubendorf
     'dublin'            : 'EIDW', //   dublin airport
-    'dubrovnik-cilipi'  : 'LDDU', //   dubrovnik-cilipi
+    'dubrovnik'         : 'LDDU', //   dubrovnik-cilipi
     'dubuque'           : 'KDBQ', //IA dubuque
     'duesseldorf'       : 'EDDL', //   duesseldorf
     'duke'              : 'KEGI', //FL duke fld/eglin
+    'eglin air force base' : 'KEGI', //FL duke fld/eglin
     'dulles'            : 'KIAD',
     'duluth'            : 'KDLH', //MN duluth
-    'dumaguete/negros'  : 'RPVD', //   dumaguete/negros
-    'dundee/riverside'  : 'EGPN', //   dundee/riverside
+    'dumaguete'         : 'RPVD', //   dumaguete/negros
+    'dundee'            : 'EGPN', //   dundee/riverside
     'dupage'            : 'KDPA', //IL chicago/dupage
     'durango'           : 'KDRO', //CO durango
-    'durazno/santa'     : 'SUDU', //   durazno/santa be
+    'durazno'           : 'SUDU', //   durazno/santa be
     'durban'            : 'FALE', //   durban shaka
-    'durban/louis'      : 'FADN', //   durban/louis bot
+//    'durban/louis'      : 'FADN', //   durban/louis bot
     'durham'            : 'KRDU',
+    'raleigh durham'    : 'KRDU',
     'dushanbe'          : 'UTDD', //   dushanbe
     'dutch'             : 'PADU', //AK dutch harbor
     'dyess'             : 'KDYS', //TX dyess afb/abilen
-    'dzaoudzi/pamanzi'  : 'FMCZ', //   dzaoudzi/pamanzi
-    'eagle'             : 'KEGE', //CO eagle co. region
+    'dzaoudzi'          : 'FMCZ', //   dzaoudzi/pamanzi
+
+// ------
+// -- only gotten through here so far
+// ------
+
+    'eagle county'      : 'KEGE', //CO eagle co. region
     'eareckson/shemya'  : 'PASY', //AK eareckson/shemya
     'earlton'           : 'CYXR', //ON earlton airport
     'east london'       : 'FAEL', //   east london/scho
@@ -994,7 +1016,6 @@ var names = {
     'fort stockton'     : 'KFST', //TX fort stockton
     'fort wainwright'   : 'PAFB', //AK fort wainwright
     'fort wayne'        : 'KFWA', //IN fort wayne
-    'fort worth'        : 'KDFW',
     'fortaleza/pinto'   : 'SBFZ', //   fortaleza/pinto
     'foz'               : 'SBFI', //   foz do iguacu ar
     'franceville/mven'  : 'FOON', //   franceville/mven
@@ -2373,17 +2394,18 @@ var names = {
     'port moresby'      : 'AYPY', //   port moresby int
     'port said'         : 'HEPS', //   port said
     'port sudan'        : 'HSPN', //   port sudan intl
-    'port-au-prince'    : 'MTPP', //   port-au-prince
+    'port au prince'    : 'MTPP', //   port-au-prince
     'portage'           : 'CYPG', //MB portage southpor
     'portland'          : 'KPDX', //OR portland
+    'portland oregon'   : 'KPDX', //OR portland
+    'portland maine'    : 'KPWM', //ME
     'porto alegre'      : 'SBCO', //   porto alegre/can
     'porto santo'       : 'LPPS', //   porto santo isla
     'porto seguro'      : 'SBPS', //   porto seguro
     'porto velho'       : 'SBPV', //   porto velho(cv/m
     'porto/pedras'      : 'LPPR', //   porto/pedras rub
     'portoroz'          : 'LJPZ', //   portoroz
-    'portsmouth'        : 'KPSM',
-    'portsmouth/pease'  : 'KPSM', //NH portsmouth/pease
+    'portsmouth'        : 'KPSM', //NH portsmouth/pease
     'posadas'           : 'SARP', //   posadas airport
     'poso/kasiguncu'    : 'WAMP', //   poso/kasiguncu
     'poughkeepsie'      : 'KPOU', //NY poughkeepsie
@@ -2671,7 +2693,8 @@ var names = {
     'schwaebisch'       : 'EDTY', //   schwaebisch hall
     'schwerin-parchim'  : 'EDOP', //   schwerin-parchim
     'scilly'            : 'EGHE', //   scilly saint mar
-    'scott'             : 'KBLV', //IL scott afb/bellev
+    'scott air force base' : 'KBLV', //IL scott afb/bellev
+    'belleville'        : 'KBLV', //IL scott afb/bellev
     'scottsbluff'       : 'KBFF', //NE scottsbluff
     'scottsdale'        : 'KSDL', //AZ scottsdale
     'sde'               : 'LLSD', //   sde dov airport
