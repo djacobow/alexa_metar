@@ -1,30 +1,33 @@
-
 // This is a list of many (but by no means enough)
-// airports by city. This is for the city-based 
+// airports by city. This is for the city-based
 // lookup function.
 //
 // This list is indexed by what people say, which is
-// itself filtered by the AMAZON.US_CITIES or 
+// itself filtered by the AMAZON.US_CITIES or
 // AMAZON.UK_CITIES slot. As such, it is probbly
 // that many of these, particularly the international
 // ones, can never be accessed because the utterances
 // would be filtered already.
 //
-// There are duplications in this list to try to 
+// There are duplications in this list to try to
 // capture some of the varying way people will refer
 // to airports, such as airports that serve more than
 // one city.
+//
+// This is not a complete list of airports with
+// METARs. It's mostly just airport that have TAFs.
+// Of course, I'm not using TAFs, I just think if it
+// as a signifier that this airport is a bit bigger
+// or has commercial traffic.
 
 var US = true;
 
 var names = {
     'aasiaat'           : 'BGAA', //   aasiaat/egedesmi
-    'egedesmi'          : 'BGAA', //   aasiaat/egedesmi
     'abadan'            : 'OIAA', //   abadan intl airp
     'abakan'            : 'UNAA', //   abakan
     'abbotsford'        : 'CYXX', //BC abbotsford airpo
     'aberdeen'          : 'KABR', //SD aberdeen
-//    'aberdeen/dyce'     : 'EGPD', //   aberdeen/dyce
     'abha'              : 'OEAB', //   abha
     'abidjan/port'      : 'DIAP', //   abidjan/port bou
     'abilene'           : 'KABI', //TX abilene
@@ -33,12 +36,9 @@ var names = {
     'abuja'             : 'DNAA', //   abuja
     'acapulco'          : 'MMAA', //   acapulco/g. alva
     'accra'             : 'DGAA', //   accra/kotoka int
-    'kotoka'            : 'DGAA', //   accra/kotoka int
     'achmad'            : 'WARS', //   achmad yani
     'adak'              : 'PADK', //AK adak nas
     'adana'             : 'LTAG', //   adana/incirlik a
-    'incirlik'          : 'LTAG', //   adana/incirlik a
-    'sakirpasa'         : 'LTAF', //   adana/sakirpasa
     'addis ababa'       : 'HAAB', //   addis ababa/bole
     'adelaide'          : 'YPAD', //   adelaide intl ar
     'aden'              : 'OYAA', //   aden intl
@@ -46,8 +46,6 @@ var names = {
     'adi sutjipto'      : 'WARJ', //   adi sutjipto
     'adiyaman'          : 'LTCP', //   adiyaman arpt
     'adrar'             : 'DAUA', //   adrar/touat
-    'touat'             : 'DAUA', //   adrar/touat
-//    'aeroparque(civ/m'  : 'SABE', //   aeroparque(civ/m
     'afonsos'           : 'SBAF', //   afonsos arpt (mi
     'afyon'             : 'LTAH', //   afyon (mil)
     'agadez'            : 'DRZA', //   agadez south (mi
@@ -58,7 +56,6 @@ var names = {
     'aguascalientes'    : 'MMAS', //   aguascalientes
     'ahmadabad'         : 'VAAH', //   ahmadabad
     'ahwaz'             : 'OIAW', //   ahwaz
-    'ennstal'           : 'LOXA', //   aigen/ennstal (m
     'aigen'             : 'LOXA', //   aigen/ennstal (m
     'ajaccio/campo'     : 'LFKJ', //   ajaccio/campo or
     'akhisar'           : 'LTBT', //   akhisar (tur-afb
@@ -70,18 +67,16 @@ var names = {
     'aktjubinsk'        : 'UATT', //   aktjubinsk
     'akure'             : 'DNAK', //   akure airport
     'akureyri'          : 'BIAR', //   akureyri
-/*
-    'al'                : 'GMAD', //   al massira mc
-    'al'                : 'GMTA', //   al hoceima/cote
-    'al'                : 'OEAH', //   al ahsa
-    'al'                : 'OEBA', //   al baha
-    'al'                : 'OEDM', //   al dawadmi
-    'al'                : 'OEJB', //   al jubail
-    'al'                : 'OEKJ', //   al kharj ab
-    'al'                : 'OMAL', //   al ain intnl arp
-    'al'                : 'ORNI', //   al najaf
-*/
-    'al-jouf'           : 'OESK', //   al-jouf (civ/mil
+    'al ahsa'           : 'OEAH', //   al ahsa
+    'al ain'            : 'OMAL', //   al ain intnl arp
+    'al baha'           : 'OEBA', //   al baha
+    'al dawadmi'        : 'OEDM', //   al dawadmi
+    'al hoceima'        : 'GMTA', //   al hoceima/cote
+    'al jouf'           : 'OESK', //   al-jouf (civ/mil
+    'al jubail'         : 'OEJB', //   al jubail
+    'al kharj'          : 'OEKJ', //   al kharj ab
+    'al massira'        : 'GMAD', //   al massira mc
+    'al najaf'          : 'ORNI', //   al najaf
     'alabaster'         : 'KEET', //AL alabaster
     'alamosa'           : 'KALS', //CO alamosa
     'albacete'          : 'LEAB', //   albacete (civ/mi
@@ -90,12 +85,10 @@ var names = {
     'alborg'            : 'EKYT', //   alborg
     'albuquerque'       : 'KABQ', //NM albuquerque
     'alcantarilla'      : 'LERI', //   alcantarilla(sp-
-    'channel islands'   : 'EGJA', //   alderney/channel
     'alencon'           : 'LFOF', //   alencon/valframb
     'aleppo'            : 'OSAP', //   aleppo (civ/mil)
     'alert'             : 'CYLT', //NU alert airport
     'alesund'           : 'ENAL', //   alesund/vigra
-    'vigra'             : 'ENAL', //   alesund/vigra
     'alexandria'        : US ? 'KAXN' : 'HEBA', //MN alexandria, Egypt
     'alexandroupolis'   : 'LGAL', //   alexandroupolis
     'alghero'           : 'LIEA', //   alghero
@@ -113,7 +106,6 @@ var names = {
     'alta'              : 'ENAT', //   alta airport
     'altenburg'         : 'EDAC', //   altenburg-nobitz
     'altenstadt'        : 'ETHA', //   altenstadt/schon
-    'schon'             : 'ETHA', //   altenstadt/schon
     'altoona'           : 'KAOO', //PA altoona
     'altus'             : 'KLTS', //OK altus afb
     'alverca'           : 'LPAR', //   alverca
@@ -123,7 +115,6 @@ var names = {
     'amari'             : 'EEEI', //   amari air base
     'amarillo'          : 'KAMA', //TX amarillo
     'amberley'          : 'YAMB', //   amberley
-    'pattimura'         : 'WAPP', //   ambon/pattimura
     'ambon'             : 'WAPP', //   ambon/pattimura
     'ambouli'           : 'HDAM', //   ambouli djibouti
     'amderma'           : 'ULDD', //   amderma
@@ -131,7 +122,6 @@ var names = {
     'amman'             : 'OJAM', //   amman/king abdul
     'amritsar'          : 'VIAR', //   amritsar
     'amsterdam'         : 'EHAM', //   amsterdam/schiph
-    'schipol'           : 'EHAM', //   amsterdam/schiph
     'amundsen scott'    : 'NZSP', //   amundsen-scott
     'anadolu'           : 'LTBY', //   anadolu
     'anaheim'           : 'KSNA',
@@ -139,9 +129,9 @@ var names = {
     'anapolis'          : 'SBAN', //   anapolis (braz-a
     'anchorage'         : 'PANC', //AK anchorage intl
     'andahuayla'        : 'SPHY', //   andahuayla
+    'andenes'           : 'ENAN', //   andoya/andenes(a
     'anderson'          : 'KAND', //SC anderson
     'andizan'           : 'UTFA', //   andizan
-    'andenes'           : 'ENAN', //   andoya/andenes(a
     'andoya'            : 'ENAN', //   andoya/andenes(a
     'andravida'         : 'LGAD', //   andravida (civ/a
     'andrews'           : 'KADW', //MD andrews afb
@@ -150,29 +140,28 @@ var names = {
     'angelholm'         : 'ESTA', //   angelholm (swe-a
     'angleton'          : 'KLBX', //TX angleton
     'ankara'            : 'LTAC', //   ankara/esenboga
-//    'ankara/etimesgut'  : 'LTAD', //   ankara/etimesgut
-//    'ankara/guvercin'   : 'LTAB', //   ankara/guvercin
     'annabal'           : 'DABB', //   annaba/el mellah
     'annecy/meythet'    : 'LFLP', //   annecy/meythet
     'anniston'          : 'KANB', //AL anniston
     'anta/huaraz'       : 'SPHZ', //   anta/huaraz
     'antalya'           : 'LTAI', //   antalya (civ/mil
     'antananarivo/iva'  : 'FMMI', //   antananarivo/iva
+    'antigua'           : 'TAPA', //   coolidge/antigua
+    'antisiranana'      : 'FMNA', //   diego-suarez/ant
     'antofagasta/cerr'  : 'SCFA', //   antofagasta/cerr
     'antsirabe'         : 'FMME', //   antsirabe
     'antwerp'           : 'EBAW', //   antwerp/deurne
     'aomori'            : 'RJSA', //   aomori airport
     'aosta'             : 'LIMW', //   aosta arpt
     'apiaupolu'         : 'NSAP', //   apia/upolu islan
-    'upolu island'      : 'NSAP', //   apia/upolu islan
     'appleton'          : 'KATW', //WI appleton/outagam
     'aqaba'             : 'OJAQ', //   aqaba intl airpo
     'aracaju'           : 'SBAR', //   aracaju/santa ma
     'arad'              : 'LRAR', //   arad
+    'arapahoe'          : 'KAPA', //CO denver/arapahoe
     'arar'              : 'OERR', //   arar
     'araxos'            : 'LGRX', //   araxos (civ/afb)
     'arcata'            : 'KACV', //CA arcata/eureka
-    'eureka'            : 'KACV', //CA arcata/eureka
     'arctic'            : 'CYAB', //NU arctic bay
     'ardabil'           : 'OITL', //   ardabil
     'arequipa'          : 'SPQU', //   arequipa/rodrigu
@@ -184,7 +173,6 @@ var names = {
     'armilla'           : 'LEGA', //   armilla (civ/mil
     'arnos'             : 'TVSV', //   arnos vale/st v
     'arrecife'          : 'GCRR', //   arrecife/lanzaro
-    'canary islands'    : 'GCRR', //   arrecife/lanzaro
     'arroyo barril'     : 'MDAB', //   arroyo barril
     'arusha'            : 'HTAR', //   arusha
     'arviat'            : 'CYEK', //NU arviat airport
@@ -205,28 +193,23 @@ var names = {
     'aswan'             : 'HESN', //   aswan (civ/mil)
     'asyut'             : 'HEAT', //   asyut
     'athens'            : US ? 'KAHN' : 'LGAV', //GA athens, Greece
-//    'athens/elef-ven'   : 'LGAV', //   athens/elef-ven
-//    'athens/hellenkio'  : 'LGAT', //   athens/hellenkio
     'atlanta'           : 'KATL', //GA atlanta
-//    'atlanta/fulton'    : 'KFTY', //GA atlanta/fulton
     'atlantic city'     : 'KACY', //NJ atlantic city
     'atyrau'            : 'UATG', //   atyrau
     'auckland'          : 'NZAA', //   auckland intl ar
     'augsburg'          : 'EDMA', //   augsburg/mulhaus
-//    'augusta'           : 'KAUG', //ME augusta
     'augusta'           : 'KAGS', //GA augusta/bush
-//    'augusta/daniel'    : 'KDNL', //GA augusta/daniel
     'aurangabad'        : 'VAAU', //   aurangabad airpo
     'aurillac'          : 'LFLW', //   aurillac (aut)
     'austin'            : 'KAUS', //TX austin
     'avalon'            : 'YMAV', //   avalon airport
     'aviano'            : 'LIYW', //   aviano (usaf)
-    'scranton'          : 'KAVP', //PA avoca/wilkes b.
     'avord'             : 'LFOA', //   avord (fafb)
     'aweil/uwayl'       : 'HSAW', //   aweil/uwayl
     'ayacucho'          : 'SPHO', //   ayacucho/coronel
     'aydin'             : 'LTBD', //   aydin
     'babelthuap'        : 'PTRO', //   babelthuap/koror
+    'bacache'           : 'SBBI', //   curitiba/bacache
     'bacau'             : 'LRBC', //   bacau
     'bage/cmdt'         : 'SBBG', //   bage/cmdt kraeme
     'baghdad'           : 'ORBI', //   baghdad intl
@@ -243,15 +226,12 @@ var names = {
     'bakersfield'       : 'KBFL', //CA bakersfield
     'baku'              : 'UBBB', //   baku/bine arpt
     'balaton'           : 'LHSM', //   balaton
-    'basel'             : 'LFSB', //   bale/mulhouse
-    'mulhouse'          : 'LFSB', //   bale/mulhouse
     'bali'              : 'WADD', //   bali intl
     'balikesir'         : 'LTBF', //   balikesir (tur-a
     'balkhash'          : 'UAAH', //   balkhash
     'balmaceda'         : 'SCBA', //   balmaceda
     'balti'             : 'LUBL', //   balti intl arpt
     'baltimore'         : 'KBWI',
-//    'baltimore/martin'  : 'KMTN', //MD baltimore/martin
     'bamako'            : 'GABS', //   bamako/senou (mi
     'banak'             : 'ENNA', //   banak/lakselv (a
     'banda'             : 'WITT', //   banda aceh/blang
@@ -266,7 +246,6 @@ var names = {
     'bar'               : 'KBHB', //ME bar harbor
     'barahona'          : 'MDBH', //   barahona
     'barcelona'         : 'LEBL', //   barcelona airpor
-//    'barcelona/gen'     : 'SVBC', //   barcelona/gen jo
     'bardenas'          : 'LEBR', //   bardenas reales
     'bardufoss'         : 'ENDU', //   bardufoss (civ/m
     'bari'              : 'LIBD', //   bari/palese macc
@@ -277,6 +256,7 @@ var names = {
     'barranquilla'      : 'SKBQ', //   barranquilla/ern
     'barrow'            : 'PABR', //AK barrow
     'bartlesville'      : 'KBVO', //OK bartlesville
+    'basel'             : 'LFSB', //   bale/mulhouse
     'bashkortostan'     : 'UWUU', //   bashkortostan
     'basrah'            : 'ORMM', //   basrah/magal
     'bastia'            : 'LFKB', //   bastia/poretta
@@ -304,8 +284,6 @@ var names = {
     'beef'              : 'TUPJ', //   beef isl/roadtow
     'begishevo'         : 'UWKE', //   begishevo
     'beijing'           : 'ZBAA',
-    'peking'            : 'ZBAA',
-//    'beijing/peking'    : 'ZBAA', //   beijing/peking
     'beira'             : 'FQBR', //   beira
     'beirut'            : 'OLBA', //   beirut (civ/mil)
     'beja'              : 'LPBJ', //   beja (por/ger-af
@@ -315,9 +293,9 @@ var names = {
     'belgaum'           : 'VABM', //   belgaum/sambra
     'belgorod'          : 'UUOB', //   belgorod
     'belgrade'          : 'LYBE',
-//    'belgrade/surcin'   : 'LYBE', //   belgrade/surcin
     'belize'            : 'MZBZ', //   belize intl
     'bella'             : 'CBBC', //BC bella bella
+    'belleville'        : 'KBLV', //IL scott afb/bellev
     'bellingham'        : 'KBLI', //WA bellingham
     'bemidji'           : 'KBJI', //MN bemidji
     'ben'               : 'LLIB', //   ben ya akov
@@ -325,13 +303,11 @@ var names = {
     'benbecula'         : 'EGPL', //   benbecula island
     'bend'              : 'KBDN', //OR bend
     'bengaluru'         : 'VOBL', //   bengaluru
+    'benghazi'          : 'HLLB', //   benina/benghazi
     'bengkula'          : 'WIPL', //   bengkula/padangk
-    'padangk'           : 'WIPL', //   bengkula/padangk
     'benguela'          : 'FNBG', //   benguela/monbaca
-    'monbaca'           : 'FNBG', //   benguela/monbaca
     'benin'             : 'DNBE', //   benin city(civ/m
     'benina'            : 'HLLB', //   benina/benghazi
-    'benghazi'          : 'HLLB', //   benina/benghazi
     'benson'            : 'EGUB', //   benson raf
     'bentonville'       : 'KXNA', //AR bentonville (nw)
     'bergamo/orio'      : 'LIME', //   bergamo/orio ser
@@ -339,9 +315,6 @@ var names = {
     'bergerac/roumani'  : 'LFBE', //   bergerac/roumani
     'berlevag'          : 'ENBV', //   berlevag
     'berlin'            : 'EDDI',
-    'tempelhof'         : 'EDDI', //   berlin/tempelhof
-    'schonefel'         : 'EDDB', //   berlin/schonefel
-    'tegel'             : 'EDDT', //   berlin/tegel (fa
     'bermuda'           : 'TXKF', //   bermuda nas
     'bern'              : 'LSZB', //   bern/belp
     'berra'             : 'SBBW', //   berra do garcas
@@ -354,9 +327,9 @@ var names = {
     'biak'              : 'WABB', //   biak/frans kaisi
     'biarritz'          : 'LFBZ', //   biarritz/anglet
     'bicycle lake'      : 'KBYS', //CA bicycle lake
-    'kuito'             : 'FNKU', //   bie/kuito/silva
     'big piney'         : 'KBPI', //WY big piney
     'big sandy'         : 'KSJS', //KY big sandy rgnl
+    'big sky'           : 'KEKS', //MT ennis big sky
     'big trout lake'    : 'CYTL', //ON big trout lake
     'biggin hill'       : 'EGKB', //   biggin hill
     'bilbao'            : 'LEBB', //   bilbao/sondica
@@ -367,7 +340,10 @@ var names = {
     'binghamton'        : 'KBGM', //NY binghamton
     'bingol'            : 'LTCU', //   bingol
     'bintulu'           : 'WBGB', //   bintulu/kalimant
+    'birmingham alabama'        : 'KBHM', //AL birmingham
+    'birmingham england'        : 'EGBB', //   birmingham airpo
     'birmingham'        : US ? 'KBHM' : 'EGBB',
+    'bisbee'            : 'KDUG', //AZ douglas bisbee
     'bisha'             : 'OEBH', //   bisha (civ/mil)
     'bishkek'           : 'UAFM', //   bishkek/manas
     'bishop'            : 'KBIH', //CA bishop
@@ -381,7 +357,6 @@ var names = {
     'blanc'             : 'CYBX', //QC blanc sablon arp
     'bloemfontein/her'  : 'FABL', //   bloemfontein/her
     'bloomington'       : 'KBMG', //IN bloomington
-//    'bloomington/norm'  : 'KBMI', //IL bloomington/norm
     'bluefield'         : 'KBLF', //WV bluefield
     'bluefields'        : 'MNBL', //   bluefields
     'blythe'            : 'KBLH', //CA blythe
@@ -390,14 +365,11 @@ var names = {
     'bodo'              : 'ENBO', //   bodo vi (civ/mil
     'bodrum'            : 'LTFE', //   bodrum milas
     'bogota'            : 'SKBO', //   bogota/eldorado
-    'swansboro'         : 'KNJM', //NC bogue/swansboro
     'bogue'             : 'KNJM', //NC bogue/swansboro
     'boise'             : 'KBOI', //ID boise
     'bol'               : 'LDSB', //   bol airport
     'bologna'           : 'LIPE', //   bologna/borgo (a
     'bolzano'           : 'LIPB', //   bolzano(civ/it-a
-//    'bom'               : 'SBLP', //   bom jesus da lap
-    'mumbai'            : 'VABB', //   bombay/santacruz
     'bombay'            : 'VABB', //   bombay/santacruz
     'bonaire'           : 'TNCB', //   bonaire/flamingo
     'boothville'        : 'KBVE', //LA boothville
@@ -411,8 +383,8 @@ var names = {
     'boston'            : 'KBOS', //MA boston
     'botovo'            : 'ULWC', //   botovo/cherepove
     'bou-saada'         : 'DAAD', //   bou-saada
-    'boulder'           : 'KBVU',
     'bouake'            : 'DIBK', //   bouake (civ/mil)
+    'boulder'           : 'KBVU',
     'bournemouth'       : 'EGHH', //   bournemouth airp
     'bowling green'     : 'KBWG', //KY bowling gree
     'bozeman'           : 'KBZN', //MT bozeman
@@ -436,34 +408,31 @@ var names = {
     'bridgeport'        : 'KBDR', //CT bridgeport
     'brie'              : 'LFBU', //   brie champniers
     'brindisi/casale'   : 'LIBR', //   brindisi/casale
+    'bringeland'        : 'ENBL', //   forde/bringeland
     'brisbane'          : 'YBBN', //   brisbane intl ar
     'bristol'           : US ? 'KTRI' : 'EGGD', //TN bristol
-    'lulsgate'          : 'EGGD', //   bristol/lulsgate
     'brive'             : 'LFSL', //   brive/souillac
     'brize'             : 'EGVN', //   brize norton raf
     'brjansk'           : 'UUBP', //   brjansk
     'brno'              : 'LKTB', //   brno/turany
-    'turany'            : 'LKTB', //   brno/turany
     'bronnoysund'       : 'ENBN', //   bronnoysund/bron
     'broome'            : 'YBRM', //   broome airport
     'broomfield'        : 'KBJC', //CO broomfield/jeffc
-    'jefferson country' : 'KBJC', //CO broomfield/jeffc
     'brownsville'       : 'KBRO', //TX brownsville
     'brunei'            : 'WBSB', //   brunei intl airp
+    'brunswick georgia' : 'KSSI', //GA brunswick
+    'brunswick maine'         : 'KNHZ', //ME brunswick nas
     'brunswick'         : 'KSSI', //GA brunswick
     'brussels'          : 'EBBR', //   brussels nationa
     'bryce canyon'      : 'KBCE', //UT bryce canyon
     'bucaramango'       : 'SKBG', //   bucaramango/palo
     'bucharest'         : 'LROP',
-//    'bucharest/baneas'  : 'LRBS', //   bucharest/baneas
-//    'bucharest/otopen'  : 'LROP', //   bucharest/otopen
     'buckeburg'         : 'ETHB', //   buckeburg(ger-ar
     'buckley'           : 'KBKF', //CO buckley angb/den
     'budapest'          : 'EPWA',
     'budapest/feriheg'  : 'LHBP', //   budapest/feriheg
     'buechel'           : 'ETSB', //   buechel
     'buenos aires'      : 'SAEZ', //   buenos aires/eze
-//    'buffalo'           : 'CYVT', //SK buffalo narrows
     'buffalo'           : 'KBUF', //NY buffalo/cheektow
     'bujumbura'         : 'HBBA', //   bujumbura
     'bukhara'           : 'UTSB', //   bukhara
@@ -476,6 +445,7 @@ var names = {
     'burgos'            : 'LEBG', //   burgos/villafria
     'burirum'           : 'VTUO', //   burirum
     'burley'            : 'KBYI', //ID burley
+    'burlington iowa'        : 'KBRL', //IA burlington
     'burlington'        : 'KBTV', //VT burlington
     'burns'             : 'KBNO', //OR burns
     'burwash'           : 'CYDB', //YT burwash
@@ -500,10 +470,8 @@ var names = {
     'calcutta'          : 'VECC', //   calcutta/dum dum
     'caldwell'          : 'KCDW',
     'calgary'           : 'CYYC', //AB calgary intnl ar
-//    'calgary/springba'  : 'CYBW', //AB calgary/springba
     'cali'              : 'SKCL', //   cali/alfonso bon
     'calicut'           : 'VOCL', //   calicut
-//    'calvi/st.'         : 'LFKC', //   calvi/st. cather
     'cam ranh bay'      : 'VVCR', //   cam ranh bay
     'camaguey'          : 'MUCM', //   camaguey/iganci
     'cambrai'           : 'LFQI', //   cambrai/epinoy(f
@@ -524,6 +492,7 @@ var names = {
     'can tho'           : 'VVCT', //   can tho
     'canagua'           : 'MUCC', //   canagua
     'canakkale'         : 'LTBH', //   canakkale
+    'canary islands'    : 'GCRR', //   arrecife/lanzaro
     'canberra'          : 'YSCB', //   canberra (civ/mi
     'cancun'            : 'MMUN', //   cancun
     'candle'            : 'CWLZ', //SK candle lake
@@ -537,16 +506,14 @@ var names = {
     'cape skiring'      : 'GOGS', //   cape skiring
     'capetown'          : 'FACT', //   capetown/df mala
     'capitan corbeta'   : 'SULS', //   capitan corbeta
-//    'capt'              : 'SCFM', //   capt fuentes mar
     'caracas'           : 'SVMI', //   caracas/s. boliv
-//    'carajas/maraba'    : 'SBCJ', //   carajas/maraba
     'caravelas'         : 'SBCV', //   caravelas airpor
     'carcassonne'       : 'LFMK', //   carcassonne/salv
     'cardak'            : 'LTAY', //   cardak
     'cardiff'           : 'EGFF',
-    'wales'             : 'EGFF', //   cardiff-wales ar
     'caribou'           : 'KCAR', //ME caribou
     'carlisle'          : 'EGNC', //   carlisle
+    'carlsbad new mexico'          : 'KCNM', //NM carlsbad
     'carlsbad'          : 'KCRQ', //CA carlsbad
     'carolina'          : 'SBCI', //   carolina airport
     'carrasco'          : 'SUMU', //   carrasco (civ/mi
@@ -579,20 +546,21 @@ var names = {
     'chajang'           : 'RKSI', //   chajang ni
     'chalons'           : 'LFOK', //   chalons/vatry fa
     'chambery'          : 'LFLB', //   chambery/aix bai
+    'chamonate'         : 'SCHA', //   copiapo/chamonat
     'champaign'         : 'KCMI', //IL champaign/urbana
-    'urbana'            : 'KCMI', //IL champaign/urbana
-    'urbana champaign'  : 'KCMI', //IL champaign/urbana
     'chandler'          : 'KIWA',
-//    'chandler/mesa'     : 'KIWA', //AZ chandler/mesa
     'changchun'         : 'ZYCC', //   changchun
+    'channel islands'   : 'EGJA', //   alderney/channel
     'chanute'           : 'KCNU', //KS chanute
     'chapleau'          : 'CYLD', //ON chapleau arpt(sa
     'charleroi'         : 'EBCI', //   charleroi/gossel
     'charles'           : 'LFPG', //   charles de gaull
+    'charleston west virginia'        : 'KCRW', //WV charleston
     'charleston'        : 'KCHS', //SC charleston
     'charlotte'         : 'KCLT', //NC charlotte
     'charlottesville'   : 'KCHO', //VA charlottesville
     'charlottetown'     : 'CYYG', //PE charlottetown ar
+    'chateaube'         : 'LFBG', //   cognac/chateaube
     'chateaudun'        : 'LFOC', //   chateaudun (fafb
     'chateauroux'       : 'LFLX', //   chateauroux/deol
     'chattanooga'       : 'KCHA', //TN chattanooga
@@ -608,10 +576,10 @@ var names = {
     'chiang mai'        : 'VTCC', //   chiang mai(civ/a
     'chiang rai'        : 'VTCT', //   chiang rai intl
     'chibougamau'       : 'CYMT', //QC chibougamau chap
+    'chicago midway'            : 'KMDW',
     'chicago'           : 'KORD', //IL chicago o'hare
     'chiclayo'          : 'SPHI', //   chiclayo/capt jo
     'chicopee'          : 'KCEF', //MA chicopee/westove
-    'westover'          : 'KCEF', //MA chicopee/westove
     'chievres'          : 'EBCV', //   chievres ab
     'chihuahua'         : 'MMCU', //   chihuahua intl a
     'childress'         : 'KCDS', //TX childress
@@ -619,7 +587,6 @@ var names = {
     'chimoio'           : 'FQCH', //   chimoio
     'china'             : 'KNID', //CA china lake (naf)
     'chinandega'        : 'MNCH', //   chinandega
-    'shatou'            : 'RCBS', //   chinmem/shatou
     'chinmem'           : 'RCBS', //   chinmem/shatou
     'chios'             : 'LGHI', //   chios airport
     'chipata'           : 'FLCP', //   chipata
@@ -632,22 +599,20 @@ var names = {
     'choluteca'         : 'MHCH', //   choluteca
     'chon'              : 'VTBS', //   chon buri/sattah
     'chongqing'         : 'ZUCK', //   chongqing/chungk
-    'chungking'         : 'ZUCK', //   chongqing/chungk
     'christchurch'      : 'NZCH', //   christchurch int
     'christiansted'     : 'TISX', //   christiansted
     'christmas island'  : 'YPXM', //   christmas isl (p
     'christmas'         : 'PLCH', //UM christmas/cassid
     'chumphon'          : 'VTSE', //   chumphon
+    'chungking'         : 'ZUCK', //   chongqing/chungk
     'church'            : 'EGXG', //   church fenton ra
     'churchill falls'   : 'CZUM', //NL churchill falls
     'churchill'         : 'CYYQ', //MB churchill airpor
     'ciampino'          : 'LIRA', //   ciampino(it-afb/
     'cienfuegos'        : 'MUCF', //   cienfuegos(civ/m
     'cimkent'           : 'UAII', //   cimkent
-    'lunken'            : 'KLUK', //OH cincinnat/lunken
     'cincinnati'        : 'KCVG',
     'cita'              : 'UIAA', //   cita/kadala
-    'kadala'            : 'UIAA', //   cita/kadala
     'ciudad del carmen' : 'MMCE', //   ciudad del carm
     'ciudad juarez'     : 'MMCS', //   ciudad juarez in
     'ciudad obregon'    : 'MMCN', //   ciudad obregon
@@ -667,7 +632,6 @@ var names = {
     'cody'              : 'KCOD', //WY cody
     'coeur d\'alene'    : 'KCOE', //ID coeur d'alene
     'coffs harbour'     : 'YCFS', //   coffs harbour
-    'chateaube'         : 'LFBG', //   cognac/chateaube
     'cognac'            : 'LFBG', //   cognac/chateaube
     'coimbatore'        : 'VOCB', //   coimbatore/peela
     'cold bay'          : 'PACD', //AK cold bay
@@ -680,28 +644,26 @@ var names = {
     'colombo'           : 'VCBI', //   colombo/katunaya
     'colonia'           : 'SUCA', //   colonia sacramen
     'colorado springs'  : 'KCOS', //CO colorado springs
+    'columbia mossouri'   : 'KCOU', //MO columbia
+    'columbia owens'    : 'KCUB', //SC columbia-owens
+    'columbia south carolina'    : 'KCUB', //SC columbia-owens
     'columbia'          : 'KCAE', //SC columbia
+    'columbus georgia' : 'KCSG', //GA columbus
+    'columbus mississippi': 'KGTR', //MS golden/columbus
     'columbus'          : 'KCMH', //OH columbus
     'comiso'            : 'LICB', //   comiso
     'comodoro'          : 'SAVC', //   comodoro rivadav
     'comox'             : 'CYQQ', //BC comox (can mil)
-    'gbessia'           : 'GUCY', //   conakry/gbessia
     'conakry'           : 'GUCY', //   conakry/gbessia
     'concepcion'        : 'SCIE', //   concepcion/carri
-//    'concepcion/maris'  : 'SGCO', //   concepcion/maris
     'concord'           : 'KCON', //NH concord
     'concordia'         : 'SAAC', //   concordia/pierre
     'coningsby'         : 'EGXC', //   coningsby raf
     'connaught'         : 'EIKN', //   connaught apt
     'conroe'            : 'KCXO', //TX conroe
     'constable'         : 'BGCO', //   constable point
-//    'constantine/el'    : 'DABC', //   constantine/el b
     'coolangatta'       : 'YBCG', //   coolangatta aws
-    'antigua'           : 'TAPA', //   coolidge/antigua
     'copenhagen'        : 'EKRK',
-//    'copenhagen/kastr'  : 'EKCH', //   copenhagen/kastr
-//    'copenhagen/roski'  : 'EKRK', //   copenhagen/roski
-    'chamonate'         : 'SCHA', //   copiapo/chamonat
     'coppermine'        : 'CYCO', //NU coppermine airpo
     'coral harbour'     : 'CYZS', //NU coral harbour ar
     'cordoba'           : 'LEBA', //   cordoba airport
@@ -712,6 +674,7 @@ var names = {
     'corrientes'        : 'SARC', //   corrientes airpo
     'corumba'           : 'SBCR', //   corumba intl arp
     'cosford'           : 'EGWC', //   cosford raf
+    'costa brava'       : 'LEGE', //   gerona/costa bra
     'costa'             : 'KSNA', //CA costa mesa
     'cotonou'           : 'DBBB', //   cotonou/cadjehou
     'coventry'          : 'EGBE', //   coventry airport
@@ -732,15 +695,14 @@ var names = {
     'cuiaba'            : 'SBCY', //   cuiaba/marechal
     'culdrose'          : 'EGDR', //   culdrose (navy)
     'culiacan'          : 'MMCL', //   culiacan (city)
-//    'culman/neriugri'   : 'UELL', //   culman/neriugri
     'curitiba'          : 'SBCT', //   curitiba/afonso
-    'bacache'           : 'SBBI', //   curitiba/bacache
     'curtin'            : 'YCIN', //   curtin/derby
     'cut'               : 'KCTB', //MT cut bank
     'cuzco'             : 'SPZO', //   cuzco/velazco as
     'cylde'             : 'CYCY', //NU cylde airport
     'cypress hills'     : 'CWVP', //SK cypress hills pa
     'da nang'           : 'VVDN', //   da nang intl arp
+    'dabolim'           : 'VOGO', //   goa/dabolim (nav
     'daggett'           : 'KDAG', //CA daggett
     'dakar'             : 'GOOY', //   dakar/yoff
     'dakhla'            : 'GMMH', //   dakhla airport
@@ -748,13 +710,12 @@ var names = {
     'dalhart'           : 'KDHT', //TX dalhart
     'dalian/dairen/lu'  : 'ZYTL', //   dalian/dairen/lu
     'dallas fort worth' : 'KDFW',
-    'dallas'            : 'KDFW', //TX dallas/ft worth
-    'fort worth'        : 'KDFW', //TX dallas/ft worth
     'dallas love'       : 'KDAL', //TX dallas/love fld
+    'dallas'            : 'KDFW', //TX dallas/ft worth
     'damascus'          : 'OSDI', //   damascus (civ/mi
     'danville'          : 'KDAN', //VA danville
-    'dar es salaam'     : 'HTDA', //   dar es salaam ar
     'dar el beida'      : 'DAAG', //   dar-el-beida/hou
+    'dar es salaam'     : 'HTDA', //   dar es salaam ar
     'dartowek'          : 'EPDA', //   dartowek naval
     'darwin'            : 'YPDN', //   darwin (civ/mil)
     'dashoguz'          : 'UTAT', //   dashoguz
@@ -766,8 +727,8 @@ var names = {
     'dawson'            : 'CYDA', //YT dawson airport
     'dax/seyresse'      : 'LFBY', //   dax/seyresse
     'dayton'            : 'KDAY', //OH dayton
-    'daytona'           : 'KDAB', //FL daytona beach
     'daytona beach'     : 'KDAB', //FL daytona beach
+    'daytona'           : 'KDAB', //FL daytona beach
     'de kooy'           : 'EHKD', //   de kooy (navy)
     'deadhorse'         : 'PASC', //AK deadhorse
     'dease lake'        : 'CYDL', //BC dease lake
@@ -783,25 +744,21 @@ var names = {
     'delta junctoin'    : 'PABI', //AK delta junction
     'deming'            : 'KDMN', //NM deming
     'denver'            : 'KDEN', //CO denver (dia)
-    'arapahoe'          : 'KAPA', //CO denver/arapahoe
     'depati amir'       : 'WIPK', //   depati amir
     'dera ghazi'        : 'OPDG', //   dera ghazi
     'des moines'        : 'KDSM', //IA des moines
     'desert rock'       : 'KDRA', //NV desert r/mercury
-    'mercury'           : 'KDRA', //NV desert r/mercury
     'desierto atacama'  : 'SCAT', //   desierto atacama
-    'detroit'           : 'KDTW',
     'detroit city'      : 'KDET', //MI detroit/city air
     'detroit wayne county' : 'KDTW', //MI detroit/wayne
     'detroit willow'    : 'KYIP', //MI detroit/willow
+    'detroit'           : 'KDTW',
     'devils lake'       : 'KDVL', //ND devils lake
     'dhahran'           : 'OEDR', //   dhahran intl (mi
     'dhaka'             : 'VGHS', //   dhaka
     'dickinson'         : 'KDIK', //ND dickinson
     'diego garcia'      : 'FJDG', //   diego garcia
-    'antisiranana'      : 'FMNA', //   diego-suarez/ant
     'diepholz'          : 'ETND', //   diepholz (ger-af
-    'longvic'           : 'LFSD', //   dijon/longvic(fa
     'dilli'             : 'WPDL', //   dilli arpt/timor
     'dillingham'        : 'PADL', //AK dillingham
     'dinard'            : 'LFRD', //   dinard/pleurtuit
@@ -817,8 +774,8 @@ var names = {
     'dole tavaux'       : 'LFGJ', //   dole tavaux
     'don torcuato'      : 'SADD', //   don torcuato arp
     'donaueschingen'    : 'EDTD', //   donaueschingen
-    'doncaster'         : 'EGCN', //   doncaster sheffi
     'doncaster sheffield' : 'EGCN', //   doncaster sheffi
+    'doncaster'         : 'EGCN', //   doncaster sheffi
     'donegal'           : 'EIDL', //   donegal arpt
     'donetsk'           : 'UKCC', //   donetsk
     'dortmund/wickede'  : 'EDLW', //   dortmund/wickede
@@ -826,12 +783,9 @@ var names = {
     'douala'            : 'FKKD', //   douala (civ/mil)
     'double eagle'      : 'KAEG', //NM double eagle ii
     'douglas'           : 'KDUG', //AZ douglas bisbee
-    'bisbee'            : 'KDUG', //AZ douglas bisbee
-    'dover delaware'    : 'KDOV', //DE dover afb
     'dover air force base'    : 'KDOV', //DE dover afb
+    'dover delaware'    : 'KDOV', //DE dover afb
     'dover'             : 'KDOV', //DE dover afb
-    'santo domingo'     : 'MDJB', //   dr balaguer intl
-    'la isabela'        : 'MDJB', //   dr balaguer intl
     'dresden'           : 'EDDC', //   dresden/klotzsch
     'driggs'            : 'KDIJ', //ID driggs reed mem
     'dryden'            : 'CYHD', //ON dryden airport
@@ -844,42 +798,39 @@ var names = {
     'dubuque'           : 'KDBQ', //IA dubuque
     'duesseldorf'       : 'EDDL', //   duesseldorf
     'duke'              : 'KEGI', //FL duke fld/eglin
-    'eglin air force base' : 'KEGI', //FL duke fld/eglin
     'dulles'            : 'KIAD',
     'duluth'            : 'KDLH', //MN duluth
     'dumaguete'         : 'RPVD', //   dumaguete/negros
     'dundee'            : 'EGPN', //   dundee/riverside
     'dupage'            : 'KDPA', //IL chicago/dupage
+    'durango mexico'           : 'MMDO', //   durango airport
     'durango'           : 'KDRO', //CO durango
     'durazno'           : 'SUDU', //   durazno/santa be
     'durban'            : 'FALE', //   durban shaka
-//    'durban/louis'      : 'FADN', //   durban/louis bot
     'durham'            : 'KRDU',
-    'raleigh durham'    : 'KRDU',
     'dushanbe'          : 'UTDD', //   dushanbe
     'dutch'             : 'PADU', //AK dutch harbor
     'dyess'             : 'KDYS', //TX dyess afb/abilen
     'dzaoudzi'          : 'FMCZ', //   dzaoudzi/pamanzi
-
-// ------
-// -- only gotten through here so far
-// ------
-
     'eagle county'      : 'KEGE', //CO eagle co. region
-    'eareckson/shemya'  : 'PASY', //AK eareckson/shemya
+    'eareckson'         : 'PASY', //AK eareckson/shemya
     'earlton'           : 'CYXR', //ON earlton airport
     'east london'       : 'FAEL', //   east london/scho
     'east midlands'     : 'EGNX', //   east midlands
-    'easter'            : 'SCIP', //   easter island
-    'eau'               : 'KEAU', //WI eau claire
+    'easter island'     : 'SCIP', //   easter island
+    'eau claire'        : 'KEAU', //WI eau claire
     'edinburgh'         : 'EGPH', //   edinburgh airpor
     'edmonton'          : 'CYEG', //AB edmonton intl ar
-    'eduardo'           : 'SBEG', //   eduardo gomes in
+    'eduardo gomes'     : 'SBEG', //   eduardo gomes in
+    'edwards air force base'           : 'KEDW', //CA edwards afb
     'edwards'           : 'KEDW', //CA edwards afb
+    'egedesmi'          : 'BGAA', //   aasiaat/egedesmi
     'egilsstadir'       : 'BIEG', //   egilsstadir
+    'eglin air force base' : 'KEGI', //FL duke fld/eglin
     'eglin'             : 'KVPS', //FL eglin afb/valpar
     'eglinton/londond'  : 'EGAE', //   eglinton/londond
     'eielson'           : 'PAEI', //AK eielson afb
+    'eilat'             : 'LLET', //   elat/j. hozman(a
     'eindhoven'         : 'EHEH', //   eindhoven rnlafb
     'ekaterinburg'      : 'USSS', //   ekaterinburg
     'ekati'             : 'CYOA', //NT ekati (pws)
@@ -899,16 +850,17 @@ var names = {
     'el tari'           : 'WATT', //   el tari
     'el tor'            : 'HETR', //   el tor
     'el turbio'         : 'SAWT', //   el turbio/rio tu
-    'elat/j.'           : 'LLET', //   elat/j. hozman(a
     'elazig'            : 'LTCA', //   elazig (civ/mil)
     'eldoret'           : 'HKEL', //   eldoret
     'elefsis'           : 'LGEL', //   elefsis (hel-afb
     'elista'            : 'URWI', //   elista
-    'elizabeth'         : 'KECG', //NC elizabeth city
+    'elizabeth city'    : 'KECG', //NC elizabeth city
     'elkins'            : 'KEKN', //WV elkins
     'elko'              : 'KEKO', //NV elko
-    'elliot'            : 'CYEL', //ON elliot lake (saw
+    'elliot lake'       : 'CYEL', //ON elliot lake (saw
+    'ellsworth air force base' : 'KRCA', //SD ellsworth afb
     'ellsworth'         : 'KRCA', //SD ellsworth afb
+    'elmendorf air force base' : 'PAED', //AK elmendorf afb
     'elmendorf'         : 'PAED', //AK elmendorf afb
     'elmira'            : 'KELM', //NY elmira
     'elsenborn'         : 'EBLB', //   elsenborn (mil)
@@ -917,8 +869,9 @@ var names = {
     'enarotali'         : 'WABT', //   enarotali
     'encarnacion'       : 'SGEN', //   encarnacion
     'enfidha'           : 'DTNH', //   enfidha
-    'enid/vance'        : 'KEND', //OK enid/vance afb
+    'enid'              : 'KEND', //OK enid/vance afb
     'ennis'             : 'KEKS', //MT ennis big sky
+    'ennstal'           : 'LOXA', //   aigen/ennstal (m
     'enontekio'         : 'EFET', //   enontekio
     'entebbe'           : 'HUEN', //   entebbe intl arp
     'enugu'             : 'DNEN', //   enugu
@@ -926,7 +879,7 @@ var names = {
     'erbil'             : 'ORER', //   erbil intl
     'ercan'             : 'LCEN', //   ercan
     'erding'            : 'ETSE', //   erding (ger-afb)
-    'erfurt/bindersle'  : 'EDDE', //   erfurt/bindersle
+    'erfurt'            : 'EDDE', //   erfurt/bindersle
     'erie'              : 'KERI', //PA erie
     'ermelo'            : 'FAEO', //   ermelo
     'eros'              : 'FYWE', //   eros airport
@@ -938,51 +891,53 @@ var names = {
     'essaouira'         : 'GMMI', //   essaouira
     'estevan'           : 'CYEN', //SK estevan airport
     'eugene'            : 'KEUG', //OR eugene
-//    'eureka'            : 'CYEU', //NU eureka
+    'eureka nanavut'    : 'CYEU', //NU eureka
+    'eureka'            : 'KACV', //CA arcata/eureka
     'evanston'          : 'KEVW', //WY evanston
     'evansville'        : 'KEVV', //IN evansville
     'evenes'            : 'ENEV', //   evenes (civ/mil)
     'everett'           : 'KPAE', //WA everett
-    'evreux/fauville'   : 'LFOE', //   evreux/fauville
+    'evreux'            : 'LFOE', //   evreux/fauville
     'exeter'            : 'EGTE', //   exeter airport
-    'fagernes/leirin'   : 'ENFG', //   fagernes/leirin
+    'fagernes'          : 'ENFG', //   fagernes/leirin
+    'fairbanks alaska'  : 'PAFA', //AK fairbanks
     'fairbanks'         : 'PAFA', //AK fairbanks
     'fairchild'         : 'KSKA', //WA fairchild afb
     'fairford'          : 'EGVA', //   fairford raf
     'faisalabad'        : 'OPFA', //   faisalabad intl
     'faizabad'          : 'OAFZ', //   faizabad
-    'fak-fak/torea'     : 'WASF', //   fak-fak/torea
+    'fak fak'           : 'WASF', //   fak-fak/torea
     'falconara'         : 'LIPY', //   falconara (it-af
     'faleolo'           : 'NSFA', //   faleolo int/apia
     'fallon'            : 'KNFL', //NV fallon nas
-    'otis'              : 'KFMH', //MA falmouth/otis ab
     'falmouth'          : 'KFMH', //MA falmouth/otis ab
     'fargo'             : 'KFAR', //ND fargo
     'farmington'        : 'KFMN', //NM farmington
     'farnborough'       : 'EGLF', //   farnborough
     'faro'              : 'LPFR', //   faro
     'fassberg'          : 'ETHS', //   fassberg (ger-af
+    'fayetteville north carolina'      : 'KFAY', //NC fayetteville
     'fayetteville'      : 'KFYV', //AR fayetteville
-    'feng'              : 'RCFN', //   feng nin tw-afb
+    'feng nin'          : 'RCFN', //   feng nin tw-afb
     'fergana'           : 'UTFF', //   fergana
     'fernando'          : 'SBFN', //   fernando de noro
     'ferrara'           : 'LIPF', //   ferrara (aut)
-    'fes-sais'          : 'GMFF', //   fes-sais
+    'fes sais'          : 'GMFF', //   fes-sais
     'feyzabad'          : 'EQBF', //   feyzabad
     'figari'            : 'LFKF', //   figari (aut)
     'filton'            : 'EGTG', //   filton (private)
     'findlay'           : 'KFDY', //OH findlay
-    'firenze/peretola'  : 'LIRQ', //   firenze/peretola
-    'flag'              : 'KFBC', //OH flag city
+    'firenze'           : 'LIRQ', //   firenze/peretola
+    'flag citty'        : 'KFBC', //OH flag city
     'flagstaff'         : 'KFLG', //AZ flagstaff
     'flint'             : 'KFNT', //MI flint
     'florence'          : 'KFLO', //SC florence
     'florennes'         : 'EBFS', //   florennes (bel-a
-    'flores/santa'      : 'MGFL', //   flores/santa el
+    'flores'            : 'MGFL', //   flores/santa el
     'florianopolis'     : 'SBFL', //   florianopolis ar
     'floro'             : 'ENFL', //   floro
-    'foggia/gino'       : 'LIBF', //   foggia/gino lisa
-    'forde/bringeland'  : 'ENBL', //   forde/bringeland
+    'foggia'            : 'LIBF', //   foggia/gino lisa
+    'forde'             : 'ENBL', //   forde/bringeland
     'forli'             : 'LIPK', //   forli (civ/it-af
     'formosa'           : 'SARF', //   formosa airport
     'forrest'           : 'YFRT', //   forrest
@@ -998,6 +953,7 @@ var names = {
     'fort eustis'       : 'KFAF', //VA ft eustis/felker
     'fort franklin'     : 'CYWJ', //NT fort franklin ar
     'fort good hope'    : 'CYGH', //NT fort good hope a
+    'fort hood'         : 'KGRK', //TX gray/ft hood
     'fort huachuca'     : 'KFHU', //AZ fort huachuca
     'fort knox'         : 'KFTK', //KY fort knox/godman
     'fort lauderdale'   : 'KFLL',
@@ -1009,37 +965,38 @@ var names = {
     'fort pierce'       : 'KFPR', //FL fort pierce
     'fort polk'         : 'KPOE', //LA fort polk fr
     'fort rileyt'       : 'KFRI', //KS ft riley/marshal
+    'fort saint john'     : 'CYXJ', //BC fort st. john ar
     'fort simpson'      : 'CYFS', //NT fort simpson arp
     'fort smith'        : 'CYSM', //NT fort smith airpo
-    'fort st. john'     : 'CYXJ', //BC fort st. john ar
     'fort still'        : 'KFSI', //OK fort sill
     'fort stockton'     : 'KFST', //TX fort stockton
     'fort wainwright'   : 'PAFB', //AK fort wainwright
     'fort wayne'        : 'KFWA', //IN fort wayne
-    'fortaleza/pinto'   : 'SBFZ', //   fortaleza/pinto
-    'foz'               : 'SBFI', //   foz do iguacu ar
-    'franceville/mven'  : 'FOON', //   franceville/mven
+    'fort worth'        : 'KDFW', //TX dallas/ft worth
+    'fortaleza'         : 'SBFZ', //   fortaleza/pinto
+    'foz go iguacu'     : 'SBFI', //   foz do iguacu ar
+    'franceville'       : 'FOON', //   franceville/mven
     'francistown'       : 'FBFT', //   francistown
     'frankfurt'         : 'EDDF', //   frankfurt main a
     'franklin'          : 'KFKL', //PA franklin
     'fredericton'       : 'CYFC', //NB fredericton airp
     'freeport'          : 'MYGF', //   freeport intl a
-    'freetown/lungi'    : 'GFLL', //   freetown/lungi
-    'frejorgues/montp'  : 'LFMT', //   frejorgues/montp
+    'freetown'          : 'GFLL', //   freetown/lungi
+    'frejorgues'        : 'LFMT', //   frejorgues/montp
     'frenchville'       : 'KFVE', //ME frenchville
     'fresno'            : 'KFAT', //CA fresno
     'friedrichshafen'   : 'EDNY', //   friedrichshafen
     'fritzlar'          : 'ETHF', //   fritzlar (ger-ar
-    'frobisher/iqalui'  : 'CYFB', //NU frobisher/iqalui
+    'frobisher'         : 'CYFB', //NU frobisher/iqalui
     'frosinone'         : 'LIRH', //   frosinone (it-af
-    'fua'               : 'NFTF', //   fua amotu tonga
+    'fua amotu'         : 'NFTF', //   fua amotu tonga
     'fuerteventura'     : 'GCFV', //   fuerteventura ar
     'fujairah'          : 'OMFJ', //   fujairah intl ar
-    'fukuoka/itazuke'   : 'RJFF', //   fukuoka/itazuke
+    'fukuoka'           : 'RJFF', //   fukuoka/itazuke
     'fukushima'         : 'RJSF', //   fukushima arpt
     'funafuti'          : 'NGFU', //   funafuti tuvalu
-    'funchal/madeira'   : 'LPMA', //   funchal/madeira
-    'futenma(us-mcas)'  : 'ROTM', //   futenma(us-mcas)
+    'funchal'           : 'LPMA', //   funchal/madeira
+    'futenma'           : 'ROTM', //   futenma(us-mcas)
     'futuna'            : 'NLWF', //   futuna isl/maopo
     'fuzhou'            : 'ZSFZ', //   fuzhou
     'gabes'             : 'DTTG', //   gabes
@@ -1047,16 +1004,17 @@ var names = {
     'gage'              : 'KGAG', //OK gage
     'gagetown'          : 'CYCX', //NB gagetown  (can m
     'gainesville'       : 'KGNV', //FL gainesville
-    'galeao/rio(civ/m'  : 'SBGL', //   galeao/rio(civ/m
-    'galela/gamarmala'  : 'WAMA', //   galela/gamarmala
+    'galeao'            : 'SBGL', //   galeao/rio(civ/m
+    'galela'            : 'WAMA', //   galela/gamarmala
     'galena'            : 'PAGA', //AK galena
     'gallivare'         : 'ESNG', //   gallivare (priva
     'gallup'            : 'KGUP', //NM gallup
     'galveston'         : 'KGLS', //TX galveston
+    'gamarmala'         : 'WAMA', //   galela/gamarmala
     'gan'               : 'VRMG', //   gan intl airport
     'gander'            : 'CYQX', //NL gander intl airp
     'gao'               : 'GAGO', //   gao (civ/mil)
-    'garden'            : 'KGCK', //KS garden city
+    'garden city'       : 'KGCK', //KS garden city
     'garoua'            : 'FKKR', //   garoua
     'gary'              : 'KGYY', //IN gary regional
     'gaspe'             : 'CYGP', //QC gaspe airport
@@ -1065,64 +1023,63 @@ var names = {
     'gatwick'           : 'EGKK',
     'gaziantep'         : 'LTAJ', //   gaziantep
     'gazipasa'          : 'LTFG', //   gazipasa
-    'gdansk/rebiechow'  : 'EPGD', //   gdansk/rebiechow
+    'gbessia'           : 'GUCY', //   conakry/gbessia
+    'gdansk'            : 'EPGD', //   gdansk/rebiechow
     'gdynia-babie'      : 'EPOK', //   gdynia-babie do
     'gecitkale'         : 'LCGK', //   gecitkale
-    'geilenkirchen(na'  : 'ETNG', //   geilenkirchen(na
-    'gen'               : 'RPMR', //   gen santos
-    'geneva/cointrin'   : 'LSGG', //   geneva/cointrin
-    'genova/sestri'     : 'LIMJ', //   genova/sestri
-    'george/p.'         : 'FAGG', //   george/p. w. bot
+    'geilenkirchen'     : 'ETNG', //   geilenkirchen(na
+    'gen santos'        : 'RPMR', //   gen santos
+    'geneva'            : 'LSGG', //   geneva/cointrin
+    'genova'            : 'LIMJ', //   genova/sestri
+    'george'            : 'FAGG', //   george/p. w. bot
     'georgetown'        : 'SYGT', //   georgetown
-    'georgetown/corre'  : 'SYEC', //   georgetown/corre
-    'georgetown/timeh'  : 'SYCJ', //   georgetown/timeh
     'geraldton'         : 'CYGQ', //ON geraldton airpor
-    'gerona/costa'      : 'LEGE', //   gerona/costa bra
-    'gerrard'           : 'MWCB', //   gerrard smith
+    'gerona'            : 'LEGE', //   gerona/costa bra
+    'gerrard smith'     : 'MWCB', //   gerrard smith
     'ghadames'          : 'HLTD', //   ghadames
     'ghanzi'            : 'FBGZ', //   ghanzi
-    'ghardaia/noumera'  : 'DAUG', //   ghardaia/noumera
+    'ghardaia'          : 'DAUG', //   ghardaia/noumera
     'ghat'              : 'HLGT', //   ghat
     'ghedi'             : 'LIPL', //   ghedi (it-afb)
     'gibraltar'         : 'LXGB', //   gibraltar (civ/m
-    'giebelstadt(usa-'  : 'ETEU', //   giebelstadt(usa-
+    'giebelstadt'       : 'ETEU', //   giebelstadt(usa-
     'gillam'            : 'CYGX', //MB gillam airport
     'gillette'          : 'KGCC', //WY gillette
     'gilze-rijen'       : 'EHGR', //   gilze-rijen rnla
-    'gioia'             : 'LIBV', //   gioia del colle
+    'gioia del colle'   : 'LIBV', //   gioia del colle
     'gizan'             : 'OEGN', //   gizan
     'gjoa'              : 'CYHK', //NU gjoa haven airpo
     'glasgow'           : 'EGPF', //   glasgow airport
     'glendive'          : 'KGDV', //MT glendive
     'glens'             : 'KGFL', //NY glens falls
-    'goa/dabolim'       : 'VOGO', //   goa/dabolim (nav
     'godthab'           : 'BGGH', //   godthab (port)
-    'goiania/santa'     : 'SBGO', //   goiania/santa ge
+    'goiania'           : 'SBGO', //   goiania/santa ge
     'gokceada'          : 'LTFK', //   gokceada
-    'golden'            : 'TKPK', //   golden rocks/nev
-    'golden/columbus'   : 'KGTR', //MS golden/columbus
-    'goldsboro/s.'      : 'KGSB', //NC goldsboro/s. j.
+    'golden mississippi'  : 'KGTR', //MS golden/columbus
+    'golden rocks'      : 'TKPK', //   golden rocks/nev
+    'goldsboro'         : 'KGSB', //NC goldsboro/s. j.
     'gomel'             : 'UMGG', //   gomel
     'goodland'          : 'KGLD', //KS goodland
-    'goose'             : 'CYYR', //NL goose bay airpor
-    'gore'              : 'CYZE', //ON gore bay airport
+    'goose bay'         : 'CYYR', //NL goose bay airpor
+    'gore bay'          : 'CYZE', //ON gore bay airport
     'gorgan'            : 'OING', //   gorgan
     'gorna'             : 'LBGO', //   gorna orechovist
     'goroka'            : 'AYGA', //   goroka
-    'gorontalo/jalal'   : 'WAMG', //   gorontalo/jalal
-    'goteborg/save'     : 'ESGP', //   goteborg/save (a
+    'gorontalo'         : 'WAMG', //   gorontalo/jalal
+    'goteborg'          : 'ESGP', //   goteborg/save (a
     'gove'              : 'YPGV', //   gove airport
-    'graf'              : 'LBPG', //   graf ignatievo
+    'graf ignatievo'    : 'LBPG', //   graf ignatievo
     'grafenwoehr'       : 'ETIC', //   grafenwoehr
     'granada'           : 'LEGR', //   granada airport
+    'grand bahama'      : 'MYGF', //   freeport intl a
     'grand canyon'      : 'KGCN', //AZ grand canyon
+    'grand cayman'      : 'MWCR', //   grnd cayman/owen
     'grand forks'       : 'KGFK', //ND grand forks
     'grand island'      : 'KGRI', //NE grand island
     'grand junction'    : 'KGJT', //CO grand junction
     'grand rapids'      : 'KGRR', //MI grand rapids
     'grande praire'     : 'CYQU', //AB grande praire ar
     'grantley'          : 'TBPB', //   grantley adams
-    'gray/ft'           : 'KGRK', //TX gray/ft hood
     'graz'              : 'LOWG', //   graz (mil/civ)
     'grazzanise'        : 'LIRM', //   grazzanise (it-a
     'great bend'        : 'KGBD', //KS great bend
@@ -1132,26 +1089,25 @@ var names = {
     'greensboro'        : 'KGSO', //NC greensboro
     'greenville'        : 'KGMU', //SC greenville
     'greenwood'         : 'KGWO', //MS greenwood
-    'greer/spartansbg'  : 'KGSP', //SC greer/spartansbg
+    'greer'             : 'KGSP', //SC greer/spartansbg
     'grenchen'          : 'LSZG', //   grenchen
-    'grenoble/st.'      : 'LFLS', //   grenoble/st. geo
+    'grenoble'          : 'LFLS', //   grenoble/st. geo
     'grissom'           : 'KGUS', //IN grissom afb/peru
-    'grnd'              : 'MWCR', //   grnd cayman/owen
     'grodno'            : 'UMMG', //   grodno
-    'groningen/eelde'   : 'EHGG', //   groningen/eelde
+    'groningen'         : 'EHGG', //   groningen/eelde
     'grootfontein'      : 'FYGF', //   grootfontein
     'grosseto'          : 'LIRS', //   grosseto (it-afb
-    'groton/new'        : 'KGON', //CT groton/new londo
-    'grottaglie(civ/a'  : 'LIBG', //   grottaglie(civ/a
+    'groton'            : 'KGON', //CT groton/new londo
+    'grottaglie'        : 'LIBG', //   grottaglie(civ/a
     'grozny'            : 'URMG', //   grozny
     'guadalajara'       : 'MMGL', //   guadalajara
-    'guangzhou/baiyun'  : 'ZGGG', //   guangzhou/baiyun
-    'guantanamo'        : 'MUGM', //   guantanamo bay
+    'guangzhou'         : 'ZGGG', //   guangzhou/baiyun
+    'guantanamo bay'   : 'MUGM', //   guantanamo bay
     'guarany'           : 'SGES', //   guarany
     'guaratingueta'     : 'SBGW', //   guaratingueta (m
     'guarulhos'         : 'SBGR', //   guarulhos (civ/m
     'guatemala/la'      : 'MGGT', //   guatemala/la au
-    'guayaquil/simon'   : 'SEGU', //   guayaquil/simon
+    'guayaquil'         : 'SEGU', //   guayaquil/simon
     'guaymas'           : 'MMGM', //   guaymas intl arp
     'guernsey'          : 'EGJB', //   guernsey airport
     'guetersloh'        : 'ETUO', //   guetersloh (raf)
@@ -1168,69 +1124,75 @@ var names = {
     'gwadar'            : 'OPGD', //   gwadar
     'gwalior'           : 'VIGR', //   gwalior (in-afb)
     'gwangju'           : 'RKJJ', //   gwangju (kor-afb
-    'gweru/thornhill'   : 'FVTL', //   gweru/thornhill
-    'gwinn/sawyer'      : 'KSAW', //MI gwinn/sawyer
+    'gweru thornhill'   : 'FVTL', //   gweru/thornhill
+    'gwinn'             : 'KSAW', //MI gwinn/sawyer
     'gyandzha'          : 'UBBG', //   gyandzha
     'gyor'              : 'LHPR', //   gyor
-    'habib'             : 'DTMB', //   habib bourguiba
-    'hae'               : 'RKTP', //   hae mi
-    'hafr'              : 'OEPA', //   hafr al-batin ar
+    'habib bouruguiba'  : 'DTMB', //   habib bourguiba
+    'hae mi'            : 'RKTP', //   hae mi
+    'hafr al batin'     : 'OEPA', //   hafr al-batin ar
     'hagshult'          : 'ESMV', //   hagshult (swe-af
     'hahn'              : 'EDFH', //   hahn
     'haifa'             : 'LLHA', //   haifa (isr-afb)
     'haikou'            : 'ZJHK', //   haikou
     'hail'              : 'OEHL', //   hail
-    'hailey/friedman'   : 'KSUN', //ID hailey/friedman
+    'hailey'            : 'KSUN', //ID hailey/friedman
+    'sun valley'        : 'KSUN', //ID hailey/friedman
     'haines'            : 'PAHN', //AK haines
     'hakodate'          : 'RJCH', //   hakodate airport
     'halifax'           : 'CYHZ', //NS halifax intl arp
+    'halim perdanakus'  : 'WIHH', //   halim perdanakus
     'halim'             : 'WIIH', //   halim intl(civ/m
-    'hall'              : 'CYUX', //NU hall beach airpo
+    'hall beach'        : 'CYUX', //NU hall beach airpo
     'halli'             : 'EFHA', //   halli (fin-afb)
     'halmstad'          : 'ESMT', //   halmstad (swe-af
-    'hamburg/finkenwe'  : 'EDHI', //   hamburg/finkenwe
-    'hamburg/fuhlsbut'  : 'EDDH', //   hamburg/fuhlsbut
+//    'hamburg'           : 'EDHI', //   hamburg/finkenwe
+    'hamburg'           : 'EDDH', //   hamburg/fuhlsbut
     'hamilton island'   : 'YBHM', //   hamilton island
     'hamilton'          : 'CYHM', //ON hamilton airport
     'hammerfest'        : 'ENHF', //   hammerfest
     'hammond'           : 'KHDC', //LA hammond
     'hanau'             : 'ETID', //   hanau (usa-af)
     'hancock'           : 'KCMX', //MI hancock
-    'hanford/san'       : 'KHNX', //CA hanford/san joaq
-    'hang'              : 'WIDD', //   hang nadim
-    'hangzhou/jianqia'  : 'ZSHC', //   hangzhou/jianqia
+    'hanford'           : 'KHNX', //CA hanford/san joaq
+    'hang nadim'        : 'WIDD', //   hang nadim
+    'hangzhou'          : 'ZSHC', //   hangzhou/jianqia
     'hannover'          : 'EDDV', //   hannover
-    'hanoi/noibai'      : 'VVNB', //   hanoi/noibai int
+    'hanoi'             : 'VVNB', //   hanoi/noibai int
     'harare'            : 'FVHA', //   harare/kutsaga(m
     'harbin'            : 'ZYHB', //   harbin
     'harlingen'         : 'KHRL', //TX harlingen
     'harrisburg'        : 'KHIA',
     'harrison'          : 'KHRO', //AR harrison
     'hartford'          : 'KBDL',
-    'hasanuddin/ujung'  : 'WAAA', //   hasanuddin/ujung
-    'hassi-messaoud/i'  : 'DAUH', //   hassi-messaoud/i
-    'hat'               : 'VTSS', //   hat yai
+    'hasanuddin'        : 'WAAA', //   hasanuddin/ujung
+    'hassi messaoud'    : 'DAUH', //   hassi-messaoud/i
+    'hat yai'           : 'VTSS', //   hat yai
     'hatay'             : 'LTDA', //   hatay airport
     'hato'              : 'TNCC', //   hato air curacao
+    'curacao'           : 'TNCC', //   hato air curacao
     'hattiesburg'       : 'KHBG', //MS hattiesburg
-    'haugesund/karmoy'  : 'ENHD', //   haugesund/karmoy
-    'havana/jose'       : 'MUHA', //   havana/jose mar
-    'havre st pierre'   : 'CYGV', //QC havre st pierre
+    'haugesund'         : 'ENHD', //   haugesund/karmoy
+    'havana'            : 'MUHA', //   havana/jose mar
+    'havre saint pierre': 'CYGV', //QC havre st pierre
     'havre'             : 'KHVR', //MT havre
     'hawarden'          : 'EGNR', //   hawarden (aut)
-    'hay'               : 'CYHY', //NT hay river airpor
-    'hayden/yampa'      : 'KHDN', //CO hayden/yampa
+    'hay river'         : 'CYHY', //NT hay river airpor
+    'hayden'            : 'KHDN', //CO hayden/yampa
     'hays'              : 'KHYS', //KS hays muni
-    'hayward'           : 'KHYR', //WI hayward
+    'hayward wisconsin' : 'KHYR', //WI hayward
+    'hayward california': 'KHWD', //CA hayward
+    'hayward'           : 'KHWD', //CA hayward
     'heathrow'          : 'EGLL',
-    'heber/russ'        : 'K36U', //UT heber/russ mcdon
-    'hefei/xingiao'     : 'ZSOF', //   hefei/xingiao
+    'heber'             : 'K36U', //UT heber/russ mcdon
+    'hefei'             : 'ZSOF', //   hefei/xingiao
+    'xingiao'           : 'ZSOF', //   hefei/xingiao
     'heidrun'           : 'ENHE', //   heidrun
     'heimdal'           : 'ENHM', //   heimdal oilp
     'helena'            : 'KHLN', //MT helena
     'helsinki'          : 'EFHK',
-    'helsinki/malmi'    : 'EFHF', //   helsinki/malmi
-    'helsinki/vantaa'   : 'EFHK', //   helsinki/vantaa
+//    'helsinki/malmi'    : 'EFHF', //   helsinki/malmi
+//    'helsinki/vantaa'   : 'EFHK', //   helsinki/vantaa
     'hemavan'           : 'ESUT', //   hemavan
     'hengchun'          : 'RCKW', //   hengchun
     'henties'           : 'FYGN', //   henties bay
@@ -1243,40 +1205,43 @@ var names = {
     'hickam'            : 'PHIK', //HI hickam afb
     'hickory'           : 'KHKY', //NC hickory
     'hierro'            : 'GCHI', //   hierro airport
-    'high'              : 'CYOJ', //AB high level airpo
+    'high level'        : 'CYOJ', //AB high level airpo
     'hihifo'            : 'NLWW', //   hihifo ile walli
     'hill'              : 'KHIF', //UT hill afb/ogden
-    'hillsboro/portld'  : 'KHIO', //OR hillsboro/portld
+    'hillsboro'         : 'KHIO', //OR hillsboro/portld
     'hilo'              : 'PHTO', //HI hilo
     'hiroshima'         : 'RJOA', //   new hiroshima
-    'hjardarnes/horna'  : 'BIHN', //   hjardarnes/horna
-    'ho'                : 'VVTS', //   ho chi minh/tans
+    'hjardarnes'        : 'BIHN', //   hjardarnes/horna
+    'ho chi minh'       : 'VVTS', //   ho chi minh/tans
+    'ho chi minh city'  : 'VVTS', //   ho chi minh/tans
     'hobart'            : 'KHBR', //OK hobart
-    'hobart/tasmania'   : 'YMHB', //   hobart/tasmania
-    'hobbs/lea'         : 'KHOB', //NM hobbs/lea co.
+    'hobart tasmania'   : 'KHBR', // austr
+    'tasmania'          : 'YMHB', //   hobart/tasmania
+    'hobbs'             : 'KHOB', //NM hobbs/lea co.
     'hobby'             : 'KHOU',
+    'houston hobby'     : 'KHOU',
     'hodeidah'          : 'OYHD', //   hodeidah
     'hoedspruit'        : 'FAHS', //   hoedspruit (saaf
     'hof'               : 'EDQM', //   hof
-    'hohenems-dornbir'  : 'LOIH', //   hohenems-dornbir
+    'hohenems'          : 'LOIH', //   hohenems-dornbir
     'hohenfels'         : 'EDIH', //   hohenfels (usaf)
     'hohn'              : 'ETNH', //   hohn (ger-afb)
     'holguin'           : 'MUHG', //   holguin (civ/mil
     'holloman'          : 'KHMN', //NM holloman afb
-    'holman'            : 'CYHI', //NT holman island ar
+    'holman island'     : 'CYHI', //NT holman island ar
     'holzdorf'          : 'ETSH', //   holzdorf
     'homer'             : 'PAHO', //AK homer
     'homestead'         : 'KHST', //FL homestead afb
     'hon'               : 'HLON', //   hon
     'hong kong'         : 'VHHH',
     'hong'              : 'VHHH', //   hong kong intl
-    'honiara/henderso'  : 'AGGH', //   honiara/henderso
+    'honiara'           : 'AGGH', //   honiara/henderso
     'honolulu'          : 'PHNL', //HI honolulu
     'hopkinsville'      : 'KHOP', //KY hopkinsville
     'hoquiam'           : 'KHQM', //WA hoquiam
-    'horn'              : 'YHID', //   horn island
+    'horn island'       : 'YHID', //   horn island
     'horta/faial'       : 'LPHR', //   horta/faial isla
-    'hot'               : 'KHOT', //AR hot springs
+    'hot springs'       : 'KHOT', //AR hot springs
     'houlton'           : 'KHUL', //ME houlton
     'houma'             : 'KHUM', //LA houma terrebonne
     'houston'           : 'KIAH',
@@ -1284,17 +1249,20 @@ var names = {
     'houston/hobby'     : 'KHOU', //TX houston/hobby
     'houston/intnl'     : 'KIAH', //TX houston/intnl
     'houston/sugar'     : 'KSGR', //TX houston/sugar la
+    'howard air force base'            : 'MPHO', //   howard afb
     'howard'            : 'MPHO', //   howard afb
-    'hua'               : 'VTPH', //   hua hin
-    'huambo/nova'       : 'FNHU', //   huambo/nova lisb
-    'huanghua/changsh'  : 'ZGHA', //   huanghua/changsh
-    'huanuco/alferez'   : 'SPNC', //   huanuco/alferez
-    'hue/phubai'        : 'VVPB', //   hue/phubai
+    'hua hin'               : 'VTPH', //   hua hin
+    'huambo'            : 'FNHU', //   huambo/nova lisb
+    'huanghua'          : 'ZGHA', //   huanghua/changsh
+    'huanuco'           : 'SPNC', //   huanuco/alferez
+    'phubai'            : 'VVPB', //   hue/phubai
+    'hue'               : 'VVPB', //   hue/phubai
     'huehuetenango'     : 'MGHT', //   huehuetenango
-    'huesca-pirineos'   : 'LEHC', //   huesca-pirineos
+    'huesca pirineos'   : 'LEHC', //   huesca-pirineos
     'huhhot'            : 'ZBHH', //   huhhot
     'humberside'        : 'EGNJ', //   humberside
     'huntington'        : 'KHTS', //WV huntington
+    'huntsville texas'  : 'KUTS', //TX huntsville
     'huntsville'        : 'KHSV', //AL huntsville
     'hurguada'          : 'HEGN', //   hurguada
     'hurlburt'          : 'KHRT', //FL hurlburt field
@@ -1304,11 +1272,16 @@ var names = {
     'hyakuri'           : 'RJAH', //   hyakuri (jasdf)
     'hyannis'           : 'KHYA', //MA hyannis
     'hyderabad'         : 'VOHY', //   hyderabad (civ/m
-    'hyeres/le'         : 'LFTH', //   hyeres/le palyve
+    'hyeres'            : 'LFTH', //   hyeres/le palyve
+
+// ------
+// -- only gotten through here so far
+// ------
+
     'iasi'              : 'LRIA', //   iasi
     'ibadan'            : 'DNIB', //   ibadan
-    'ibiza/es'          : 'LEIB', //   ibiza/es codola
-    'idaho'             : 'KIDA', //ID idaho falls
+    'ibiza'             : 'LEIB', //   ibiza/es codola
+    'idaho falls'       : 'KIDA', //ID idaho falls
     'igarka'            : 'UOII', //   igarka
     'igdir'             : 'LTCT', //   igdir
     'igloolik'          : 'CYGT', //NU igloolik airport
@@ -1328,6 +1301,7 @@ var names = {
     'imperial'          : 'KIPL', //CA imperial
     'in amenas'         : 'DAUZ', //   in amenas/zarzai
     'in salah'          : 'DAUI', //   in salah north
+    'incirlik'          : 'LTAG', //   adana/incirlik a
     'indian mountain'   : 'PAIM', //AK indian mountain
     'indian springs'    : 'KINS', //NV indian springs
     'indianapolis'      : 'KIND', //IN indianapolis
@@ -1373,11 +1347,14 @@ var names = {
     'izmir/kaklic'      : 'LTFA', //   izmir/kaklic
     'izumo'             : 'RJOC', //   izumo airport
     'jabalpur'          : 'VAJB', //   jabalpur
+    'jackson tennessee'           : 'KMKL', //TN jackson
+    'jackson wyoming'           : 'KJAC', //WY jackson
     'jackson'           : 'KJAN', //MS jackson
     'jackson/hawkins'   : 'KHKS', //MS jackson/hawkins
     'jackson/reynolds'  : 'KJXN', //MI jackson/reynolds
     'jacksonvil/cecil'  : 'KVQQ', //FL jacksonvil/cecil
     'jacksonvil/craig'  : 'KCRG', //FL jacksonvil/craig
+    'jacksonville north carolina'      : 'KOAJ', //NC jacksonville
     'jacksonville'      : 'KJAX', //FL jacksonville
     'jaipur'            : 'VIJP', //   jaipur/sanganer
     'jakobshavn'        : 'BGJN', //   jakobshavn (port
@@ -1389,6 +1366,7 @@ var names = {
     'jayapura/sentani'  : 'WAJJ', //   jayapura/sentani
     'jeddah'            : 'OEJD', //   jeddah
     'jeddah/king'       : 'OEJN', //   jeddah/king abdu
+    'jefferson country' : 'KBJC', //CO broomfield/jeffc
     'jeju'              : 'RKPC', //   jeju intl airpo
     'jerez'             : 'LEJR', //   jerez (civ/mil)
     'jerome'            : 'KJER', //ID jerome county
@@ -1426,6 +1404,7 @@ var names = {
     'juzno-sahalinsk'   : 'UHSS', //   juzno-sahalinsk
     'jyvaskyla'         : 'EFJY', //   jyvaskyla (mil/c
     'kabul'             : 'OAKB', //   kabul intl (mil)
+    'kadala'            : 'UIAA', //   cita/kadala
     'kadena'            : 'RODN', //   kadena (usafb-na
     'kaduna'            : 'DNKA', //   kaduna (civ/mil)
     'kagoshima'         : 'RJFK', //   kagoshima airpor
@@ -1454,7 +1433,7 @@ var names = {
     'kangnung'          : 'RKNN', //   kangnung (kor-af
     'kano/mallam'       : 'DNKN', //   kano/mallam amin
     'kansai'            : 'RJBB', //   kansai intl
-    'kansas city'            : 'KMCI', //MO kansas city/intl
+    'kansas city'       : 'KMCI', //MO kansas city/intl
     'kaohsiung'         : 'RCKH', //   kaohsiung intl
     'kapuskasing'       : 'CYYU', //ON kapuskasing airp
     'karachi'           : 'OPKC', //   karachi intl arp
@@ -1564,6 +1543,7 @@ var names = {
     'kota bharu'        : 'WMKC', //   kota bharu/sulta
     'kota kinabalu'     : 'WBKK', //   kota kinabalu in
     'kotlas'            : 'ULKK', //   kotlas
+    'kotoka'            : 'DGAA', //   accra/kotoka int
     'kotzebue'          : 'PAOT', //AK kotzebue
     'koumac'            : 'NWWK', //   koumac
     'krabi'             : 'VTSG', //   krabi
@@ -1584,6 +1564,7 @@ var names = {
     'kuantan'           : 'WMKD', //   kuantan (afb)
     'kuching'           : 'WBGG', //   kuching (civ/mil
     'kufra'             : 'HLKF', //   kufra (mil/civ)
+    'kuito'             : 'FNKU', //   bie/kuito/silva
     'kujbysev/bezencu'  : 'UWWS', //   kujbysev/bezencu
     'kulusuk'           : 'BGKK', //   kulusuk airport
     'kumamoto(civ/jas'  : 'RJFT', //   kumamoto(civ/jas
@@ -1612,6 +1593,7 @@ var names = {
     'la gomera'         : 'GCGM', //   la gomera arpt
     'la grande reviera' : 'CYGL', //QC la grande rivier
     'la guardia'        : 'KLGA', //NY nyc/la guardia
+    'la isabela'        : 'MDJB', //   dr balaguer intl
     'la mesa'           : 'MHLM', //   la mesa/pedro s
     'la palma'          : 'GCLA', //   la palma airport
     'la paz'            : 'MMLP', //   la paz intl airp
@@ -1626,6 +1608,8 @@ var names = {
     'laayoune/hassan'   : 'GMML', //   laayoune/hassan
     'labuan'            : 'WBKL', //   labuan (afb)
     'labuha/taliabu'    : 'WAPH', //   labuha/taliabu
+    'lafayette indiana' : 'KLAF', //IN lafayette
+    'lafayette louisiana'       : 'KLFT', //LA lafayette
     'lafayette'         : 'KLAF', //IN lafayette
     'laghouat'          : 'DAUL', //   laghouat
     'lagos/ikeja'       : 'DNMM', //   lagos/ikeja
@@ -1712,6 +1696,7 @@ var names = {
     'lewisburg/greenb'  : 'KLWB', //WV lewisburg/greenb
     'lewiston'          : 'KLWS', //ID lewiston
     'lewistown'         : 'KLWT', //MT lewistown
+    'lexington'         : 'KLEX', //KY lexington
     'lhasa'             : 'ZULS', //   lhasa
     'liberia/tomas'     : 'MRLB', //   liberia/tomas g
     'libreville/leon'   : 'FOOL', //   libreville/leon
@@ -1745,6 +1730,7 @@ var names = {
     'logan'             : 'KLGU', //UT logan
     'logrono/agoncill'  : 'LELO', //   logrono/agoncill
     'lome/tokoin'       : 'DXXX', //   lome/tokoin (mil
+    'london ontario'            : 'CWSN', //ON london cs
     'london'            : 'EGLL',
     'london/gatwick'    : 'EGKK', //   london/gatwick a
     'london/heathrow'   : 'EGLL', //   london/heathrow
@@ -1753,6 +1739,7 @@ var names = {
     'long poind'        : 'CWWU', //NL long pond
     'long'              : 'KLGB', //CA long beach
     'longana'           : 'NVSG', //   longana airport
+    'longvic'           : 'LFSD', //   dijon/longvic(fa
     'longview'          : 'KGGG', //TX longview
     'lord'              : 'YLHI', //   lord howe island
     'loreto'            : 'MMLT', //   loreto
@@ -1780,7 +1767,9 @@ var names = {
     'lugano'            : 'LSZA', //   lugano (pvt/aut)
     'luhansk'           : 'UKCW', //   luhansk
     'luke'              : 'KLUF', //AZ luke afb/glendal
+    'lulsgate'          : 'EGGD', //   bristol/lulsgate
     'lumberton'         : 'KLBT', //NC lumberton
+    'lunken'            : 'KLUK', //OH cincinnat/lunken
     'lupin'             : 'CYWO', //NU lupin arpt (sawr
     'luqa/malta'        : 'LMML', //   luqa/malta
     'lusaka'            : 'FLKK', //   lusaka kuanda
@@ -1863,6 +1852,7 @@ var names = {
     'mar'               : 'SAZM', //   mar del plata ar
     'maraba'            : 'SBMA', //   maraba
     'maracaibo/la'      : 'SVMC', //   maracaibo/la chi
+    'marathon ontary'          : 'CYSP', //ON marathon
     'marathon'          : 'KMTH', //FL marathon
     'marce'             : 'LFJR', //   marce
     'marcos'            : 'MPMG', //   marcos gelabert
@@ -1934,6 +1924,7 @@ var names = {
     'merauke/mopah'     : 'WAKK', //   merauke/mopah
     'merced'            : 'KMCE', //CA merced
     'merced/castle'     : 'KMER', //CA merced/castle af
+    'mercury'           : 'KDRA', //NV desert r/mercury
     'merida'            : 'MMMD', //   merida intl arpt
     'meridian'          : 'KNMM', //MS meridian nas
     'meridian/key'      : 'KMEI', //MS meridian/key fld
@@ -1967,6 +1958,7 @@ var names = {
     'mineralyne'        : 'URMM', //   mineralyne vody
     'minna'             : 'DNMN', //   minna airport
     'minneapolis'       : 'KMSP', //MN minneapolis
+    'minot air force base'             : 'KMIB', //ND minot afb
     'minot'             : 'KMOT', //ND minot
     'minsk'             : 'EPMM', //   minsk mazowiecki
     'minsk-in-min'      : 'UMMM', //   minsk-in-min
@@ -1993,6 +1985,7 @@ var names = {
     'molokai'           : 'PHMK', //HI molokai
     'mombasa/moi'       : 'HKMO', //   mombasa/moi intl
     'momote'            : 'AYMO', //   momote manus is
+    'monbaca'           : 'FNBG', //   benguela/monbaca
     'monchengladbach'   : 'EDLN', //   monchengladbach
     'monclova'          : 'MMMV', //   monclova
     'moncton'           : 'CYQM', //NB moncton airport
@@ -2008,6 +2001,7 @@ var names = {
     'monticello'        : 'KLLQ', //AR monticello
     'montijo'           : 'LPMT', //   montijo (por-afb
     'montpelier/barre'  : 'KMPV', //VT montpelier/barre
+    'montpellier mediterranee'  : 'LFMT', //   frejorgues/montp
     'montreal/dorval'   : 'CYUL', //QC montreal/dorval
     'montreal/mirabel'  : 'CYMX', //QC montreal/mirabel
     'montrose'          : 'KMTJ', //CO montrose
@@ -2036,7 +2030,9 @@ var names = {
     'muan'              : 'RKJB', //   muan intl
     'muenster/osnabru'  : 'EDDG', //   muenster/osnabru
     'muir'              : 'KMUI', //PA muir aaf/indiant
+    'mulhouse'          : 'LFSB', //   bale/mulhouse
     'multan'            : 'OPMT', //   multan
+    'mumbai'            : 'VABB', //   bombay/santacruz
     'munda/new'         : 'AGGM', //   munda/new georgi
     'mundo'             : 'MGMM', //   mundo maya
     'munich'            : 'EDDM',
@@ -2121,6 +2117,7 @@ var names = {
     'newark'            : 'KEWR', //NJ newark
     'newburgh'          : 'KSWF', //NY newburgh/stewart
     'newcastle'         : 'EGNT', //   newcastle
+    'newport oregon'           : 'KONP', //OR newport
     'newport'           : 'KPHF', //VA newport news
     'newquay'           : 'EGHQ', //   newquay
     'ngaoundere'        : 'FKKN', //   ngaoundere
@@ -2145,6 +2142,7 @@ var names = {
     'nogales'           : 'KOLS', //AZ nogales
     'nome'              : 'PAOM', //AK nome
     'nordholz'          : 'ETMN', //   nordholz (ger-na
+    'norfolk nebraska'           : 'KOFK', //NE norfolk
     'norfolk'           : 'KORF', //VA norfolk
     'norman'            : 'CYVQ', //NT norman wells arp
     'norman/westheime'  : 'KOUN', //OK norman/westheime
@@ -2233,6 +2231,7 @@ var names = {
     'ostafyevo'         : 'UUMO', //   ostafyevo intl
     'ostersund/froson'  : 'ESNZ', //   ostersund/froson
     'ostrava/mosnov'    : 'LKMT', //   ostrava/mosnov
+    'otis air force base' : 'KFMH', //MA falmouth/otis ab
     'ottawa'            : 'CYOW', //ON ottawa intl
     'ottumwa'           : 'KOTM', //IA ottumwa
     'ouagadougou'       : 'DFFD', //   ouagadougou (mil
@@ -2248,6 +2247,7 @@ var names = {
     'oxford'            : 'EGTK', //   oxford
     'oxnard'            : 'KOXR', //CA oxnard
     'ozark/cairns'      : 'KOZR', //AL ozark/cairns aaf
+    'padangk'           : 'WIPL', //   bengkula/padangk
     'paderborn/lippst'  : 'EDLP', //   paderborn/lippst
     'paducah'           : 'KPAH', //KY paducah
     'page'              : 'KPGA', //AZ page
@@ -2287,6 +2287,7 @@ var names = {
     'patna'             : 'VEPT', //   patna
     'patrick'           : 'KCOF', //FL patrick afb/coco
     'pattani'           : 'VTSK', //   pattani
+    'pattimura'         : 'WAPP', //   ambon/pattimura
     'patuxent'          : 'KNHK', //MD patuxent river
     'paulatuk'          : 'CYPC', //NT paulatuk airport
     'pavlodar'          : 'UASP', //   pavlodar
@@ -2299,6 +2300,7 @@ var names = {
     'pecs-pogany'       : 'LHPP', //   pecs-pogany
     'pegasus'           : 'NZPG', //   pegasus field
     'peipeinimaru/tin'  : 'PGWT', //GU peipeinimaru/tin
+    'peking'            : 'ZBAA',
     'pekoa'             : 'NVSS', //   pekoa arpt/santo
     'pellston'          : 'KPLN', //MI pellston
     'pelly'             : 'CYBB', //NU pelly bay airpor
@@ -2386,6 +2388,7 @@ var names = {
     'poprad/tatry'      : 'LZTT', //   poprad/tatry
     'pori'              : 'EFPO', //   pori (mil/civ)
     'port angeles'      : 'KCLM', //WA port angeles
+    'port au prince'    : 'MTPP', //   port-au-prince
     'port elizabeth'    : 'FAPE', //   port elizabeth
     'port gentil'       : 'FOOG', //   port gentil
     'port harcourt'     : 'DNPO', //   port harcourt
@@ -2394,11 +2397,10 @@ var names = {
     'port moresby'      : 'AYPY', //   port moresby int
     'port said'         : 'HEPS', //   port said
     'port sudan'        : 'HSPN', //   port sudan intl
-    'port au prince'    : 'MTPP', //   port-au-prince
     'portage'           : 'CYPG', //MB portage southpor
-    'portland'          : 'KPDX', //OR portland
-    'portland oregon'   : 'KPDX', //OR portland
     'portland maine'    : 'KPWM', //ME
+    'portland oregon'   : 'KPDX', //OR portland
+    'portland'          : 'KPDX', //OR portland
     'porto alegre'      : 'SBCO', //   porto alegre/can
     'porto santo'       : 'LPPS', //   porto santo isla
     'porto seguro'      : 'SBPS', //   porto seguro
@@ -2481,6 +2483,7 @@ var names = {
     'raipur'            : 'VARP', //   raipur
     'rajiv'             : 'VOHS', //   rajiv gandhi inl
     'rajkot'            : 'VARK', //   rajkot
+    'raleigh durham'    : 'KRDU',
     'raleigh'           : 'KRDU',
     'raleigh-durham'    : 'KRDU',
     'raleigh/durham'    : 'KRDU', //NC raleigh/durham
@@ -2520,6 +2523,7 @@ var names = {
     'rhinelander'       : 'KRHI', //WI rhinelander
     'rhodes/diagoras'   : 'LGRP', //   rhodes/diagoras
     'rhourd'            : 'DAEN', //   rhourd nouss
+    'richard\'s bay'         : 'FARB', //   richard's bay
     'richmond'          : 'KRIC', //VA richmond
     'rickenbacker'      : 'KLCK', //OH rickenbacker ang
     'rifle'             : 'KRIL', //CO rifle
@@ -2528,6 +2532,7 @@ var names = {
     'rimini'            : 'LIPR', //   rimini (civ/it-a
     'rio branco'        : 'SBRB', //   rio branco/medic
     'rio cuarto'        : 'SAOC', //   rio cuarto airpo
+    'rio de janeiro'    : 'SBGL', //   galeao/rio(civ/m
     'rio gallegos'      : 'SAWG', //   rio gallegos arp
     'rio grande'        : 'SAWE', //   rio grande airpo
     'rio/jacarepagua'   : 'SBJR', //   rio/jacarepagua
@@ -2546,6 +2551,7 @@ var names = {
     'roatan'            : 'MHRO', //   roatan
     'roberts'           : 'GLRB', //   roberts intl/mon
     'roberval'          : 'CYRJ', //QC roberval airport
+    'rochester minnesota'         : 'KRST', //MN rochester
     'rochester'         : 'KROC', //NY rochester
     'rock'              : 'KRKS', //WY rock springs
     'rockford'          : 'KRFD', //IL rockford
@@ -2594,20 +2600,38 @@ var names = {
     'sachon'            : 'RKPS', //   sachon (kor-afb)
     'sachs'             : 'CYSY', //NT sachs harbour(m
     'sacramento'        : 'KSAC', //CA sacramento
+    'saddam'  : 'ORBS', //   saddam(irq-afb/c
     'saga'              : 'RJFS', //   saga airport
     'saginaw'           : 'KMBS', //MI saginaw
     'saint anthony'     : 'CYAY', //NL saint anthony ar
+    'saint augustine'   : 'KSGJ', //FL st augustine
+    'saint catharines'  : 'CYSN', //ON st. catharines a
+    'saint catherine'   : 'HESC', //   st catherine
+    'saint cloud'       : 'KSTC', //MN st. cloud
+    'saint denis'       : 'FMEE', //   st. denis/gillot
+    'saint dizier'      : 'LFSI', //   st. dizier/robin
+    'saint etienee'     : 'LFMH', //   st etienne/bouth
+    'saint gatien'      : 'LFRG', //   st gatien
     'saint george'      : 'KDXZ', //UT saint george
     'saint hubert'      : 'CYHU', //QC saint hubert arp
     'saint john'        : 'CYSJ', //NB saint john
+    'saint johns'       : 'CYYT', //NL st johns arp
+    'saint joseph'      : 'KSTJ', //MO st. joseph
     'saint leonard'     : 'CYSL', //NB saint leonard ar
-//    'saint louis'       : 'GOSS', //   saint louis
+    'saint louis'       : 'KSTL', //MO st. louis
+    'saint maarten'     : 'TNCM', //   st maarten julia
+    'saint nazaire'     : 'LFRZ', //   st. nazaire/mont
+    'saint paul island' : 'PASN', //AK st paul island
     'saint paul'        : 'KMSP',
+    'saint petersburg'  : 'KPIE', //FL st petersburg
+    'saint pierre'      : 'LFVP', //NL st pierre-france
+    'saint thomas'      : 'TIST', //   st thomas (king)
     'saint yan'         : 'LFLN', //   saint yan
     'saint-brieuc'      : 'LFRT', //   saint-brieuc arm
     'sainte-marie'      : 'FMMS', //   sainte-marie arp
     'saipan/kobler'     : 'PGSN', //   saipan/kobler
     'saiq'              : 'OOSQ', //   saiq
+    'sakirpasa'         : 'LTAF', //   adana/sakirpasa
     'sakon'             : 'VTUI', //   sakon nakhon
     'sal'               : 'GVAC', //   sal isl/amilcar
     'salalah'           : 'OOSA', //   salalah
@@ -2658,6 +2682,7 @@ var names = {
     'santarem'          : 'SBSN', //   santarem intl ar
     'santiago'          : 'MDST', //   santiago intl a
     'santiago/labacol'  : 'LEST', //   santiago/labacol
+    'santo domingo'     : 'MDJB', //   dr balaguer intl
     'santorini'         : 'LGSR', //   santorini island
     'santos dumont'     : 'SBRJ', //   santos dumont/ri
     'sanya'             : 'ZJSY', //   sanya/fenghuang
@@ -2684,19 +2709,23 @@ var names = {
     'savannah/hunter'   : 'KSVN', //GA savannah/hunter
     'savannakhet(cv/m'  : 'VLSK', //   savannakhet(cv/m
     'savonlinna'        : 'EFSA', //   savonlinna (aut)
+    'sawyer'            : 'KSAW', //MI gwinn/sawyer
     'sayun'             : 'OYSY', //   sayun
     'scampton'          : 'EGXP', //   scampton raf
     'scatsa/shetland'   : 'EGPM', //   scatsa/shetland
     'schaffen'          : 'EBDT', //   schaffen
     'schefferville'     : 'CYKL', //QC schefferville ar
+    'schipol'           : 'EHAM', //   amsterdam/schiph
     'schleswig(ger-na'  : 'ETNS', //   schleswig(ger-na
+    'schon'             : 'ETHA', //   altenstadt/schon
+    'schonefel'         : 'EDDB', //   berlin/schonefel
     'schwaebisch'       : 'EDTY', //   schwaebisch hall
     'schwerin-parchim'  : 'EDOP', //   schwerin-parchim
     'scilly'            : 'EGHE', //   scilly saint mar
     'scott air force base' : 'KBLV', //IL scott afb/bellev
-    'belleville'        : 'KBLV', //IL scott afb/bellev
     'scottsbluff'       : 'KBFF', //NE scottsbluff
     'scottsdale'        : 'KSDL', //AZ scottsdale
+    'scranton'          : 'KAVP', //PA avoca/wilkes b.
     'sde'               : 'LLSD', //   sde dov airport
     'seattle'           : 'KSEA',
     'seattle/boeing'    : 'KBFI', //WA seattle/boeing
@@ -2730,6 +2759,7 @@ var names = {
     'sharjah'           : 'OMSJ', //   sharjah intl arp
     'sharm'             : 'HESH', //   sharm el sheikhi
     'sharurah'          : 'OESH', //   sharurah (civ/mi
+    'shatou'            : 'RCBS', //   chinmem/shatou
     'shaw'              : 'KSSC', //SC shaw afb/sumter
     'shawbury'          : 'EGOS', //   shawbury raf
     'shearwater(can'    : 'CYAW', //NS shearwater(can m
@@ -2816,30 +2846,15 @@ var names = {
     'spaa'              : 'EPTM', //   spaa glinnik
     'spangdahlem'       : 'ETAD', //   spangdahlem (usa
     'sparrevohn'        : 'PASV', //AK sparrevohn
+    'spartansberg'      : 'KGSP', //SC greer/spartansbg
     'spence'            : 'CYYH', //NU spence bay airpo
     'split/kastel'      : 'LDSP', //   split/kastel sta
     'spokane/felts'     : 'KSFF', //WA spokane/felts
     'spokane/metro'     : 'KGEG', //WA spokane/metro
     'springbok'         : 'FASB', //   springbok
+    'springfield illinois'       : 'KSPI', //IL springfield
     'springfield'       : 'KSGF', //MO springfield
     'st athan'          : 'EGDX', //   st athan raf
-    'saint augustine'   : 'KSGJ', //FL st augustine
-    'saint catharines'  : 'CYSN', //ON st. catharines a
-    'saint catherine'   : 'HESC', //   st catherine
-    'saint cloud'       : 'KSTC', //MN st. cloud
-    'saint denis'       : 'FMEE', //   st. denis/gillot
-    'saint dizier'      : 'LFSI', //   st. dizier/robin
-    'saint etienee'     : 'LFMH', //   st etienne/bouth
-    'saint gatien'      : 'LFRG', //   st gatien
-    'saint johns'       : 'CYYT', //NL st johns arp
-    'saint joseph'      : 'KSTJ', //MO st. joseph
-    'saint louis'       : 'KSTL', //MO st. louis
-    'saint maarten'     : 'TNCM', //   st maarten julia
-    'saint nazaire'     : 'LFRZ', //   st. nazaire/mont
-    'saint paul island' : 'PASN', //AK st paul island
-    'saint petersburg'  : 'KPIE', //FL st petersburg
-    'saint pierre'      : 'LFVP', //NL st pierre-france
-    'saint thomas'      : 'TIST', //   st thomas (king)
     'stanley'           : 'SFAL', //   stanley airport
     'stansted'          : 'EGSS', //   stansted airport
     'state'             : 'KUNV', //PA state college
@@ -2875,6 +2890,7 @@ var names = {
     'suwon'             : 'RKSW', //   suwon (us/kor-af
     'svalbard/longyea'  : 'ENSB', //   svalbard/longyea
     'svolvaer/helle'    : 'ENSH', //   svolvaer/helle
+    'swansboro'         : 'KNJM', //NC bogue/swansboro
     'swartkop'          : 'FASK', //   swartkop (saaf)
     'swidwin'           : 'EPSN', //   swidwin arpt
     'swift'             : 'CYYN', //SK swift curren
@@ -2937,11 +2953,13 @@ var names = {
     'tebessa'           : 'DABS', //   tebessa
     'tees-side'         : 'EGNV', //   tees-side
     'tefe'              : 'SBTF', //   tefe
+    'tegel'             : 'EDDT', //   berlin/tegel (fa
     'tegucigalpa/ton'   : 'MHTG', //   tegucigalpa/ton
     'tehran/mehrabad'   : 'OIII', //   tehran/mehrabad
     'tela'              : 'MHTE', //   tela
     'telfer'            : 'YTEF', //   telfer airport
     'telluride'         : 'KTEX', //CO telluride region
+    'tempelhof'         : 'EDDI', //   berlin/tempelhof
     'temuco'            : 'SCQP', //   temuco
     'temuco/maquehue'   : 'SCTC', //   temuco/maquehue
     'tenerife'          : 'GCTS', //   tenerife sur/rei
@@ -3012,6 +3030,7 @@ var names = {
     'torp'              : 'ENTO', //   torp (civ/nor-af
     'torrejon'          : 'LETO', //   torrejon (usafb)
     'torreon'           : 'MMTC', //   torreon airport
+    'touat'             : 'DAUA', //   adrar/touat
     'touggourt/sidi'    : 'DAUK', //   touggourt/sidi m
     'touho'             : 'NWWU', //   touho
     'toulouse/blagnac'  : 'LFBO', //   toulouse/blagnac
@@ -3055,6 +3074,7 @@ var names = {
     'tunis/carthage'    : 'DTTA', //   tunis/carthage
     'tupelo'            : 'KTUP', //MS tupelo
     'turaif'            : 'OETR', //   turaif
+    'turany'            : 'LKTB', //   brno/turany
     'turkmenabat'       : 'UTAV', //   turkmenabat
     'turkmenbashi'      : 'UTAK', //   turkmenbashi
     'turks'             : 'MBGT', //   turks island
@@ -3086,8 +3106,11 @@ var names = {
     'unalakleet'        : 'PAUN', //AK unalakleet
     'upernavik'         : 'BGUK', //   upernavik
     'upington/pierre'   : 'FAUP', //   upington/pierre
+    'upolu island'      : 'NSAP', //   apia/upolu islan
     'uppsala'           : 'ESCM', //   uppsala (swe-afb
     'uralsk'            : 'UARR', //   uralsk
+    'urbana champaign'  : 'KCMI', //IL champaign/urbana
+    'urbana'            : 'KCMI', //IL champaign/urbana
     'urfa/sanilurfa'    : 'LTCH', //   urfa/sanilurfa
     'urgench'           : 'UTNU', //   urgench
     'uruapan/gen'       : 'MMPN', //   uruapan/gen rayo
@@ -3119,6 +3142,7 @@ var names = {
     'valley'            : 'EGOV', //   valley raf
     'vamdrup'           : 'EKVD', //   vamdrup (aut/man
     'van nuys'               : 'KVNY', //CA van nuys
+    'vance air force base' : 'KEND', //OK enid/vance afb
     'vancouver'         : 'CYVR', //BC vancouver intl a
     'vandel'            : 'EKVA', //   vandel (dan-afb)
     'vandenberg'        : 'KVBG', //CA vandenberg afb
@@ -3141,12 +3165,14 @@ var names = {
     'vicenza(civ/it-a'  : 'LIPT', //   vicenza(civ/it-a
     'vichy/charmeil'    : 'LFLV', //   vichy/charmeil
     'victoria falls'          : 'FVFA', //   victoria falls
+    'victoria texas'          : 'KVCT', //TX victoria
     'victoria'          : 'CYYJ', //BC victoria intl ar
     'vidsel'            : 'ESPE', //   vidsel (swe-afb)
     'vienna/schwechat'  : 'LOWW', //   vienna/schwechat
     'vientiane/wattay'  : 'VLVT', //   vientiane/wattay
     'vigie/st'          : 'TLPC', //   vigie/st lucia
     'vigo/peinador'     : 'LEVX', //   vigo/peinador
+    'vigra'             : 'ENAL', //   alesund/vigra
     'vijayawada/ganna'  : 'VOBZ', //   vijayawada/ganna
     'vilanculos'        : 'FQVL', //   vilanculos
     'vilhena'           : 'SBVH', //   vilhena
@@ -3179,6 +3205,7 @@ var names = {
     'wadi'              : 'OEWD', //   wadi al dawaser
     'wagga'             : 'YSWG', //   wagga wagga(cv/m
     'wake'              : 'PWAK', //UM wake island airf
+    'wales'             : 'EGFF', //   cardiff-wales ar
     'wall'              : 'TQPF', //   wall blake
     'walla'             : 'KALW', //WA walla walla
     'walvis'            : 'FYWB', //   walvis bay
@@ -3193,13 +3220,16 @@ var names = {
     'waskaganish'       : 'CYKQ', //QC waskaganish airp
     'waterford'         : 'EIWF', //   waterford arpt
     'waterkloof'        : 'FAWK', //   waterkloof (saaf
+    'waterloo iowa'          : 'KALO', //IA waterloo
     'waterloo'          : 'CYKF', //ON waterloo well
+    'watertown south dakota'         : 'KATY', //SD watertown
     'watertown'         : 'KART', //NY watertown
     'watson'            : 'CYQH', //YT watson lake airp
     'wattisham'         : 'EGUW', //   wattisham raf
     'waukesha'          : 'KUES', //WI waukesha cnty
     'wausau'            : 'KAUW', //WI wausau
     'wawa'              : 'CYXZ', //ON wawa airport
+    'weimar'            : 'EDDE', //   erfurt/bindersle
     'wejh'              : 'OEWJ', //   wejh
     'wekweeti'          : 'CYWE', //NT wekweeti
     'wellington'        : 'NZWN', //   wellington intl
@@ -3210,6 +3240,7 @@ var names = {
     'westchester'       : 'KHPN',
     'westerland/sylt'   : 'EDXW', //   westerland/sylt
     'westfield'         : 'KBAF', //MA westfield
+    'westover'          : 'KCEF', //MA chicopee/westove
     'wewak'             : 'AYWK', //   wewak intl airpo
     'wharton'           : 'EGNO', //   wharton
     'wheeler'           : 'PHHI', //HI wheeler afb/oahu
@@ -3233,8 +3264,11 @@ var names = {
     'williamsport'      : 'KIPT', //PA williamsport
     'williamtown'       : 'YWLM', //   williamtown arp
     'williston'         : 'KISN', //ND williston
+    'wilmington north carolina'        : 'KILM', //NC wilmington
+    'wilmington ohio'        : 'KILN', //OH wilmington
     'wilmington'        : 'KILG', //DE wilmington
     'windhoek'          : 'FYWW', //   windhoek
+    'windsor ontario'           : 'CYQG', //ON windsor airport
     'windsor'           : 'KBDL', //CT windsor locks
     'wink'              : 'KINK', //TX wink
     'winnemucca'        : 'KWMC', //NV winnemucca
@@ -3317,8 +3351,9 @@ var names = {
     'zurich-kloten'     : 'LSZH', //   zurich-kloten (a
     'zvartnots'         : 'UDYZ', //   zvartnots
     'zweibrucken'       : 'EDRZ', //   zweibrucken
-//     'paso'              : 'SARL', //   paso de los libr
+//    'aberdeen/dyce'     : 'EGPD', //   aberdeen/dyce
 //    'abu'               : 'OMAD', //   abu dhabi/bateen
+//    'aeroparque(civ/m'  : 'SABE', //   aeroparque(civ/m
 //    'agri'              : 'LTCO', //   agri airport
 //    'albany'            : 'KABY', //GA albany
 //    'alexandria'        : 'HEBA', //   alexandria borg
@@ -3326,46 +3361,63 @@ var names = {
 //    'alexandria'        : 'KESF', //LA alexandria
 //    'alexandria/nouzh'  : 'HEAX', //   alexandria/nouzh
 //    'alice'             : 'YBAS', //   alice springs ar
+//    'ankara/etimesgut'  : 'LTAD', //   ankara/etimesgut
+//    'ankara/guvercin'   : 'LTAB', //   ankara/guvercin
+//    'athens/elef-ven'   : 'LGAV', //   athens/elef-ven
+//    'athens/hellenkio'  : 'LGAT', //   athens/hellenkio
+//    'atlanta/fulton'    : 'KFTY', //GA atlanta/fulton
+//    'augusta'           : 'KAUG', //ME augusta
+//    'augusta/daniel'    : 'KDNL', //GA augusta/daniel
 //    'aviano'            : 'LIPA', //   aviano (it/us-af
 //    'balikesir'         : 'LTFD', //   balikesir korfez
+//    'baltimore/martin'  : 'KMTN', //MD baltimore/martin
 //    'bangui/m'poko'     : 'FEFF', //   bangui/m'poko (m
+//    'barcelona/gen'     : 'SVBC', //   barcelona/gen jo
+//    'beijing/peking'    : 'ZBAA', //   beijing/peking
 //    'belfast'           : 'EGAC', //   belfast harbour
+//    'belgrade/surcin'   : 'LYBE', //   belgrade/surcin
 //    'belo'              : 'SBBH', //   belo horiz/pampu
 //    'belo'              : 'SBCF', //   belo horiz/tancr
 //    'bierset/liege'     : 'EBLG', //   bierset/liege (c
 //    'bierset/liege'     : 'EBLH', //   bierset/liege (m
-//    'birmingham'        : 'EGBB', //   birmingham airpo
-//    'birmingham'        : 'KBHM', //AL birmingham
+//    'bloomington/norm'  : 'KBMI', //IL bloomington/norm
 //    'boise'             : 'KBOI',
-//    'brunswick'         : 'KNHZ', //ME brunswick nas
-//    'burlington'        : 'KBRL', //IA burlington
+//    'bom'               : 'SBLP', //   bom jesus da lap
+//    'bucharest/baneas'  : 'LRBS', //   bucharest/baneas
+//    'bucharest/otopen'  : 'LROP', //   bucharest/otopen
+//    'buffalo'           : 'CYVT', //SK buffalo narrows
+//    'calgary/springba'  : 'CYBW', //AB calgary/springba
+//    'calvi/st.'         : 'LFKC', //   calvi/st. cather
 //    'campos/bartolome'  : 'SBCP', //   campos/bartolome
-//    'carlsbad'          : 'KCNM', //NM carlsbad
-//    'charleston'        : 'KCRW', //WV charleston
+//    'capt'              : 'SCFM', //   capt fuentes mar
+//    'carajas/maraba'    : 'SBCJ', //   carajas/maraba
+//    'chandler/mesa'     : 'KIWA', //AZ chandler/mesa
 //    'charleston'        : 'KIGC', //SC charleston afb
 //    'charlestown/newc'  : 'TKPN', //   charlestown/newc
 //    'chicago/midway'           : 'KMDW', //IL chicago
 //    'cochin'            : 'VOCC', //   cochin (in-navy)
-//    'columbia'          : 'KCOU', //MO columbia
-//    'columbia-owens'    : 'KCUB', //SC columbia-owens
-//    'columbus'          : 'KCBM', //MS columbus afb
-//    'columbus'          : 'KCSG', //GA columbus
+//    'concepcion/maris'  : 'SGCO', //   concepcion/maris
+//    'constantine/el'    : 'DABC', //   constantine/el b
+//    'copenhagen/kastr'  : 'EKCH', //   copenhagen/kastr
+//    'copenhagen/roski'  : 'EKRK', //   copenhagen/roski
 //    'corpus christi'    : 'KCRP', //TX corpus christi
+//    'culman/neriugri'   : 'UELL', //   culman/neriugri
 //    'decatur'           : 'KAXC', //IL decatur
 //    'dubai'             : 'OMDW', //   dubai al maktoum
-//    'durango'           : 'MMDO', //   durango airport
+//    'durban/louis'      : 'FADN', //   durban/louis bot
 //    'edmonton'          : 'CYXD', //AB edmonton municip
 //    'edmonton/namao(m'  : 'CYED', //AB edmonton/namao(m
 //    'edmonton/villenu'  : 'CZVL', //AB edmonton/villenu
 //    'el paso'           : 'KELP', //TX el paso
 //    'faro'              : 'CZFA', //YT faro apt artcc
-//    'fayetteville'      : 'KFAY', //NC fayetteville
 //    'fort lauderdale'   : 'KFLL', //FL ft lauderd/holly
 //    'fort myers'      : 'KRSW', //FL fort myers
 //    'fort smith'      : 'KFSM', //AR fort smith
 //    'fort'            : 'KNFW', //TX fort worth nas
 //    'ft'                : 'KAFW', //TX ft worth/allianc
 //    'ft'                : 'KFXE', //FL ft lauderd/exec
+//    'georgetown/corre'  : 'SYEC', //   georgetown/corre
+//    'georgetown/timeh'  : 'SYCJ', //   georgetown/timeh
 //    'geraldton'         : 'YGEL', //   geraldton
 //    'glasgow'           : 'KGGW', //MT glasgow
 //    'gostomel''         : 'UKKM', //   gostomel'
@@ -3373,19 +3425,13 @@ var names = {
 //    'grand forks'       : 'KRDR', //ND grand forks afb
 //    'greenville'        : 'KGLH', //MS greenville
 //    'greenwood'         : 'CYZX', //NS greenwood (can m
-//    'halim'             : 'WIHH', //   halim perdanakus
 //    'har'kov/osnova'    : 'UKHH', //   har'kov/osnova
-//    'hohenfels'         : 'ETIH', //   hohenfels (usa-a
-//    'huntsville'        : 'KUTS', //TX huntsville
 //    'j.'                : 'FYWH', //   j. g. strijdom
-//    'jackson'           : 'KJAC', //WY jackson
-//    'jackson'           : 'KMKL', //TN jackson
 //    'jacksonville'      : 'KNIP', //FL jacksonville nas
-//    'jacksonville'      : 'KOAJ', //NC jacksonville
 //    'jamestown'         : 'KJMS', //ND jamestown
 //    'kalispell'         : 'KGPI', //MT kalispell
 //    'kandahar'          : 'EQCB', //   kandahar
-//    'kansas'            : 'KMKC', //MO kansas city/dntn
+//    'kansas city' : 'KMKC', //MO kansas city/dntn
 //    'key'               : 'KNQX', //FL key west nas
 //    'kiel/holtenau'     : 'EDHK', //   kiel/holtenau ci
 //    'kiev/zhyliany'     : 'UKKK', //   kiev/zhyliany
@@ -3395,24 +3441,18 @@ var names = {
 //    'la grande'         : 'CYAH', //QC la grande iv arp
 //    'la'              : 'NWWR', //   la roche/mare is
 //    'la'              : 'SLLP', //   la paz/jfk intl
-//    'lafayette'       : 'KLFT', //LA lafayette
 //    'las'               : 'KLSV', //NV las vegas/nellis
 //    'las'               : 'KLVS', //NM las vegas
-//    'lexington'         : 'KLEX', //KY lexington
 //    'lima/jorge'        : 'SPJC', //   lima/jorge chave
 //    'little'            : 'KLRF', //AR little rock afb
 //    'livingstone'       : 'FLLI', //   livingstone (mil
-//    'london'            : 'CWSN', //ON london cs
 //    'london'            : 'CYXU', //ON london airport
 //    'london'            : 'EGLC', //   london city airp
 //    'london'            : 'KLOZ', //KY london
 //    'manzanillo'        : 'MUMZ', //   manzanillo
-//    'marathon'          : 'CYSP', //ON marathon
 //    'mary'              : 'UTAM', //   mary
 //    'mary's'            : 'CYMH', //NL mary's harbour
 //    'mcmurdo'           : 'NZWD', //   mcmurdo williams
-//    'midway'            : 'KMDW',
-//    'minot'             : 'KMIB', //ND minot afb
 //    'minsk'             : 'UMMS', //   minsk
 //    'mountain home'   : 'KMUO', //ID mountain home
 //    'n'zeto/ambrizete'  : 'FNZE', //   n'zeto/ambrizete
@@ -3423,28 +3463,25 @@ var names = {
 //    'ndola'             : 'FLSK', //   ndola
 //    'new orleans'     : 'KNBG', //LA new orleans nas
 //    'new orleans'     : 'KNEW', //LA new orleans/lake
-//    'newport'           : 'KONP', //OR newport
 //    'norfolk'           : 'KNGU', //VA norfolk nas/cham
-//    'norfolk'           : 'KOFK', //NE norfolk
 //    'norfolk'           : 'YSNF', //   norfolk island a
 //    'osh'               : 'UAFO', //   osh
 //    'panama'            : 'MPPA', //   panama pacifico
+//    'paso'              : 'SARL', //   paso de los libr
 //    'pensacola'         : 'KNPA', //FL pensacola nas
 //    'philadelphia/ne'   : 'KPNE', //PA philadelphia/ne
 //    'portland'        : 'KPWM', //ME portland
-//    'porto'           : 'SBPA', //   porto alegre/sal
+//    'porto alegre'           : 'SBPA', //   porto alegre/sal
 //    'prishtina'         : 'LYPR', //   prishtina
-//    'richard's'         : 'FARB', //   richard's bay
 //    'richmond'          : 'YRMD', //   richmond
 //    'richmond'          : 'YSRI', //   richmond (aus-af
-//    'rochester'         : 'KRST', //MN rochester
 //    'rota'              : 'PGRO', //   rota intl airp
 //    's'                 : 'WMKA', //   s abdul halim
 //    's.'                : 'GVSV', //   s. pedro
 //    'sable island'             : 'CYSA', //NS sable island(apt
-//    'sacramento/metro'  : 'KSMF', //CA sacramento/metro
-//    'saddam(irq-afb/c'  : 'ORBS', //   saddam(irq-afb/c
+//    'sacramento'       : 'KSMF', //CA sacramento/metro
 //    'saint george'    : 'KSGU', //UT saint george
+//    'saint louis'       : 'GOSS', //   saint louis
 //    'san antonio'       : 'KSSF', //TX s antonio/stinsn
 //    'san juan'        : 'SANU', //   san juan airport
 //    'san'             : 'KSAT', //TX san antonio
@@ -3470,7 +3507,6 @@ var names = {
 //    'sidney'            : 'KSNY', //NE sidney
 //    'simferopol''       : 'UKFF', //   simferopol'
 //    'simferopol''       : 'URFF', //   simferopol'
-//    'springfield'       : 'KSPI', //IL springfield
 //    'st petersburg'                : 'ULLI', //   st petersburg
 //    'st pierre'               : 'FMEP', //   st. pierre/fonds
 //    'st.'               : 'KSUS', //MO st. louis/spirit
@@ -3483,12 +3519,6 @@ var names = {
 //    'tuxtla'            : 'MMTG', //   tuxtla gutierrez
 //    'van'               : 'LTCI', //   van
 //    'victoria'          : 'CYWH', //BC victoria harbour
-//    'victoria'          : 'KVCT', //TX victoria
-//    'waterloo'          : 'KALO', //IA waterloo
-//    'watertown'         : 'KATY', //SD watertown
-//    'wilmington'        : 'KILM', //NC wilmington
-//    'wilmington'        : 'KILN', //OH wilmington
-//    'windsor'           : 'CYQG', //ON windsor airport
 //    'wr.neustadt'       : 'LOXN', //   wr.neustadt west
 //    'yuma'              : 'KNYL', //AZ yuma mcas
 //  'cordoba'           : 'SACO', //   cordoba airport
