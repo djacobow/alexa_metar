@@ -148,7 +148,7 @@ var getXML = function(cbctx, id, cb) {
 var validateCity = function(slots) {
     var name = "none provided";
     try {
-        name = slots.city.value.toLowerCase();
+        name = slots.city.value.toLowerCase().replace('/',' ').replace('-',' ');
         if (names[name]) {
             return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
         }
@@ -258,6 +258,7 @@ function metar2text(metar,preferences) {
             n = n.replace(/air\w+/,' ');
             n = n.replace('arpt',' ');
             n = n.replace('apt',' ');
+            n = n.replace(/\barp\b/,' ');
             n = n.replace('/',' ');
             blobs.push(n);
         } else {
@@ -588,9 +589,9 @@ function processResult(cbctx, data) {
         var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
         to_say = 'The weather server returned an empty response for ' +
 	        letters.join(' ') +
-	        '. This could mean the identifier is invalid, or simply ' +
-	        'that the server is having trouble right now. Perhaps try ' +
-	        'again in a few minutes.';
+	        '. This usually means that the identifier is invalid, but it could be ' +
+	        'that the weather server is having trouble right now and trying ' +
+	        'in a few minutes would help.';
         cbctx.session.user_info.stats.last_airport = null;
         pdb.setUserInfo(cbctx.session.user.userId,
                         cbctx.session.user_info,
