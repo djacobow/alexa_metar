@@ -442,6 +442,7 @@ function metar2text(metar,preferences) {
             var layer_type_short = layer.$.sky_cover;
             var layer_base = layer.$.cloud_base_ft_agl;
             var layer_type = layer_type_short == 'CLR' ? 'clear' :
+                             layer_type_short == 'SKC' ? 'clear' :
 	                         layer_type_short == 'FEW' ? 'few clouds' :
 	                         layer_type_short == 'SCT' ? 'scattered' :
 		                     layer_type_short == 'BKN' ? 'broken' :
