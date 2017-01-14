@@ -148,7 +148,10 @@ var getXML = function(cbctx, id, cb) {
 var validateCity = function(slots) {
     var name = "none provided";
     try {
-        name = slots.city.value.toLowerCase().replace('/',' ').replace('-',' ');
+        name = slots.city.value.toLowerCase()
+            .replace('/',' ')
+            .replace('-',' ')
+            .replace('airport','');
         if (names[name]) {
             return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
         }
