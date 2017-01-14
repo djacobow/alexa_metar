@@ -365,9 +365,9 @@ if (require.main == module) {
     if (1) {
         var slots = {
             sa: { value: 'k' },
-            sb: { value: 's'} ,
-            sc: { value: 'b' },
-            sd: { value: 'n' },
+            sb: { value: 'b'} ,
+            sc: { value: 'l' },
+            sd: { value: 'v' },
         };
         var sr = metar.validateSlots(slots);
         test_ctx.letters = sr.letters;
