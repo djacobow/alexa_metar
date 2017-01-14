@@ -150,15 +150,15 @@ airport_wx_app.prototype.intentHandlers = {
 
     // Generic amazon intents
     "AMAZON.HelpIntent": function(intent, session, response) {
-        logBasic('AMAZON.HelpIntent',session);
+        logBasic('AMAZON.HelpIntent',session,intent);
         response.tellNoEnd(help_text);
     },
     "AMAZON.StopIntent": function(intent, session, response) {
-        logBasic('AMAZON.StopIntent',session);
+        logBasic('AMAZON.StopIntent',session,intent);
         response.tell('stopping. goodbye');
     },
     "AMAZON.CancelIntent": function(intent, session, response) {
-        logBasic('AMAZON.CancelIntent',session);
+        logBasic('AMAZON.CancelIntent',session,intent);
         response.tell('canceling. goodbye');
     },
 
@@ -183,6 +183,7 @@ airport_wx_app.prototype.intentHandlers = {
 
     // a simple intent for getting the time in zulu
     getTime: function(intent, session, response) {
+        logBasic('getTime',session,intent);
         var now = new Date();
         var r = 'The time is now ' +
 	            util.numberToZeroPaddedString(now.getUTCHours(),2) +
