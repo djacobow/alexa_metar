@@ -58,9 +58,9 @@ function milesToWords(b,m) {
         var quarters = Math.floor(m*4 + 0.5);
         var wholes   = Math.floor(quarters/4);
         quarters -= wholes * 4;
-        b.push(wholes);
+        if (wholes || !quarters) b.push(wholes);
         if (quarters) {
-            b.push('and');
+            if (wholes) b.push('and');
             if (quarters == 1) {
                 b.push('one quarter');
             } else if (quarters == 2) {
@@ -614,4 +614,30 @@ module.exports = {
     validateDefaultAirport: validateDefaultAirport,
     validateCity:           validateCity,
 };
+
+if (require.main == module) {
+    var b;
+    b = []; milesToWords(b,0); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.125); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.25); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.375); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.5); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.625); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.75); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.875); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,0.90); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,1); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,1.25); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,1.5); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,1.75); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,2); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,2.25); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,2.5); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,2.75); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,3); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,3.25); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,3.5); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,3.75); console.log(JSON.stringify(b,null,2));
+    b = []; milesToWords(b,4); console.log(JSON.stringify(b,null,2));
+}
 
