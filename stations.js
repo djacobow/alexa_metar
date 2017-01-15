@@ -8252,7 +8252,7 @@ var station_data = {
   'iata': 'AAA ',
   'elev': 0.182,
   'metar': 'X',
-  'name': 'lincoln',
+  'name': 'lincoln logan county',
   'lon': -89.3333333333333,
   'icao': 'KAAA',
   'lat': 40.1666666666667,
