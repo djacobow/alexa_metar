@@ -380,5 +380,23 @@ if (require.main == module) {
         }
     }
 
+    if (1) {
+        var slots = {
+            sa: { value: 'p' },
+            sb: { value: 'a'} ,
+            sc: { value: 'n' },
+            sd: { value: 'c' },
+        };
+        var sr = metar.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            metar.getCached(test_ctx, metar.processResult);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
 }
+
 
