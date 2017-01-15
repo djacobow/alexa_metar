@@ -2738,6 +2738,7 @@ var names = {
     'san diego'         : 'KSAN',
     'san fernando'      : 'SADF', //   san fernando
     'san francisco'     : 'KSFO',
+    'san francisco california' : 'KSFO',
     'san javier'        : 'LELC', //   san javier(mil/c
     'san jose'          : 'KSJC',
     'san juan puerto rico' : 'TJSJ', //PR san juan/wfo
