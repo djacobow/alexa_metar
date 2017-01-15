@@ -23186,7 +23186,7 @@ var station_data = {
  'KMDW': {
   'lat': 41.7833333333333,
   'country': 'US',
-  'name': 'chicago',
+  'name': 'chicago midway',
   'icao': 'KMDW',
   'lon': -87.75,
   'elev': 0.188,
