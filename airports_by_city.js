@@ -2222,6 +2222,7 @@ var names = {
     'nukus'             : 'UTNN', //   nukus/karakalpak
     'karakalpak'        : 'UTNN', //   nukus/karakalpak
     'o\'hare'           : 'KORD',
+    'chicago o\'hare'   : 'KORD',
     'oakland'           : 'KOAK', //CA oakland
     'oaxaca'            : 'MMOX', //   oaxaca/xoxocotla
     'xoxocotla'         : 'MMOX', //   oaxaca/xoxocotla
