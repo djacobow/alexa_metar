@@ -262,6 +262,8 @@ function metar2text(metar,preferences) {
                 .replace('\bintl\b','international')
                 .replace('\bint\b','international')
                 .replace(/\bafb\b/,'air force base')
+                .replace(/\braf\b/,'royal air force')
+                .replace(/\bnas\b/,'naval air station')
                 .replace(/\bairp\w+/,' ')
                 .replace('arpt',' ')
                 .replace('apt',' ')
