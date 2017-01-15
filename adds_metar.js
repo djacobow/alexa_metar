@@ -259,8 +259,8 @@ function metar2text(metar,preferences) {
 
         if (sta_dat.name) {
             var n = sta_dat.name.replace('intnl','international')
-                .replace('\bintl\b','international')
-                .replace('\bint\b','international')
+                .replace(/\bintl\b/,'international')
+                .replace(/\bint\b/,'international')
                 .replace(/\bafb\b/,'air force base')
                 .replace(/\braf\b/,'royal air force')
                 .replace(/\bnas\b/,'naval air station')
