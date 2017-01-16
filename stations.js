@@ -6326,7 +6326,7 @@ var station_data = {
   'elev': 0.014,
   'lat': 50.95,
   'metar': 'X',
-  'name': 'southampton wx c',
+  'name': 'southampton international',
   'icao': 'EGHI',
   'lon': -1.35,
  },
