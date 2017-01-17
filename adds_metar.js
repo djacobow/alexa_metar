@@ -262,19 +262,36 @@ function metar2text(metar,preferences) {
                 .replace(/\bintl\b/,'international')
                 .replace(/\bint\b/,'international')
                 .replace(/\bafb\b/,'air force base')
+                .replace(/\bmcas\b/,'marine corps air station')
+                .replace(/\fld\b/,'field')
+                .replace(/\muni\b/,'municipal')
+                .replace(/\municip\b/,'municipal')
+                .replace(/\bvly\b/,'valley')
+                .replace(/\breg\b/,'regional')
+                .replace(/\bpt\b/,'point')
+                .replace(/\bst\b/,'saint')
+                .replace(/\bmt\b/,'mount')
+                .replace(/\bmtn\b/,'mountain')
+                .replace(/\brgnl\b/,'regional')
                 .replace(/\braf\b/,'royal air force')
                 .replace(/\bnas\b/,'naval air station')
-                .replace(/\bairp\w+/,' ')
-                .replace('arpt',' ')
-                .replace('apt',' ')
-                .replace(/\barp\b/,' ')
+                .replace(/\bairp\w+/,'airport')
+                .replace(/\bislap\w+/,'island')
+                .replace(/\barpt\b/,'airport')
+                .replace('apt','airport')
+                .replace(/\barp\b/,'airport')
                 .replace('/',' ');
             blobs.push(n);
+            if (n.match(/\bairport|base|station|field|airfield\b/)) {
+            } else {
+                blobs.push('airport');
+            }
         } else {
             var id      = "" + metar.station_id;
             blobs.push.apply(blobs,id.split(''));
+            blobs.push('airport');
         }
-        blobs.push('airport');
+        // blobs.push('airport');
         blobs.push(m_pause);
     }
 
