@@ -297,22 +297,33 @@ function metar2text(metar,preferences) {
 
 
     // automated results, like from AWOS state that they were autoamted
-    if (util.definedNonNull(metar.quality_control_flags)) {
-        var cc = metar.quality_control_flags[0];
-        if (util.defined(cc) && (typeof cc == 'object')) {
-            if (util.defined(cc.auto_station)) {
-                if (util.stringIs(cc.auto_station[0],'TRUE')) {
-                    blobs.push('automated');
-                }
-            }
-        }
-    }
+    var was_automated = false;
+    try {
+        was_automated = 
+            util.stringIs(metar.quality_control_flags[0].auto_station[0],
+                         'TRUE');
+    } catch (e0) { }
 
 
     // say "special" if the update to the metar was done off the normal
     // schedule, due to an important and sudden weather change, for example
-    if (util.stringIs(metar.metar_type,'SPECI')) {
-        blobs.push('special');
+    var was_speci = false;
+    try {
+        was_speci = util.stringIs(metar.metar_type,'SPECI');
+    } catch (e1) { }
+
+
+    // ADDS returns a lot of reports that are both automated and SPECI,
+    // which seems very fishy to me. Wikipedia says that an ASOS 
+    // system can do an out-of-schedule report if the weather has changed
+    // quickly, but I've never heard an automated station say "special",
+    // so I'm going to suppress them here.
+    if (was_automated) {
+        blobs.push('automated');
+    } else {
+        if (was_speci) {
+            blobs.push('special');
+        }
     }
 
 
