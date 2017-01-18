@@ -691,8 +691,10 @@ var names = {
     'comodoro'          : 'SAVC', //   comodoro rivadav
     'comox'             : 'CYQQ', //BC comox (can mil)
     'conakry'           : 'GUCY', //   conakry/gbessia
+    'concord california': 'KCCR', // CA
+    'buchanon field'    : 'KCCR', // CA
     'concepcion'        : 'SCIE', //   concepcion/carri
-    'concord'           : 'KCON', //NH concord
+    'concord new hampshire' : 'KCON', //NH concord
     'concordia'         : 'SAAC', //   concordia/pierre
     'coningsby'         : 'EGXC', //   coningsby raf
     'connaught'         : 'EIKN', //   connaught apt
@@ -1192,6 +1194,7 @@ var names = {
     'gwinn'             : 'KSAW', //MI gwinn/sawyer
     'gyandzha'          : 'UBBG', //   gyandzha
     'gyor'              : 'LHPR', //   gyor
+    'half moon bay'     : 'KHAF',
     'habib bouruguiba'  : 'DTMB', //   habib bourguiba
     'hae mi'            : 'RKTP', //   hae mi
     'hafr al batin'     : 'OEPA', //   hafr al-batin ar
@@ -1867,6 +1870,7 @@ var names = {
     'lyon'              : 'EKCH',
     'lyon/bron'         : 'LFLY', //   lyon/bron
     'lyon/satolas'      : 'LFLL', //   lyon/satolas
+    'modesto'           : 'KMOD',
     'mabaruma'          : 'SYMB', //   mabaruma
     'macae'             : 'SBME', //   macae
     'macao'             : 'VMMC', //   macao/macau
@@ -2149,6 +2153,8 @@ var names = {
     'mys'               : 'UHMI', //   mys schmidta
     'mysore'            : 'VOMY', //   mysore
     'mzuzu'             : 'FWUU', //   mzuzu
+    'novato'            : 'KDVO',
+    'gnoss field'       : 'KDVO',
     'nabire/irian'      : 'WABI', //   nabire/irian jay
     'nadym'             : 'USMM', //   nadym
     'nadzab'            : 'AYNZ', //   nadzab
@@ -2604,6 +2610,10 @@ var names = {
     'quito mariscal'    : 'SEQU', //   quito/mariscal s
     'quito'             : 'SEQM', //   quito/new intl
     'qurghonteppa'      : 'UTDT', //   qurghonteppa
+    'reid hillview'     : 'KRHV',
+    'read hillview'     : 'KRHV', // not right spelling, but this is what Alexa gives me
+    'san jose reid hillview' : 'KRHV',
+    'san jose hillview' : 'KRHV',
     'rabat'             : 'GMME', //   rabat/sale (rmaf
     'rabil'             : 'GVBA', //   rabil airport
     'radom'             : 'EPRA', //   radom airport
@@ -3294,6 +3304,7 @@ var names = {
     'uytash'            : 'URML', //   uytash
     'uzhgorod'          : 'UKLU', //   uzhgorod
     'uzice ponikve'     : 'LYUZ', //   uzice-ponikve
+    'vacaville'         : 'KVCB',
     'vaasa'             : 'EFVA', //   vaasa
     'vadso'             : 'ENVD', //   vadso
     'vaerlose'          : 'EKVL', //   vaerlose (dan-af
