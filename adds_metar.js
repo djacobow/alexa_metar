@@ -299,9 +299,11 @@ function metar2text(metar,preferences) {
     // automated results, like from AWOS state that they were autoamted
     if (util.definedNonNull(metar.quality_control_flags)) {
         var cc = metar.quality_control_flags[0];
-        if (util.definedHasLength(cc)) {
-            if (util.stringIs(cc.auto_station[0],'TRUE')) {
-                blobs.push('automated');
+        if (util.defined(cc) && (typeof cc == 'object')) {
+            if (util.defined(cc.auto_station)) {
+                if (util.stringIs(cc.auto_station[0],'TRUE')) {
+                    blobs.push('automated');
+                }
             }
         }
     }

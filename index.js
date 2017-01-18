@@ -397,6 +397,41 @@ if (require.main == module) {
         }
     }
 
+    if (1) {
+        var slots = {
+            sa: { value: 'k' },
+            sb: { value: 'e'} ,
+            sc: { value: 'u' },
+            sd: { value: 'l' },
+        };
+        var sr = metar.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            metar.getCached(test_ctx, metar.processResult);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
+    if (1) {
+        var slots = {
+            sa: { value: 'k' },
+            sb: { value: 'p'} ,
+            sc: { value: 'a' },
+            sd: { value: 'o' },
+        };
+        var sr = metar.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            metar.getCached(test_ctx, metar.processResult);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
 }
+
 
 
