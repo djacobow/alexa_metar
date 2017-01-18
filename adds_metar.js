@@ -256,8 +256,7 @@ function metar2text(metar,preferences) {
     var sta_dat = null;
     if (util.definedNonNull(metar.station_id)) {
         sta_dat = stations[metar.station_id];
-
-        if (sta_dat.name) {
+        if (util.defined(sta_dat) && util.defined(sta_dat.name)) {
             var n = sta_dat.name.replace('intnl','international')
                 .replace(/\bintl\b/,'international')
                 .replace(/\bint\b/,'international')
@@ -362,7 +361,7 @@ function metar2text(metar,preferences) {
         var wind_dir_true = parseFloat(metar.wind_dir_degrees[0]);
 
         var mag_var = 0;
-        if (sta_dat) {
+        if (util.defined(sta_dat) && sta_dat) {
             mag_var = wmm.declination(sta_dat.elev,sta_dat.lat,sta_dat.lon,
 		    nowToMagYear());
         } else {
