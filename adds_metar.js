@@ -151,7 +151,8 @@ var validateCity = function(slots) {
         name = slots.city.value.toLowerCase()
             .replace('/',' ')
             .replace('-',' ')
-            .replace('airport','');
+            .replace(/\bairport\b/,'')
+            .replace(/\bweather\b/,'');
         if (names[name]) {
             return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
         } else {
