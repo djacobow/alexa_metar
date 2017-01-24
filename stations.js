@@ -32479,7 +32479,7 @@ var station_data = {
   'country': 'KM',
  },
  'KBNA': {
-  'name': 'nashville',
+  'name': 'nashville international',
   'lon': -86.6833333333333,
   'icao': 'KBNA',
   'lat': 36.1166666666667,
