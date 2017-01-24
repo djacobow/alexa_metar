@@ -152,6 +152,7 @@ var validateCity = function(slots) {
             .replace('/',' ')
             .replace('-',' ')
             .replace(/\bairport\b/,'')
+            .replace(/\binternational\b/,'')
             .replace(/\bweather\b/,'');
         if (names[name]) {
             return { mode: 'city', valid: true, letters: names[name].split(''), orig: name };
