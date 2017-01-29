@@ -55494,7 +55494,7 @@ var station_data = {
  'KBHM': {
   'lon': -86.75,
   'icao': 'KBHM',
-  'name': 'birmingham',
+  'name': 'Birmingham Shuttlesworth International',
   'country': 'US',
   'lat': 33.5666666666667,
   'iata': 'BHM ',
