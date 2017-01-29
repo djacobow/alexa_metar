@@ -92,7 +92,7 @@ function metarById(sr, session, response) {
 
 function joinWithAnd(a) {
     if (a.length > 1) {
-        return a.slice(0,a.length-2).join(' , ') + ' and ' + a[a.length-1];
+        return a.slice(0,a.length-1).join(' , ') + ' and ' + a[a.length-1];
     } else if (a.length > 0) {
         return a[0];
     } else {
@@ -113,7 +113,7 @@ function prefSetter(type,intent,session,pdb,response) {
             'slot_name': 'pressure',
             'pref_name': 'pressure_unit',
             'read_name': 'altimeter unit',
-            'legal': ['millibar', 'millibars', 'hectopascal','inches'],
+            'legal': ['millibar', 'millibars','hectopascal','pascal','inches'],
         },
         'wdir': {
             'slot_name': 'ref',
@@ -432,6 +432,4 @@ if (require.main == module) {
     }
 
 }
-
-
 
