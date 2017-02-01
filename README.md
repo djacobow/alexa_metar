@@ -13,6 +13,10 @@ It hits the Aviation Digital Data Service (ADDS) to fetch METARs (that's weather
 from various airports, then reads the result aloud in the format that a pilot would here
 if he were listening on ATIS. 
 
+It can also read TAFS (terminal forecasts) in a format that seems appropriate
+for Alexa. There is no official verbal format for TAFS to mimic, since they
+are strictly a printed weather product.
+
 ## ATIS vs METAR
 
 METAR == METeorological Report
@@ -30,6 +34,14 @@ reference for wind direction is different (magnetic vs true north), and the tota
 amount of information may be different. A METAR might have some fields that are not
 normally present in an ATIS report (such as fraction temperatures) and an ATIS report
 often includes non-weather related airport information.
+
+## TAF printed vs TAF read aloud
+
+TAFS are generally not read aloud, so this app has no particular format
+to mimic. In general, the phraseology is like that for ATIS, except there
+will be no temperature (not included in TAFs) and each section of the 
+TAF will be preceded by a from-to period that the forecast covers. Also,
+the beginning of the TAF specifies the entire duration of the forecast.
 
 ## What the program does
 
