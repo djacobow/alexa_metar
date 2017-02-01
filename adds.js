@@ -5,10 +5,8 @@
 
 var do_not_cache = false;
 
-var pdb = require('./prefs');
-var util = require('./dutil');
-
-
+var pdb           = require('./prefs');
+var util          = require('./dutil');
 var names         = require('./airports_by_city.js');
 var https         = require('https');
 var xml2js        = require('xml2js');
