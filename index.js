@@ -3,7 +3,8 @@
 var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff';
 
 var AlexaSkill = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
-var metar      = require('./adds_metar'); // aviation METARs
+var adds       = require('./adds');       // aviation METARs
+var wxdec      = require('./wxdec_helpers.js');
 var pdb        = require('./prefs');      // saving user preferences
 var util       = require('./dutil');      // utils
 
@@ -62,9 +63,9 @@ function weatherById(sr, session, response, do_taf) {
             letters : sr.letters,
         };
         if (do_taf) {
-            metar.getCachedTAF(ctx, metar.processTAF);
+            adds.getCachedTAF(ctx, wxdec.processTAF);
         } else {
-            metar.getCachedMETAR(ctx, metar.processMETAR);
+            adds.getCachedMETAR(ctx, wxdec.processMETAR);
         }
     } else {
         var was_city    = sr.mode == 'city';
@@ -173,37 +174,37 @@ airport_wx_app.prototype.intentHandlers = {
     // The "main" intents for getting the current weather
     metarThree: function(intent, session, response) {
         logBasic('metarThree',session,intent);
-        weatherById(metar.validateSlots(intent.slots),session,response);
+        weatherById(adds.validateSlots(intent.slots),session,response);
     },
     metarFour: function(intent, session, response) {
         logBasic('metarFour',session,intent);
-        weatherById(metar.validateSlots(intent.slots),session,response);
+        weatherById(adds.validateSlots(intent.slots),session,response);
     },
     metarCity: function(intent, session, response) {
         logBasic('metarCity',session,intent);
-        weatherById(metar.validateCity(intent.slots),session,response);
+        weatherById(adds.validateCity(intent.slots),session,response);
     },
     metarDeflt: function(intent, session, response) {
         logBasic('metarDeflt',session,intent);
-        weatherById(metar.validateDefaultAirport(session.user_info),session,response);
+        weatherById(adds.validateDefaultAirport(session.user_info),session,response);
     },
 
     // The intents for getting the forecast weather
     tafThree: function(intent, session, response) {
         logBasic('tafThree',session,intent);
-        weatherById(metar.validateSlots(intent.slots),session,response,true);
+        weatherById(adds.validateSlots(intent.slots),session,response,true);
     },
     tafFour: function(intent, session, response) {
         logBasic('tafFour',session,intent);
-        weatherById(metar.validateSlots(intent.slots),session,response,true);
+        weatherById(adds.validateSlots(intent.slots),session,response,true);
     },
     tafCity: function(intent, session, response) {
         logBasic('tafCity',session,intent);
-        weatherById(metar.validateCity(intent.slots),session,response,true);
+        weatherById(adds.validateCity(intent.slots),session,response,true);
     },
     tafDeflt: function(intent, session, response) {
         logBasic('tafDeflt',session,intent);
-        weatherById(metar.validateDefaultAirport(session.user_info),session,response,true);
+        weatherById(adds.validateDefaultAirport(session.user_info),session,response,true);
     },
 
 
@@ -335,34 +336,34 @@ if (require.main == module) {
     };
 
 
-    if (0) {
+    if (1) {
         var slots = {
             sa: { value: 'l' },
             sb: { value: 'e'} ,
             sc: { value: 'm' },
             sd: { value: 'd' },
         };
-        var sr = metar.validateSlots(slots);
+        var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
         }
     }
 
-    if (0) {
+    if (1) {
         var slots = {
             sa: { value: 'p' },
             sb: { value: 'a'} ,
             sc: { value: 'f' },
             sd: { value: 'a' },
         };
-        var sr = metar.validateSlots(slots);
+        var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -373,84 +374,84 @@ if (require.main == module) {
         var slots = {
             city: { value: 'heathrow' },
         };
-        var sr    = metar.validateCity(slots);
+        var sr    = adds.validateCity(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedTAF(test_ctx, metar.processTAF);
+            adds.getCachedTAF(test_ctx, wxdec.processTAF);
         }
     }
 
 
-    if (0) {
-        var sr    = metar.validateDefaultAirport(test_ctx.session.user_info);
+    if (1) {
+        var sr    = adds.validateDefaultAirport(test_ctx.session.user_info);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         }
     }
 
-    if (0) {
+    if (1) {
         var slots = {
             sa: { value: 'k' },
             sb: { value: 'b'} ,
             sc: { value: 'l' },
             sd: { value: 'v' },
         };
-        var sr = metar.validateSlots(slots);
+        var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
         }
     }
 
-    if (0) {
+    if (1) {
         var slots = {
             sa: { value: 'p' },
             sb: { value: 'a'} ,
             sc: { value: 'n' },
             sd: { value: 'c' },
         };
-        var sr = metar.validateSlots(slots);
+        var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
         }
     }
 
-    if (0) {
+    if (1) {
         var slots = {
             sa: { value: 'k' },
             sb: { value: 'e'} ,
             sc: { value: 'u' },
             sd: { value: 'l' },
         };
-        var sr = metar.validateSlots(slots);
+        var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
         }
     }
 
-    if (0) {
+    if (1) {
         var slots = {
             sa: { value: 'k' },
             sb: { value: 'p'} ,
             sc: { value: 'a' },
             sd: { value: 'o' },
         };
-        var sr = metar.validateSlots(slots);
+        var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            metar.getCachedMETAR(test_ctx, metar.processMETAR);
+            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
