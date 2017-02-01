@@ -458,5 +458,39 @@ if (require.main == module) {
         }
     }
 
+    if (1) {
+        var slots = {
+            sa: { value: 'p' },
+            sb: { value: 'p'} ,
+            sc: { value: 'P' },
+            sd: { value: 'P' },
+        };
+        var sr = adds.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
+    if (1) {
+        var slots = {
+            sa: { value: 'p' },
+            sb: { value: 'p'} ,
+            sc: { value: 'P' },
+            sd: { value: 'P' },
+        };
+        var sr = adds.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            adds.getCachedMETAR_TAF(test_ctx, 'taf', wxdec.processTAF);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
 }
 
