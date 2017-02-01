@@ -63,9 +63,9 @@ function weatherById(sr, session, response, do_taf) {
             letters : sr.letters,
         };
         if (do_taf) {
-            adds.getCachedTAF(ctx, wxdec.processTAF);
+            adds.getCachedMETAR_TAF(ctx, 'taf', wxdec.processTAF);
         } else {
-            adds.getCachedMETAR(ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(ctx, 'metar', wxdec.processMETAR);
         }
     } else {
         var was_city    = sr.mode == 'city';
@@ -346,7 +346,7 @@ if (require.main == module) {
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -363,7 +363,7 @@ if (require.main == module) {
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -377,7 +377,7 @@ if (require.main == module) {
         var sr    = adds.validateCity(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedTAF(test_ctx, wxdec.processTAF);
+            adds.getCachedMETAR_TAF(test_ctx, 'taf', wxdec.processTAF);
         }
     }
 
@@ -386,7 +386,7 @@ if (require.main == module) {
         var sr    = adds.validateDefaultAirport(test_ctx.session.user_info);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         }
     }
 
@@ -400,7 +400,7 @@ if (require.main == module) {
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -417,7 +417,7 @@ if (require.main == module) {
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -434,7 +434,7 @@ if (require.main == module) {
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);
@@ -451,7 +451,7 @@ if (require.main == module) {
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
-            adds.getCachedMETAR(test_ctx, wxdec.processMETAR);
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
         } else {
             console.log('uh-oh');
             console.log(sr);

@@ -23,7 +23,7 @@ var wordToLetter = function(word) {
     return v;
 };
 
-var getCachedTAF = function(cbctx, cb) {
+var getCachedMETAR_TAF = function(cbctx, type, cb) {
     var letters      = cbctx.letters;
     var id           = '';
     if (letters.length < 4) {
@@ -31,41 +31,20 @@ var getCachedTAF = function(cbctx, cb) {
     }
     id += letters.join('');
 
-    if (do_not_cache) return getRawMETAR_TAF(false, cbctx, id, cb);
+    if (do_not_cache) return getRawMETAR_TAF(type === 'taf', cbctx, id, cb);
 
-    pdb.sta_get(id,'taf',function(ferr,fdata) {
+    pdb.sta_get(id,type,function(ferr,fdata) {
         if (ferr) {
             if (!util.stringInIgnoreCase(ferr,['too_old','no_items_returned'])) {
                 console.error('-w- getCached return error: ' + ferr);
             }
-            return getRawMETAR_TAF(true, cbctx, id, cb);
+            return getRawMETAR_TAF(type === 'taf', cbctx, id, cb);
         } else {
             return cb(cbctx,fdata);
         }
     });
 };
 
-var getCachedMETAR = function(cbctx, cb) {
-    var letters      = cbctx.letters;
-    var id           = '';
-    if (letters.length < 4) {
-        id = 'K';
-    }
-    id += letters.join('');
-
-    if (do_not_cache) return getRawMETAR_TAF(false, cbctx, id, cb);
-
-    pdb.sta_get(id,'metar',function(ferr,fdata) {
-        if (ferr) {
-            if (!util.stringInIgnoreCase(ferr,['too_old','no_items_returned'])) {
-                console.error('-w- getCached return error: ' + ferr);
-            }
-            return getRawMETAR_TAF(false, cbctx, id, cb);
-        } else {
-            return cb(cbctx,fdata);
-        }
-    });
-};
 
 var getRawMETAR_TAF = function(taf, cbctx, id, cb) {
     taf = (taf !== undefined) && taf;
@@ -208,8 +187,7 @@ function validateDefaultAirport(user_info) {
 
 
 module.exports = {
-    getCachedMETAR:         getCachedMETAR,
-    getCachedTAF:           getCachedTAF,
+    getCachedMETAR_TAF:     getCachedMETAR_TAF,
     validateSlots:          validateSlots,
     validateDefaultAirport: validateDefaultAirport,
     validateCity:           validateCity,
