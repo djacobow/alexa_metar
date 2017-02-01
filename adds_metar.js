@@ -10,6 +10,7 @@ var util = require('./dutil');
 
 var s_pause = '<break time="100ms"/>';
 var m_pause = '<break time="200ms"/>';
+var l_pause = '<break time="400ms"/>';
 
 var names         = require('./airports_by_city.js');
 var AlexaSkill    = require('./AlexaSkill'); // The AlexaSkill prototype and helpers
@@ -72,7 +73,7 @@ function milesToWords(b,m) {
     }
 }
 
-var getCached = function(cbctx, cb) {
+var getCachedTAF = function(cbctx, cb) {
     var letters      = cbctx.letters;
     var id           = '';
     if (letters.length < 4) {
@@ -80,25 +81,48 @@ var getCached = function(cbctx, cb) {
     }
     id += letters.join('');
 
-    if (do_not_cache) return getXML(cbctx, id, cb);
+    if (do_not_cache) return getRawMETAR_TAF(false, cbctx, id, cb);
 
-    pdb.sta_get(id,function(ferr,fdata) {
+    pdb.sta_get(id,'taf',function(ferr,fdata) {
         if (ferr) {
             if (!util.stringInIgnoreCase(ferr,['too_old','no_items_returned'])) {
                 console.error('-w- getCached return error: ' + ferr);
             }
-            return getXML(cbctx, id, cb);
+            return getRawMETAR_TAF(true, cbctx, id, cb);
         } else {
             return cb(cbctx,fdata);
         }
     });
 };
 
-var getXML = function(cbctx, id, cb) {
+var getCachedMETAR = function(cbctx, cb) {
+    var letters      = cbctx.letters;
+    var id           = '';
+    if (letters.length < 4) {
+        id = 'K';
+    }
+    id += letters.join('');
+
+    if (do_not_cache) return getRawMETAR_TAF(false, cbctx, id, cb);
+
+    pdb.sta_get(id,'metar',function(ferr,fdata) {
+        if (ferr) {
+            if (!util.stringInIgnoreCase(ferr,['too_old','no_items_returned'])) {
+                console.error('-w- getCached return error: ' + ferr);
+            }
+            return getRawMETAR_TAF(false, cbctx, id, cb);
+        } else {
+            return cb(cbctx,fdata);
+        }
+    });
+};
+
+var getRawMETAR_TAF = function(taf, cbctx, id, cb) {
+    taf = (taf !== undefined) && taf;
 
     var url =
        'https://www.aviationweather.gov/adds/dataserver_current/httpparam' +
-	   '?dataSource=metars' +
+	   '?dataSource=' + (taf ? 'tafs' : 'metars') +
 	   '&requestType=retrieve' +
 	   '&format=xml' +
 	   '&hoursBeforeNow=3' +
@@ -120,7 +144,8 @@ var getXML = function(cbctx, id, cb) {
                         } else {
                             if (do_not_cache) return cb(cbctx, result);
 
-                            pdb.sta_store(id,result,function(serr) {
+                            pdb.sta_store(id,taf ? 'taf' : 'metar',
+                                result,function(serr) {
                                 return cb(cbctx,result);
                             });
                         }
@@ -249,15 +274,13 @@ function radioify(blobs) {
 }
 
 
-function metar2text(metar,preferences) {
-    var blobs = [];
-    // console.log(metar);
 
-    // Get the airport name if we have it in our database,
-    // otherwise just say the identifier.
+// Get the airport name if we have it in our database,
+// otherwise just say the identifier.
+function makeAirportName(id, blobs) {
     var sta_dat = null;
-    if (util.definedNonNull(metar.station_id)) {
-        sta_dat = stations[metar.station_id];
+    if (util.definedNonNull(id)) {
+        sta_dat = stations[id];
         if (util.defined(sta_dat) && util.defined(sta_dat.name)) {
             var n = sta_dat.name.replace('intnl','international')
                 .replace(/\bintl\b/,'international')
@@ -288,93 +311,93 @@ function metar2text(metar,preferences) {
                 blobs.push('airport');
             }
         } else {
-            var id      = "" + metar.station_id;
             blobs.push.apply(blobs,id.split(''));
             blobs.push('airport');
         }
-        // blobs.push('airport');
-        blobs.push(m_pause);
+    }
+    return sta_dat;
+}
+
+function taf2text(period, last_dt, sta_dat, preferences) {
+    // console.log(JSON.stringify(period,null,2));
+    var blobs = [];
+
+    if (period.hasOwnProperty('change_indicator') && 
+        (period.change_indicator[0] === 'TEMPO')) {
+        blobs.push('temporarily');
     }
 
+    var from_t = new Date(period.fcst_time_from[0]);
+    var to_t   = new Date(period.fcst_time_to[0]);
+    blobs.push('from');
+    blobs.push.apply(blobs, dateToMonthDayZulu(from_t, last_dt));
 
-    // automated results, like from AWOS state that they were autoamted
-    var was_automated = false;
-    try {
-        was_automated = 
-            util.stringIs(metar.quality_control_flags[0].auto_station[0],
-                         'TRUE');
-    } catch (e0) { }
+    blobs.push('to');
+    blobs.push.apply(blobs, dateToMonthDayZulu(to_t, from_t));
 
-
-    // say "special" if the update to the metar was done off the normal
-    // schedule, due to an important and sudden weather change, for example
-    var was_speci = false;
-    try {
-        was_speci = util.stringIs(metar.metar_type,'SPECI');
-    } catch (e1) { }
-
-
-    // ADDS returns a lot of reports that are both automated and SPECI,
-    // which seems very fishy to me. Wikipedia says that an ASOS 
-    // system can do an out-of-schedule report if the weather has changed
-    // quickly, but I've never heard an automated station say "special",
-    // so I'm going to suppress them here.
-    if (was_automated) {
-        blobs.push('automated');
-    } else {
-        if (was_speci) {
-            blobs.push('special');
-        }
+    if (period.hasOwnProperty('change_indicator') && 
+        (period.change_indicator[0] === 'BECMG')) {
+        blobs.push('becoming');
     }
 
+    blobs.push(m_pause);
 
- blobs.push('weather observation');
+    vis2text(period.visibility_statute_mi, preferences, blobs);
 
-    // state the time, in zulu
-    if (util.definedNonNull(metar.observation_time)) {
-        var otime = new Date(metar.observation_time);
-        blobs.push(util.timeToDigits(otime).join(' '));
-        blobs.push('zulu');
-        blobs.push(m_pause);
-    }
+    preferences.wind_reference = 'true'; // TAF should always be true
+    wind2text(period.wind_dir_degrees, period.wind_speed_kt, 
+              period.hasOwnProperty('wind_gust_kt') ? period.wind_gust_kt : null,
+              [''], sta_dat, preferences, false, blobs);
 
 
+    wx2text(period.hasOwnProperty('wx_string') ? period.wx_string : null,
+            preferences, blobs);
+
+    sky2text(period.sky_condition, preferences, blobs);
+
+    blobs.push(s_pause);
+    return blobs;
+}
+
+function vis2text(vis_mi, preferences, blobs) {
     // report the visibility information
-    if (util.definedNonNull(metar.visibility_statute_mi)) {
+    if (util.definedNonNull(vis_mi)) {
         blobs.push('visibility');
         var use_km =
             util.stringInIgnoreCase(preferences.distance_unit,
                                     ['kilometer','kilometers','km']);
         if (use_km) {
-            metersToWords(blobs, parseFloat(metar.visibility_statute_mi) * 1609.34);
+            metersToWords(blobs, parseFloat(vis_mi) * 1609.34);
         } else {
-            milesToWords(blobs, parseFloat(metar.visibility_statute_mi));
+            milesToWords(blobs, parseFloat(vis_mi));
         }
         blobs.push(m_pause);
     }
+}
 
-
+function wind2text(wdir_deg, wspd_kt, wgst_kt, raw_text, 
+                   sta_dat, preferences, say_true, blobs) {
     // report the wind. There are several variations in phraseology for this,
     // so this is a bit more complicated than one might imagine.
-    if (util.definedNonNull(metar.wind_dir_degrees) &&
-        util.definedNonNull(metar.wind_speed_kt)) {
+    if (util.definedNonNull(wdir_deg) &&
+        util.definedNonNull(wspd_kt)) {
         blobs.push('wind');
         // METARs have true directions
-        var wind_dir_true = parseFloat(metar.wind_dir_degrees[0]);
+        var wind_dir_true = parseFloat(wdir_deg[0]);
 
         var mag_var = 0;
         if (util.defined(sta_dat) && sta_dat) {
             mag_var = wmm.declination(sta_dat.elev,sta_dat.lat,sta_dat.lon,
 		    nowToMagYear());
         } else {
-            console.log('-warn- : metar2text : did not calculate mag var; wind is true');
+            console.log('-warn- : wind2text : did not calculate mag var; wind is true');
        }
 
-       var wind_speed_int = parseInt(metar.wind_speed_kt[0]);
+       var wind_speed_int = parseInt(wspd_kt[0]);
        if (wind_speed_int === 0) {
            blobs.push('calm');
        } else {
-           if (metar.raw_text[0].match(/\sVRB/)) {
+           if (raw_text[0].match(/\sVRB/)) {
                blobs.push('variable');
            } else {
                var wind_dir_pref  = mag_var;
@@ -395,24 +418,25 @@ function metar2text(metar,preferences) {
                var wind_dir_int = Math.floor(wind_dir_pref + 0.5);
                var wind_digits = util.numberToZeroPaddedArray(wind_dir_int,3);
                wind_digits.forEach(function(x) { blobs.push(x.toString()); });
-               if (use_true) {
+               if (say_true) {
                    blobs.push('true');
                }
            }
            blobs.push('at');
-           blobs.push(metar.wind_speed_kt[0]);
-           if (metar.wind_gust_kt) {
+           blobs.push(wspd_kt[0]);
+           if (wgst_kt) {
                blobs.push('gusting');
-               blobs.push(metar.wind_gust_kt[0]);
+               blobs.push(wgst_kt[0]);
            }
        }
        blobs.push(m_pause);
    }
+}
 
-
+function wx2text(wx_string, preferences, blobs) {
     // weather descriptions
-    if (util.definedNonNull(metar.wx_string)) {
-        var wx = metar.wx_string.toString();
+    if (util.definedNonNull(wx_string)) {
+        var wx = wx_string.toString();
         var vicinity = false;
         if (wx.match(/^-/)) { blobs.push('light'); }
         if (wx.match(/^\+/)) { blobs.push('heavy'); }
@@ -466,12 +490,13 @@ function metar2text(metar,preferences) {
         }
         blobs.push(m_pause);
    }
+}
 
-
+function sky2text(sky_condition, preferences, blobs) {
     // sky condition (clouds)
-    if (util.definedNonNull(metar.sky_condition)) {
+    if (util.definedNonNull(sky_condition)) {
         blobs.push('sky condition');
-        metar.sky_condition.forEach(function(layer) {
+        sky_condition.forEach(function(layer) {
             var layer_type_short = layer.$.sky_cover;
             var layer_base = layer.$.cloud_base_ft_agl;
             var layer_type = layer_type_short == 'CLR' ? 'clear' :
@@ -498,6 +523,64 @@ function metar2text(metar,preferences) {
         });
         blobs.push(s_pause);
     }
+}
+function metar2text(metar,preferences) {
+    var blobs = [];
+    // console.log(metar);
+
+    var sta_dat = makeAirportName(metar.station_id, blobs);
+    blobs.push(m_pause);
+
+    // automated results, like from AWOS state that they were autoamted
+    var was_automated = false;
+    try {
+        was_automated = 
+            util.stringIs(metar.quality_control_flags[0].auto_station[0],
+                         'TRUE');
+    } catch (e0) { }
+
+
+    // say "special" if the update to the metar was done off the normal
+    // schedule, due to an important and sudden weather change, for example
+    var was_speci = false;
+    try {
+        was_speci = util.stringIs(metar.metar_type,'SPECI');
+    } catch (e1) { }
+
+
+    // ADDS returns a lot of reports that are both automated and SPECI,
+    // which seems very fishy to me. Wikipedia says that an ASOS 
+    // system can do an out-of-schedule report if the weather has changed
+    // quickly, but I've never heard an automated station say "special",
+    // so I'm going to suppress them here.
+    if (was_automated) {
+        blobs.push('automated');
+    } else {
+        if (was_speci) {
+            blobs.push('special');
+        }
+    }
+
+
+ blobs.push('weather observation');
+
+    // state the time, in zulu
+    if (util.definedNonNull(metar.observation_time)) {
+        var otime = new Date(metar.observation_time);
+        blobs.push(util.timeToDigits(otime).join(' '));
+        blobs.push('zulu');
+        blobs.push(m_pause);
+    }
+
+    vis2text(metar.visibility_statute_mi, preferences, blobs);
+
+    wind2text(metar.wind_dir_degrees, metar.wind_speed_kt, metar.wind_gust_kt,
+              metar.raw_text, sta_dat, preferences, true, blobs);
+
+    wx2text(metar.wx_string, preferences, blobs);
+
+    sky2text(metar.sky_condition, preferences, blobs);
+
 
 
     // temperature && dewpoint, ATIS is always "c", but I've
@@ -575,9 +658,144 @@ function reversePhonetics() {
     return rp;
 }
 
-function processResult(cbctx, data) {
+function dateToMonthDayZulu(dt, last_dt) {
+    last_dt = util.definedNonNull(last_dt) ? last_dt : null;
+    var date  = dt.getUTCDate();
+    console.log(last_dt);
+    var different_dates = (!util.definedNonNull(last_dt)) ||
+                          (last_dt.getUTCDate() !== date);
+
+    var pieces = [];
+    if (different_dates) {
+        var month = dt.getUTCMonth();
+        month = [ 'January', 'February', 'March', 'April',
+                  'May', 'June', 'July', 'August', 
+                  'September', 'October', 'November', 'December' ][month];
+        pieces.push(month);
+        pieces.push(date);
+        pieces.push(', ');
+    }
+
+
+    var hours = dt.getUTCHours();
+    var minutes = dt.getUTCMinutes();
     if (false) {
-        console.log('processResult DATA IS');
+        var hour_digits = util.numberToZeroPaddedArray(hours,2);
+        pieces.push.apply(pieces, hour_digits);
+        var minute_digits = '';
+        if (minutes) {
+            minute_digits  = util.numberToZeroPaddedArray(minutes,2);
+        } else {
+            minute_digits = ['hundred'];
+        }
+        pieces.push.apply(pieces, minute_digits);
+    } else {
+        if (hours < 10) {
+            pieces.push('zero');
+        }
+        pieces.push(hours.toString());
+
+        if (minutes === 0) {
+            pieces.push('hundred');
+        } else {
+            if (minutes < 10) {
+                pieces.push('zero');
+            }
+            pieces.push(minutes);
+        }
+    }
+    pieces.push('zulu');
+    return pieces;
+}
+
+function datesToIntervalMinutes(d1,d2) {
+    var d1m = d1.getTime();
+    var d2m = d2.getTime();
+    var delta_m = d2 - d1;
+    var delta_sec = delta_m / 1000;
+    var delta_min = delta_sec / 60;
+    var delta_hrs = Math.floor(delta_min / 60);
+    delta_min -= delta_hrs * 60;
+    delta_min = Math.floor(delta_min);
+    var rv = [];
+    if (delta_hrs) rv.push.apply(rv,[delta_hrs, 'hours']);
+    if (delta_min) rv.push.apply(rv,[delta_min, 'minutes']);
+    return rv;
+}
+
+function processTAF(cbctx, data) {
+    if (false) {
+        console.log('processTAF DATA IS');
+        console.log(JSON.stringify(data,null,2));
+    }
+    var to_say = '';
+    var taf = null;
+    if (data.response &&
+        data.response.data[0] &&
+        data.response.data[0].TAF) {
+        taf = data.response.data[0].TAF[0];
+    }
+    if (taf) {
+        // console.log(taf);
+        var prefs = cbctx.session.user_info.preferences;
+        var issue_time = new Date(taf.issue_time[0]);
+        var from_time  = new Date(taf.valid_time_from[0]);
+        var to_time    = new Date(taf.valid_time_to[0]);
+        var forecast   = taf.forecast;
+
+        var chunks = ['terminal', 'forecast', 'for'];
+
+        var sta_dat = makeAirportName(taf.station_id[0], chunks);
+
+        chunks.push.apply(chunks, [s_pause, 'issued']);
+        chunks.push.apply(chunks, dateToMonthDayZulu(issue_time));
+        chunks.push(',');
+        chunks.push.apply(chunks,datesToIntervalMinutes(issue_time,new Date()));
+        chunks.push('ago');
+
+        chunks.push(m_pause);
+
+        chunks.push.apply(chunks, ['forecast', 'valid', 'from']);
+        chunks.push.apply(chunks, dateToMonthDayZulu(from_time,issue_time));
+        chunks.push('to');
+        chunks.push.apply(chunks, dateToMonthDayZulu(to_time,from_time));
+        chunks.push('.');
+        chunks.push(m_pause);
+
+        var last_dt = to_time;
+        for (var i=0; i<forecast.length; i++) {
+            var period = forecast[i];
+            chunks.push.apply(chunks, taf2text(period, last_dt, sta_dat, prefs));
+            last_dt = new Date(period.fcst_time_to[0]);
+        }
+
+        chunks     = radioify(chunks);
+        to_say = chunks.join(' ');
+        to_say = ['<speak>',to_say,'.','</speak>'].join(' ');
+
+        cbctx.response_object.tellWithCard(
+            {type: 'SSML', speech: to_say},
+             "TAF for " + taf.station_id, taf.raw_text[0]
+        );
+    } else {
+        var rp      = reversePhonetics();
+        var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
+        to_say = 'When trying to download the taf for ' +
+	        letters.join(' ') +
+	        ' the weather server returned an empty response. This usually ' +
+            ' means that the aiport does not exist or that the airport does ' +
+            ' not have a terminal forecast.  However, it could be ' +
+	        ' that the weather server is having trouble right now and ' +
+            ' trying again later would help.';
+        cbctx.response_object.tellWithCard(
+            to_say, "No TAF", "No response for " + cbctx.letters.join('')
+        );
+    }
+}
+
+function processMETAR(cbctx, data) {
+    if (false) {
+        console.log('processMETAR DATA IS');
         console.log(JSON.stringify(data,null,2));
     }
     var metar = null;
@@ -589,7 +807,7 @@ function processResult(cbctx, data) {
 
     var to_say = '';
     if (util.definedNonNull(metar)) {
-        console.log('-d- processResult : __METAR_OK__');
+        console.log('-d- processMETAR : __METAR_OK__');
         var chunks = metar2text(metar,cbctx.session.user_info.preferences);
         chunks     = radioify(chunks);
         to_say = chunks.join(' ');
@@ -605,11 +823,11 @@ function processResult(cbctx, data) {
 
         to_say = ['<speak>',to_say,'</speak>'].join(' ');
 
-        // console.log('-d- processResult : Going to say: ' + to_say);
+        // console.log('-d- processMETAR : Going to say: ' + to_say);
 
         cbctx.session.user_info.stats.last_airport = metar.station_id[0];
         if (false) {
-            console.log('-d- processResult __SAVING_UPDATE__');
+            console.log('-d- processMETAR __SAVING_UPDATE__');
             console.log(cbctx.session.user);
             console.log(cbctx.session.user_info);
         }
@@ -625,14 +843,15 @@ function processResult(cbctx, data) {
                         }
         );
     } else {
-        console.log('-d- processResult : __METAR_NOT_OK__');
+        console.log('-d- processMETAR : __METAR_NOT_OK__');
         var rp      = reversePhonetics();
         var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
         to_say = 'The weather server returned an empty response for ' +
 	        letters.join(' ') +
-	        '. This usually means that the identifier is invalid, but it could be ' +
-	        'that the weather server is having trouble right now and trying ' +
-	        'in a few minutes would help.';
+	        '. This usually means that the identifier is invalid or that ' +
+            ' the airport specified does not have weather reporting. However ' +
+	        ' it could be that the weather server is having trouble right ' +
+            ' now and trying again in a few minutes would help.';
         cbctx.session.user_info.stats.last_airport = null;
         pdb.setUserInfo(cbctx.session.user.userId,
                         cbctx.session.user_info,
@@ -645,8 +864,10 @@ function processResult(cbctx, data) {
 }
 
 module.exports = {
-    getCached:              getCached,
-    processResult:          processResult,
+    getCachedMETAR:         getCachedMETAR,
+    getCachedTAF:           getCachedTAF,
+    processMETAR:           processMETAR,
+    processTAF:             processTAF,
     wordToLetter:           wordToLetter,
     validateSlots:          validateSlots,
     validateDefaultAirport: validateDefaultAirport,

@@ -61,6 +61,60 @@
       ]
     },
     {
+      "intent": "tafThree",
+      "slots": [
+        {
+          "name": "sa",
+          "type": "ONELETTER"
+        },
+        { "name": "sb",
+         "type" : "ONELETTER"
+        },
+        {
+          "name": "sc",
+          "type": "ONELETTER"
+        }
+      ]
+    },
+    {
+      "intent": "tafFour",
+      "slots": [
+        {
+          "name": "sa",
+          "type": "ONELETTER"
+        },
+        { "name": "sb",
+         "type" : "ONELETTER"
+        },
+        {
+          "name": "sc",
+          "type": "ONELETTER"
+        },
+                {
+          "name": "sd",
+          "type": "ONELETTER"
+        }
+
+      ]
+    },
+    {
+      "intent": "tafCity",
+      "slots": [
+        {
+          "name": "city",
+          "type": "AMAZON.US_CITY"
+        }
+
+
+      ]
+    },
+    {
+      "intent": "tafDeflt",
+      "slots": [
+      ]
+    },
+
+    {
       "intent": "setAirport",
       "slots": []
     },

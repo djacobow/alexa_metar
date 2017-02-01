@@ -12,7 +12,8 @@ var config = {
         table_name: 'METAR_preferences',
     },
     cache_db: {
-        table_name: 'weathercache',
+        metar_table_name: 'weathercache',
+        taf_table_name: 'forecastcache',
         max_age: 3 * 60,
     },
     default_userinfo: {
@@ -30,9 +31,13 @@ var config = {
 // set up to use database
 aws.config.loadFromPath(config.aws_credentials);
 
-function sta_get(id,cb) {
+function sta_get(id,type,cb) {
+    var tname = type === 'taf' ?
+                config.cache_db.taf_table_name :
+                config.cache_db.metar_table_name;
+
     var p = {
-        TableName: config.cache_db.table_name,
+        TableName: tname,
         KeyConditionExpression: "#id = :staid",
         ExpressionAttributeNames: {
             "#id": "station"
@@ -60,7 +65,11 @@ function sta_get(id,cb) {
 
 }
 
-function sta_store(id,data,cb) {
+function sta_store(id,type,data,cb) {
+
+    var tname = type === 'taf' ?
+                config.cache_db.taf_table_name :
+                config.cache_db.metar_table_name;
 
     // Get around the RIDICULOUS limitation in dynamodb that it cannot
     // store empty strings. Why? Who knows?! It's the dumbest thing
@@ -75,7 +84,7 @@ function sta_store(id,data,cb) {
         !data.response.warnings[0].length) delete data.response.warnings;
 
     var p = {
-        TableName: config.cache_db.table_name,
+        TableName: tname,
         Item: {
             station: id,
             wdata: data,

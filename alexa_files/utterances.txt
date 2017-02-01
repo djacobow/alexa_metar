@@ -1,14 +1,18 @@
 metarThree to read the atis at    {sa} {sb} {sc}
 metarThree to read the atis in    {sa} {sb} {sc}
-metarThree to read the atis from  {sa} {sb} {sc}
-metarThree to read the atis for   {sa} {sb} {sc}
-metarThree to read the metar at   {sa} {sb} {sc}
-metarThree to read the metar for  {sa} {sb} {sc}
-metarThree to read the metar in   {sa} {sb} {sc}
-metarThree to read the metar from {sa} {sb} {sc}
-metarThree to get                 {sa} {sb} {sc}
-metarThree to get the atis at     {sa} {sb} {sc}
-metarThree to get the metar at    {sa} {sb} {sc}
+metarThree to read the atis from    {sa} {sb} {sc}
+metarThree to read the atis for     {sa} {sb} {sc}
+metarThree to read the metar at     {sa} {sb} {sc}
+metarThree to read the metar for    {sa} {sb} {sc}
+metarThree to read the metar in     {sa} {sb} {sc}
+metarThree to read the metar from   {sa} {sb} {sc}
+metarThree to read the weather for  {sa} {sb} {sc}
+metarThree to read the weather in   {sa} {sb} {sc}
+metarThree to read the weather from {sa} {sb} {sc}
+metarThree to get                   {sa} {sb} {sc}
+metarThree to get the atis at       {sa} {sb} {sc}
+metarThree to get the metar at      {sa} {sb} {sc}
+metarThree to get the weather at    {sa} {sb} {sc}
 
 metarThree read the atis at    {sa} {sb} {sc}
 metarThree read the atis in    {sa} {sb} {sc}
@@ -21,6 +25,10 @@ metarThree read the metar from {sa} {sb} {sc}
 metarThree get                 {sa} {sb} {sc}
 metarThree get the atis at     {sa} {sb} {sc}
 metarThree get the metar at    {sa} {sb} {sc}
+metarThree get the weather at    {sa} {sb} {sc}
+metarThree read the weather for  {sa} {sb} {sc}
+metarThree read the weather in   {sa} {sb} {sc}
+metarThree read the weather from {sa} {sb} {sc}
 
 
 metarFour  to read the atis at    {sa} {sb} {sc} {sd}
@@ -31,9 +39,14 @@ metarFour  to read the metar at   {sa} {sb} {sc} {sd}
 metarFour  to read the metar for  {sa} {sb} {sc} {sd}
 metarFour  to read the metar in   {sa} {sb} {sc} {sd}
 metarFour  to read the metar from {sa} {sb} {sc} {sd}
+metarFour  to read the weather at   {sa} {sb} {sc} {sd}
+metarFour  to read the weather for  {sa} {sb} {sc} {sd}
+metarFour  to read the weather in   {sa} {sb} {sc} {sd}
+metarFour  to read the weather from {sa} {sb} {sc} {sd}
 metarFour  to get                 {sa} {sb} {sc} {sd}
 metarFour  to get the atis at     {sa} {sb} {sc} {sd}
 metarFour  to get the metar at    {sa} {sb} {sc} {sd}
+metarFour  to get the weather at  {sa} {sb} {sc} {sd}
 
 metarFour  read the atis at    {sa} {sb} {sc} {sd}
 metarFour  read the atis in    {sa} {sb} {sc} {sd}
@@ -46,6 +59,11 @@ metarFour  read the metar from {sa} {sb} {sc} {sd}
 metarFour  get                 {sa} {sb} {sc} {sd}
 metarFour  get the atis at     {sa} {sb} {sc} {sd}
 metarFour  get the metar at    {sa} {sb} {sc} {sd}
+metarFour  read the weather at   {sa} {sb} {sc} {sd}
+metarFour  read the weather for  {sa} {sb} {sc} {sd}
+metarFour  read the weather in   {sa} {sb} {sc} {sd}
+metarFour  read the weather from {sa} {sb} {sc} {sd}
+metarFour  to get the weather at  {sa} {sb} {sc} {sd}
 
 metarCity  to read the atis at    {city}
 metarCity  to read the atis in    {city}
@@ -55,9 +73,15 @@ metarCity  to read the metar at   {city}
 metarCity  to read the metar for  {city}
 metarCity  to read the metar in   {city}
 metarCity  to read the metar from {city}
+metarCity  to read the weather at   {city}
+metarCity  to read the weather for  {city}
+metarCity  to read the weather in   {city}
+metarCity  to read the weather from {city}
 metarCity  to get                 {city}
 metarCity  to get the atis at     {city}
 metarCity  to get the metar at    {city}
+metarCity  to get the weather at  {city}
+
 
 metarCity  read the atis at    {city}
 metarCity  read the atis in    {city}
@@ -67,16 +91,20 @@ metarCity  read the metar at   {city}
 metarCity  read the metar for  {city}
 metarCity  read the metar in   {city}
 metarCity  read the metar from {city}
+metarCity  read the weather at   {city}
+metarCity  read the weather for  {city}
+metarCity  read the weather in   {city}
+metarCity  read the weather from {city}
+
 metarCity  get                 {city}
 metarCity  get the atis at     {city}
 metarCity  get the metar at    {city}
+metarCity  get the weather at  {city}
 
-metarDeflt to get default
 metarDeflt to get default atis
 metarDeflt to get default metar
 metarDeflt to get default weather
 metarDeflt to get default station
-metarDeflt to get local
 metarDeflt to get local atis
 metarDeflt to get local metar
 metarDeflt to get local weather
@@ -85,18 +113,14 @@ metarDeflt to get the local atis
 metarDeflt to get the local metar
 metarDeflt to get the local station
 metarDeflt to get the local weather
-metarDeflt for metar
-metarDeflt for atis
 metarDeflt for local atis
 metarDeflt for local metar
 metarDeflt for local weather
-
-metarDeflt get default
+metarDeflt for local station
 metarDeflt get default atis
 metarDeflt get default metar
 metarDeflt get default weather
 metarDeflt get default station
-metarDeflt get local
 metarDeflt get local atis
 metarDeflt get local metar
 metarDeflt get local weather
@@ -105,11 +129,28 @@ metarDeflt get the local atis
 metarDeflt get the local metar
 metarDeflt get the local station
 metarDeflt get the local weather
-metarDeflt for metar
-metarDeflt for atis
 metarDeflt for local atis
 metarDeflt for local metar
 metarDeflt for local weather
+metarDeflt for local station
+
+tafThree get the forecast for {sa} {sb} {sc}
+tafThree get the forecast at {sa} {sb} {sc}
+tafThree get the taf for {sa} {sb} {sc}
+tafThree get the taf at {sa} {sb} {sc}
+tafFour get the forecast for {sa} {sb} {sc} {sd}
+tafFour get the forecast at {sa} {sb} {sc} {sd}
+tafFour get the taf for {sa} {sb} {sc} {sd}
+tafFour get the taf at {sa} {sb} {sc} {sd}
+tafCity get the forecast for {city}
+tafCity get the forecast at {city}
+tafCity get the taf for {city}
+tafCity get the taf at {city}
+tafCity get the default forecast
+tafCity get the local forecast
+tafCity get the default station forecast
+tafCity get the local station forecast
+
 
 setWindRef set wind reference {ref}
 setWindRef set wind {ref}
@@ -174,3 +215,4 @@ getTime to get time zulu
 getTime to report zulu time
 getTime to report u t c time
 getTime to report the time
+
