@@ -379,86 +379,6 @@ var datesToIntervalMinutes = function(d1,d2) {
     return rv;
 };
 
-var processTAF = function(cbctx, data) {
-    if (false) {
-        console.log('processTAF DATA IS');
-        console.log(JSON.stringify(data,null,2));
-    }
-    var to_say = '';
-    var taf = null;
-    if (data.response &&
-        data.response.data[0] &&
-        data.response.data[0].TAF) {
-        taf = data.response.data[0].TAF[0];
-    }
-    if (taf) {
-        // console.log(taf);
-        var prefs = cbctx.session.user_info.preferences;
-        var issue_time = new Date(taf.issue_time[0]);
-        var from_time  = new Date(taf.valid_time_from[0]);
-        var to_time    = new Date(taf.valid_time_to[0]);
-        var forecast   = taf.forecast;
-
-        var chunks = ['terminal', 'forecast', 'for'];
-
-        var sta_dat = makeAirportName(taf.station_id[0], chunks);
-
-        // give the time the forecast was generated, and how
-        // long ago that was
-        chunks.push.apply(chunks, [s_pause, 'issued']);
-        chunks.push.apply(chunks, dateToMonthDayZulu(issue_time));
-        chunks.push(',');
-        chunks.push.apply(
-            chunks,datesToIntervalMinutes(issue_time,new Date())
-        );
-        chunks.push('ago');
-        // these periods end sentences and affect Alexa's inflection
-        chunks.push('.');
-        chunks.push(m_pause);
-
-        // The overall forecast period.
-        chunks.push.apply(chunks, ['forecast', 'valid', 'from']);
-        chunks.push.apply(chunks, dateToMonthDayZulu(from_time,issue_time));
-        chunks.push('to');
-        chunks.push.apply(chunks, dateToMonthDayZulu(to_time,from_time));
-        chunks.push('.');
-        chunks.push(m_pause);
-
-        var last_dt = to_time;
-        for (var i=0; i<forecast.length; i++) {
-            var period = forecast[i];
-            chunks.push.apply(
-                chunks, taf2text(period, last_dt, sta_dat, prefs)
-            );
-            last_dt = new Date(period.fcst_time_to[0]);
-        }
-
-        chunks     = radioify(chunks);
-        to_say = chunks.join(' ');
-        to_say = ['<speak>',to_say,'.','</speak>'].join(' ');
-
-        cbctx.response_object.tellWithCard(
-            {type: 'SSML', speech: to_say},
-             "TAF for " + taf.station_id, taf.raw_text[0]
-        );
-    } else {
-        var rp      = reversePhonetics();
-        var letters = cbctx.letters.map(function(l) {
-            return rp[l.toLowerCase()];
-        });
-        to_say = 'When trying to download the taf for ' +
-	        letters.join(' ') +
-
-`The weather server returned an empty response. This almost always \
-indicates that the airport does not exist or that it does not have a \
-terminal forecast. However, it is possible that the A D D S weather server \
-is having trouble right now and that trying again later would work.`;
-
-        cbctx.response_object.tellWithCard(
-            to_say, "No TAF", "No response for " + cbctx.letters.join('')
-        );
-    }
-};
 
 var temp2text = function(temp_c, dewp_c, preferences, blobs) {
     // temperature && dewpoint, ATIS is always "c", but I've
@@ -692,6 +612,96 @@ in a few minuts would help.`;
                                 "No response for " + cbctx.letters.join('')
                             );
                         }
+        );
+    }
+};
+
+
+var processTAF = function(cbctx, data) {
+    if (false) {
+        console.log('processTAF DATA IS');
+        console.log(JSON.stringify(data,null,2));
+    }
+    var to_say = '';
+    var taf = null;
+    if (data.response &&
+        data.response.data[0] &&
+        data.response.data[0].TAF) {
+        taf = data.response.data[0].TAF[0];
+    }
+    if (taf) {
+        // console.log(taf);
+        var prefs = cbctx.session.user_info.preferences;
+        var issue_time = new Date(taf.issue_time[0]);
+        var from_time  = new Date(taf.valid_time_from[0]);
+        var to_time    = new Date(taf.valid_time_to[0]);
+        var forecast   = taf.forecast;
+
+        var chunks = ['terminal', 'forecast', 'for'];
+
+        var sta_dat = makeAirportName(taf.station_id[0], chunks);
+
+        // give the time the forecast was generated, and how
+        // long ago that was
+        chunks.push.apply(chunks, [s_pause, 'issued']);
+        chunks.push.apply(chunks, dateToMonthDayZulu(issue_time));
+        chunks.push(',');
+        chunks.push.apply(
+            chunks,datesToIntervalMinutes(issue_time,new Date())
+        );
+        chunks.push('ago');
+        // these periods end sentences and affect Alexa's inflection
+        chunks.push('.');
+        chunks.push(m_pause);
+
+        // The overall forecast period.
+        chunks.push.apply(chunks, ['forecast', 'valid', 'from']);
+        chunks.push.apply(chunks, dateToMonthDayZulu(from_time,issue_time));
+        chunks.push('to');
+        chunks.push.apply(chunks, dateToMonthDayZulu(to_time,from_time));
+        chunks.push('.');
+        chunks.push(m_pause);
+
+        var last_dt = to_time;
+        for (var i=0; i<forecast.length; i++) {
+            var period = forecast[i];
+            chunks.push.apply(
+                chunks, taf2text(period, last_dt, sta_dat, prefs)
+            );
+            last_dt = new Date(period.fcst_time_to[0]);
+        }
+
+        chunks     = radioify(chunks);
+        to_say = chunks.join(' ');
+        to_say = ['<speak>',to_say,'.','</speak>'].join(' ');
+
+
+        cbctx.session.user_info.stats.last_airport = taf.station_id[0];
+        pdb.setUserInfo(cbctx.session.user.userId,
+                        cbctx.session.user_info,
+                        function(e) {
+                            cbctx.response_object.tellWithCard(
+                                {type: 'SSML', speech: to_say},
+                                "TAF for " + taf.station_id,
+                                taf.raw_text[0]
+                            );
+                        }
+        );
+    } else {
+        var rp      = reversePhonetics();
+        var letters = cbctx.letters.map(function(l) {
+            return rp[l.toLowerCase()];
+        });
+        to_say = 'When trying to download the taf for ' +
+	        letters.join(' ') +
+
+`The weather server returned an empty response. This almost always \
+indicates that the airport does not exist or that it does not have a \
+terminal forecast. However, it is possible that the A D D S weather server \
+is having trouble right now and that trying again later would work.`;
+
+        cbctx.response_object.tellWithCard(
+            to_say, "No TAF", "No response for " + cbctx.letters.join('')
         );
     }
 };
