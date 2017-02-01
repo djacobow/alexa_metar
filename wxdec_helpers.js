@@ -2,8 +2,8 @@
 /*jshint -W097 */
 /*jshint esversion: 6 */
 
-var util = require('./dutil');
-var pdb = require('./prefs');
+var util          = require('./dutil');
+var pdb           = require('./prefs');
 var WorldMagModel = require('./WorldMagneticModel');
 var wmm           = new WorldMagModel();
 var stations      = require('./stations.js');
@@ -105,7 +105,7 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
     // console.log(JSON.stringify(period,null,2));
     var blobs = [];
 
-    if (period.hasOwnProperty('change_indicator') && 
+    if (period.hasOwnProperty('change_indicator') &&
         (period.change_indicator[0] === 'TEMPO')) {
         blobs.push('temporarily');
     }
@@ -118,7 +118,7 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
     blobs.push('to');
     blobs.push.apply(blobs, dateToMonthDayZulu(to_t, from_t));
 
-    if (period.hasOwnProperty('change_indicator') && 
+    if (period.hasOwnProperty('change_indicator') &&
         (period.change_indicator[0] === 'BECMG')) {
         blobs.push('becoming');
     }
@@ -128,8 +128,10 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
     vis2text(period.visibility_statute_mi, preferences, blobs);
 
     preferences.wind_reference = 'true'; // TAF should always be true
-    wind2text(period.wind_dir_degrees, period.wind_speed_kt, 
-              period.hasOwnProperty('wind_gust_kt') ? period.wind_gust_kt : null,
+    wind2text(period.wind_dir_degrees, period.wind_speed_kt,
+              period.hasOwnProperty('wind_gust_kt') ?
+                  period.wind_gust_kt :
+                  null,
               [''], sta_dat, preferences, false, blobs);
 
 
@@ -158,7 +160,7 @@ var vis2text = function(vis_mi, preferences, blobs) {
     }
 };
 
-var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text, 
+var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
                    sta_dat, preferences, say_true, blobs) {
     // report the wind. There are several variations in phraseology for this,
     // so this is a bit more complicated than one might imagine.
@@ -173,7 +175,8 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
             mag_var = wmm.declination(sta_dat.elev,sta_dat.lat,sta_dat.lon,
 		    nowToMagYear());
         } else {
-            console.log('-warn- : wind2text : did not calculate mag var; wind is true');
+            console.log('-warn- : wind2text : did not calculate mag var; ' +
+                'wind is true');
        }
 
        var wind_speed_int = parseInt(wspd_kt[0]);
@@ -184,12 +187,13 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
                blobs.push('variable');
            } else {
                var wind_dir_pref  = mag_var;
-               var use_true = util.stringIsIgnoreCase(preferences.wind_reference,'true');
+               var use_true = util.stringIsIgnoreCase(
+                   preferences.wind_reference,'true');
                if (use_true) {
                    // true wind directions are generally not appropriate
-                   // in an ATIS report, but because I have to calculate starting
-                   // from true, I make it optional for the user to get a true
-                   // direction.
+                   // in an ATIS report, but because I have to calculate
+                   // starting from true, I make it optional for the
+                   // user to get a true direction.
                    wind_dir_pref = wind_dir_true;
                } else {
                    wind_dir_pref += wind_dir_true;
@@ -200,7 +204,9 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
                while (wind_dir_pref > 360) wind_dir_pref -= 360;
                var wind_dir_int = Math.floor(wind_dir_pref + 0.5);
                var wind_digits = util.numberToZeroPaddedArray(wind_dir_int,3);
-               wind_digits.forEach(function(x) { blobs.push(x.toString()); });
+               wind_digits.forEach(function(x) {
+                   blobs.push(x.toString());
+               });
                if (say_true) {
                    blobs.push('true');
                }
@@ -292,9 +298,11 @@ var sky2text = function(sky_condition, preferences, blobs) {
             if ((layer_type != 'clear') && (layer_type.length)) {
                 layer_base = parseInt(layer_base);
                 var layer_base_thousands = Math.floor(layer_base / 1000);
-                var layer_base_hundreds  = Math.floor((layer_base - layer_base_thousands*1000) / 100);
+                var layer_base_hundreds  =
+                    Math.floor((layer_base - layer_base_thousands*1000) / 100);
                 if (layer_base_thousands) {
-                    blobs.push(layer_base_thousands.toString().split('').join(' '));
+                    blobs.push(layer_base_thousands
+                        .toString().split('').join(' '));
                     blobs.push('thousand');
                 }
                 if (layer_base_hundreds) {
@@ -328,27 +336,16 @@ var dateToMonthDayZulu = function(dt, last_dt) {
     if (different_dates) {
         var month = dt.getUTCMonth();
         month = [ 'January', 'February', 'March', 'April',
-                  'May', 'June', 'July', 'August', 
+                  'May', 'June', 'July', 'August',
                   'September', 'October', 'November', 'December' ][month];
         pieces.push(month);
         pieces.push(date);
         pieces.push(', ');
     }
 
-
     var hours = dt.getUTCHours();
     var minutes = dt.getUTCMinutes();
-    if (false) {
-        var hour_digits = util.numberToZeroPaddedArray(hours,2);
-        pieces.push.apply(pieces, hour_digits);
-        var minute_digits = '';
-        if (minutes) {
-            minute_digits  = util.numberToZeroPaddedArray(minutes,2);
-        } else {
-            minute_digits = ['hundred'];
-        }
-        pieces.push.apply(pieces, minute_digits);
-    } else {
+    if (true) {
         if (hours < 10) {
             pieces.push('zero');
         }
@@ -406,15 +403,17 @@ var processTAF = function(cbctx, data) {
 
         var sta_dat = makeAirportName(taf.station_id[0], chunks);
 
-        // give the time the forecast was generated, and how 
+        // give the time the forecast was generated, and how
         // long ago that was
         chunks.push.apply(chunks, [s_pause, 'issued']);
         chunks.push.apply(chunks, dateToMonthDayZulu(issue_time));
         chunks.push(',');
-        chunks.push.apply(chunks,datesToIntervalMinutes(issue_time,new Date()));
+        chunks.push.apply(
+            chunks,datesToIntervalMinutes(issue_time,new Date())
+        );
         chunks.push('ago');
         // these periods end sentences and affect Alexa's inflection
-        chunks.push('.'); 
+        chunks.push('.');
         chunks.push(m_pause);
 
         // The overall forecast period.
@@ -428,7 +427,9 @@ var processTAF = function(cbctx, data) {
         var last_dt = to_time;
         for (var i=0; i<forecast.length; i++) {
             var period = forecast[i];
-            chunks.push.apply(chunks, taf2text(period, last_dt, sta_dat, prefs));
+            chunks.push.apply(
+                chunks, taf2text(period, last_dt, sta_dat, prefs)
+            );
             last_dt = new Date(period.fcst_time_to[0]);
         }
 
@@ -442,20 +443,91 @@ var processTAF = function(cbctx, data) {
         );
     } else {
         var rp      = reversePhonetics();
-        var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
+        var letters = cbctx.letters.map(function(l) {
+            return rp[l.toLowerCase()];
+        });
         to_say = 'When trying to download the taf for ' +
 	        letters.join(' ') +
-	        ' the weather server returned an empty response. This usually ' +
-            ' means that the aiport does not exist or that the airport does ' +
-            ' not have a terminal forecast.  However, it could be ' +
-	        ' that the weather server is having trouble right now and ' +
-            ' trying again later would help.';
+
+`The weather server returned an empty response. This almost always \
+indicates that the airport does not exist or that it does not have a \
+terminal forecast. However, it is possible that the A D D S weather server \
+is having trouble right now and that trying again later would work.`;
+
         cbctx.response_object.tellWithCard(
             to_say, "No TAF", "No response for " + cbctx.letters.join('')
         );
     }
 };
 
+var temp2text = function(temp_c, dewp_c, preferences, blobs) {
+    // temperature && dewpoint, ATIS is always "c", but I've
+    // gotten requests for 'F' so I've added that as an option
+    var use_f = util.stringInIgnoreCase(
+        preferences.temp_unit,['fahrenheit','f']
+    );
+    if (util.definedNonNull(temp_c)) {
+        blobs.push('temperature');
+        var tp = parseFloat(temp_c);
+        if (use_f) {
+            tp = Math.floor((tp * 9.0 / 5.0) + 32.5);
+        } else {
+            tp = Math.floor(tp + 0.5);
+        }
+        if (tp < 0) blobs.push('minus');
+        blobs.push(Math.abs(tp).toString());
+        if (use_f) {
+            blobs.push('fahrenheit');
+        }
+        blobs.push(m_pause);
+    }
+
+    if (util.definedNonNull(dewp_c)) {
+        blobs.push('dewpoint');
+        var dp = parseFloat(dewp_c);
+        if (use_f) {
+            dp = Math.floor((dp * 9.0 / 5.0) + 32.5);
+            if (dp < 0) blobs.push('minus');
+        } else {
+            dp = Math.floor(dp + 0.5);
+        }
+        if (dp < 0) blobs.push('minus');
+        blobs.push(Math.abs(dp).toString());
+        if (use_f) {
+            blobs.push('fahrenheit');
+        }
+        blobs.push(m_pause);
+    }
+
+};
+
+var press2text = function(altim_in_hg, preferences, blobs) {
+    // pressure for altimeter setting
+    if (util.definedNonNull(altim_in_hg)) {
+        var altim;
+        var altim_digits;
+        var use_mb =
+            util.stringInIgnoreCase(
+                preferences.pressure_unit,
+                ['millibar','millibars','bar','bars',
+                 'hectopascal','hectopascals','pascal']
+            );
+
+        if (use_mb) {
+            altim = Math.floor(0.5 + 33.8639 * parseFloat(altim_in_hg));
+            altim_digits = altim.toString().split('');
+            blobs.push('q');
+            blobs.push('n');
+            blobs.push('h');
+        } else {
+            altim = Math.floor(0.5 + 100 * parseFloat(altim_in_hg));
+            altim_digits = altim.toString().split('');
+            blobs.push('altimeter');
+        }
+        altim_digits.forEach(function(digit) { blobs.push(digit); });
+        blobs.push(m_pause);
+    }
+};
 
 // switches text to use some of the stranger ICAO standard
 // pronunciation, such as saying three as tree and five as fife,
@@ -465,10 +537,14 @@ var radioify = function(blobs) {
     blobs.forEach(function(blob) {
         var nb = blob;
         switch (blob) {
-            case '9': nb = 'niner'; break;
-            case '5': nb = 'fife'; break;
-            case '3': nb = 'tree'; break;
-            // case '4': nb = 'fow-er'; break; // fow-er is too annoying. Nobody really says it.
+            case   9 : nb = 'niner'; break;
+            case '9' : nb = 'niner'; break;
+            case   5 : nb = 'fife'; break;
+            case '5' : nb = 'fife'; break;
+            case   3 : nb = 'tree'; break;
+            case '3' : nb = 'tree'; break;
+            // fow-er is too annoying. Nobody really says it.
+            // case '4': nb = 'fow-er'; break;
             default: break;
         }
         new_blobs.push(nb);
@@ -486,7 +562,7 @@ function metar2text(metar,preferences) {
     // automated results, like from AWOS state that they were autoamted
     var was_automated = false;
     try {
-        was_automated = 
+        was_automated =
             util.stringIs(metar.quality_control_flags[0].auto_station[0],
                          'TRUE');
     } catch (e0) { }
@@ -500,8 +576,8 @@ function metar2text(metar,preferences) {
     } catch (e1) { }
 
 
-    // ADDS returns a lot of reports that are both automated and SPECI,
-    // which seems very fishy to me. Wikipedia says that an ASOS 
+    // ADDS returns a lot of reports that are simultanesouly automated
+    // and SPECI, which seems very fishy to me. Wikipedia says that an ASOS
     // system can do an out-of-schedule report if the weather has changed
     // quickly, but I've never heard an automated station say "special",
     // so I'm going to suppress them here.
@@ -513,8 +589,7 @@ function metar2text(metar,preferences) {
         }
     }
 
-
- blobs.push('weather observation');
+    blobs.push('weather observation');
 
     // state the time, in zulu
     if (util.definedNonNull(metar.observation_time)) {
@@ -526,73 +601,18 @@ function metar2text(metar,preferences) {
 
     vis2text(metar.visibility_statute_mi, preferences, blobs);
 
-    wind2text(metar.wind_dir_degrees, metar.wind_speed_kt, metar.wind_gust_kt,
-              metar.raw_text, sta_dat, preferences, true, blobs);
+    wind2text(metar.wind_dir_degrees, metar.wind_speed_kt,
+              metar.wind_gust_kt, metar.raw_text, sta_dat,
+              preferences, true, blobs);
 
     wx2text(metar.wx_string, preferences, blobs);
 
     sky2text(metar.sky_condition, preferences, blobs);
 
+    temp2text(metar.temp_c, metar.dewpoint_c, preferences, blobs);
 
+    press2text(metar.altim_in_hg, preferences, blobs);
 
-    // temperature && dewpoint, ATIS is always "c", but I've
-    // gotten requests for 'F' so I've added that as an option
-    var use_f = util.stringInIgnoreCase(preferences.temp_unit,['fahrenheit','f']);
-    if (util.definedNonNull(metar.temp_c)) {
-        blobs.push('temperature');
-        var tp = parseFloat(metar.temp_c);
-        if (use_f) {
-            tp = Math.floor((tp * 9.0 / 5.0) + 32.5);
-        } else {
-            tp = Math.floor(tp + 0.5);
-        }
-        if (tp < 0) blobs.push('minus');
-        blobs.push(Math.abs(tp).toString());
-        if (use_f) {
-            blobs.push('fahrenheit');
-        }
-        blobs.push(m_pause);
-    }
-
-    if (util.definedNonNull(metar.dewpoint_c)) {
-        blobs.push('dewpoint');
-        var dp = parseFloat(metar.dewpoint_c);
-        if (use_f) {
-            dp = Math.floor((dp * 9.0 / 5.0) + 32.5);
-            if (dp < 0) blobs.push('minus');
-        } else {
-            dp = Math.floor(dp + 0.5);
-        }
-        if (dp < 0) blobs.push('minus');
-        blobs.push(Math.abs(dp).toString());
-        if (use_f) {
-            blobs.push('fahrenheit');
-        }
-        blobs.push(m_pause);
-    }
-
-
-    // pressure for altimeter setting
-    if (util.definedNonNull(metar.altim_in_hg)) {
-        var altim;
-        var altim_digits;
-        var use_mb =
-            util.stringInIgnoreCase(preferences.pressure_unit,['millibar','millibars','bar','bars','hectopascal','hectopascals','pascal']);
-
-        if (use_mb) {
-            altim = Math.floor(0.5 + 33.8639 * parseFloat(metar.altim_in_hg));
-            altim_digits = altim.toString().split('');
-            blobs.push('q');
-            blobs.push('n');
-            blobs.push('h');
-        } else {
-            altim = Math.floor(0.5 + 100 * parseFloat(metar.altim_in_hg));
-            altim_digits = altim.toString().split('');
-            blobs.push('altimeter');
-        }
-        altim_digits.forEach(function(digit) { blobs.push(digit); });
-        blobs.push(m_pause);
-    }
 
     // adding the period helps alexa determine the ending inflection
     // of the 'sentence'
@@ -657,25 +677,31 @@ var processMETAR = function(cbctx, data) {
         var letters = cbctx.letters.map(function(l) { return rp[l.toLowerCase()]; });
         to_say = 'The weather server returned an empty response for ' +
 	        letters.join(' ') +
-	        '. This usually means that the identifier is invalid or that ' +
-            ' the airport specified does not have weather reporting. However ' +
-	        ' it could be that the weather server is having trouble right ' +
-            ' now and trying again in a few minutes would help.';
+`. This usually indicates that the identifier is not valid or that the \
+airport does not have weather reporting. However, it could also be that \
+the A D D S server is having trouble right now and that trying again in \
+in a few minuts would help.`;
+
         cbctx.session.user_info.stats.last_airport = null;
         pdb.setUserInfo(cbctx.session.user.userId,
                         cbctx.session.user_info,
                         function(){
-                            cbctx.response_object.tellWithCard(to_say,"No METAR",
-                            "No response for " + cbctx.letters.join(''));
+                            cbctx.response_object.tellWithCard(
+                                to_say,
+                                "No METAR",
+                                "No response for " + cbctx.letters.join('')
+                            );
                         }
         );
     }
 };
 
+
 module.exports = {
     processTAF: processTAF,
     processMETAR: processMETAR,
 };
+
 
 if (require.main == module) {
     var b;
