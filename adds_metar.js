@@ -542,7 +542,7 @@ function metar2text(metar,preferences) {
         var altim;
         var altim_digits;
         var use_mb =
-            util.stringInIgnoreCase(preferences.pressure_unit,['millibar','millibars','hectopascal','hectopascals','pascal']);
+            util.stringInIgnoreCase(preferences.pressure_unit,['millibar','millibars','bar','bars','hectopascal','hectopascals','pascal']);
 
         if (use_mb) {
             altim = Math.floor(0.5 + 33.8639 * parseFloat(metar.altim_in_hg));

@@ -113,7 +113,7 @@ function prefSetter(type,intent,session,pdb,response) {
             'slot_name': 'pressure',
             'pref_name': 'pressure_unit',
             'read_name': 'altimeter unit',
-            'legal': ['millibar', 'millibars','hectopascal','pascal','inches'],
+            'legal': ['millibar', 'millibars','bar','bars','hectopascal','pascal','inches'],
         },
         'wdir': {
             'slot_name': 'ref',
