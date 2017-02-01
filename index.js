@@ -1,4 +1,4 @@
-
+/*jshint esversion: 6 */
 // App ID for the skill
 var APP_ID = 'amzn1.echo-sdk-ams.app.74a477b4-fe89-452d-8aa2-9cb6d89391ff';
 
@@ -36,8 +36,17 @@ airport_wx_app.prototype.eventHandlers.onSessionStarted =
 airport_wx_app.prototype.eventHandlers.onLaunch =
     function (launchRequest, session, response) {
         logBasic('onLaunch',session);
-        var speechOutput = 'Welcome to the mee-tar reader app. I will read you airport weather reports. You can say "get San Francisco" to get the weather at San Fancisco airport. You can say "get kilo oscar romeo delta" to get the weather for at Chicago O\'Hare airport. Please note that the data I read is advisory and you should consult official sources for a legal weather briefing.';
-        var repromptText = "Say a major US city name or a three or four letter airport identifier.";
+        var speechOutput =
+
+`Welcome to the mee-tar reader app. I will read you airport weather \
+reports. You can say "get San Francisco" to get the weather at San \
+Francisco airport. You can say "get kilo oscar romeo delta" to get \
+the weather for at Chicago O'Hare airport. Please note that the data \
+I read is advisory and you should consult official sources for a legal \
+weather briefing.`;
+
+        var repromptText =
+'Say a major US city name or a three or four letter airport identifier.';
         response.ask(speechOutput, repromptText);
 };
 
@@ -47,12 +56,13 @@ airport_wx_app.prototype.eventHandlers.onSessionEnded =
 };
 
 
-var help_text =
-"The airport weather skill lets you hear airport me-tars and terminal" +
-"forecasts red aloud " +
-"as if they were ATIS reports. It works by city name or by three or " +
-"four letter airport identifier. You can say get Oakland or get juliet " +
-"foxtrot kilo or get the taf for Houston.";
+var help_text = `\
+The airport weather skill lets you hear airport mee-tars and terminal \
+forecasts red aloud as if they were ATIS reports. It works by three or four \
+letter airport identifier, or by city name. For example, you can say \
+get kilo oscar alpha kilo or get Oakland. This will return the current  \
+weather. You can say get forecast San Francisco or get forecast  \
+kilo sierra foxtrot oscar. This will return the terminal forecast.`;
 
 function weatherById(sr, session, response, do_taf) {
     do_taf = util.definedNonNull(do_taf);
@@ -73,27 +83,35 @@ function weatherById(sr, session, response, do_taf) {
          var ask = '';
          if (was_city) {
              if (sr.orig && (sr.orig !== 'none provided')) {
-                 ask = "I could not find the city " + sr.orig +
-	                   " in my database. That is probably my fault. I am " +
-                       " working on expanding my database, but it is limited " +
-                       " to the largest airports right now. ";
+                 ask =
+
+`I could not find the city ${sr.orig} in my database. That is probably \
+my fault. I am working on expanding my database, but it is limited to  \
+the largest airports right now. You might try using the airports \
+eye kay oh identifier instead.`;
+
              } else {
-                 ask = "It looks like you didn't name a city for me to look up. ";
+                 ask = `It looks like you didn't name a city  \
+                 for me to look up.`;
              }
          } else if (was_default) {
-             ask = "The default airport has not been set. Complete " +
-	               " a request first by identifier or city name, then " +
-	               " say \"set default\" to set the default airport.";
+             ask = 
+
+`The default airport has not been set. Complete a request first by  \
+identifier or city name, then say "set default" to set the default  \
+airport.`;
+
          } else {
              ask = "I couldn't make sense of your request. I heard " +
 	         sr.orig.join(' ');
          }
          repromptText =
-            'Please try again. To get the me-tar say get, followed by a US ' +
-            'or UK city name or ' +
-            'three or four letter identifier using the eye-kay-oh phonetic ' +
-            'alphabet. To get the forecast, say get forecast for followed ' +
-            'by the city, or three of four letter identifier';
+
+`Please try again. To get the mee-tar say get, followed by a US or UK \
+city name, or three or four letter identifier using eye kay oh phonetics. \
+To get the forecast, say get forecast followed by the city, or three or \
+four letter phonetic identifier.`;
+
          ask += ' '  + repromptText;
          response.ask(ask,repromptText);
     }
@@ -122,7 +140,8 @@ function prefSetter(type,intent,session,pdb,response) {
             'slot_name': 'pressure',
             'pref_name': 'pressure_unit',
             'read_name': 'altimeter unit',
-            'legal': ['millibar', 'millibars','bar','bars','hectopascal','pascal','inches'],
+            'legal': ['millibar', 'millibars','bar','bars',
+                      'hectopascal','pascal','inches'],
         },
         'wdir': {
             'slot_name': 'ref',
@@ -186,7 +205,9 @@ airport_wx_app.prototype.intentHandlers = {
     },
     metarDeflt: function(intent, session, response) {
         logBasic('metarDeflt',session,intent);
-        weatherById(adds.validateDefaultAirport(session.user_info),session,response);
+        weatherById(adds.validateDefaultAirport(session.user_info),session,
+            response
+        );
     },
 
     // The intents for getting the forecast weather
@@ -204,7 +225,9 @@ airport_wx_app.prototype.intentHandlers = {
     },
     tafDeflt: function(intent, session, response) {
         logBasic('tafDeflt',session,intent);
-        weatherById(adds.validateDefaultAirport(session.user_info),session,response,true);
+        weatherById(adds.validateDefaultAirport(session.user_info),session,
+            response,true
+        );
     },
 
 
@@ -243,7 +266,6 @@ airport_wx_app.prototype.intentHandlers = {
         }
     },
 
-
     setRepeat: function(intent,session,response) {
         logBasic('setRepeat',session,intent);
         var repeat_count = 1;
@@ -253,12 +275,14 @@ airport_wx_app.prototype.intentHandlers = {
         }
         if ((repeat_count < 1) ||
             (repeat_count > 10)) {
-            var rstring = 'The supported range for repeat counts is from one' +
-                ' to ten, inclusive. Try again with a value in that range.';
+            var rstring = 'The supported range for repeat counts is ' +
+                ' from one to ten, inclusive. Try again with a value ' +
+                ' in that range.';
             response.tell(rstring);
         } else {
             session.user_info.preferences.repeat = repeat_count;
-            pdb.setUserInfo(session.user.userId,session.user_info,function() {
+            pdb.setUserInfo(session.user.userId,session.user_info,
+                            function() {
                 var rstring = 'I set your repeat count to ';
                 rstring += repeat_count.toString() + ' ';
                 response.tell(rstring);
