@@ -146,10 +146,13 @@ tafCity get the forecast for {city}
 tafCity get the forecast at {city}
 tafCity get the taf for {city}
 tafCity get the taf at {city}
-tafCity get the default forecast
-tafCity get the local forecast
-tafCity get the default station forecast
-tafCity get the local station forecast
+tafCity get the {city} forecast
+tafCity get the {city} taf
+
+tafDeflt get the default forecast
+tafDeflt get the local forecast
+tafDeflt get the default station forecast
+tafDeflt get the local station forecast
 
 
 setWindRef set wind reference {ref}
@@ -215,4 +218,3 @@ getTime to get time zulu
 getTime to report zulu time
 getTime to report u t c time
 getTime to report the time
-

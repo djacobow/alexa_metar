@@ -14,8 +14,8 @@ There are some interesting additional features you can try:
 
 - Get the TAF like this:
 
- "Alexa, ask airport to get the forecast for kilo juliet foxtrot kilo"
- "Alexa, ask airport to get the taf for Heathrow"
+ "Alexa, ask airport weather to get the forecast for kilo juliet foxtrot kilo"
+ "Alexa, ask airport weather to get the taf for Houston"
 
 - Get the Zulu time, like this:
 
