@@ -14,8 +14,8 @@ There are some interesting additional features you can try:
 
 - Get the TAF like this:
 
- "Alexa, ask airport weather to get the forecast for kilo juliet foxtrot kilo"
- "Alexa, ask airport weather to get the taf for Houston"
+ "Alexa, ask airport to get the forecast for kilo juliet foxtrot kilo"
+ "Alexa, ask airport to get the taf for London"
 
 - Get the Zulu time, like this:
 
@@ -57,8 +57,8 @@ Saying the complete ICAO identifier gets tedious. You can save time with a defau
 
 The most recent SUCCESSFULLY read station will become the default. From that point forward you can say:
 
-"Alexa, ask airport weather for local station" or
-"Alexa, ask airport weather for default station"
+"Alexa, ask airport weather for the local station" or
+"Alexa, ask airport weather for the default station"
 
 The stored default airport will be used. 
 
@@ -69,6 +69,7 @@ A real ATIS recording is a continuous loop. Alexa can mimic that. Set a repetiti
 "Alexa, ask airport weather to set repeat to five." or
 "Alexa, ask airport weather to set repeat to one."
 
+(This does not affect TAF.)
 
 Contact me with suggestions: dave@toolsofourtools.org
 
