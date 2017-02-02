@@ -26767,7 +26767,7 @@ var station_data = {
   'iata': 'NUW ',
   'elev': 0.014,
   'metar': 'X',
-  'name': 'whidbey is. nas',
+  'name': 'whidbey island nas',
   'lon': -122.65,
   'icao': 'KNUW',
   'lat': 48.35,
