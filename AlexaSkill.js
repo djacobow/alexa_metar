@@ -195,7 +195,7 @@ Response.prototype = (function () {
         tellWithCard: function (speechOutput, cardTitle, cardContent) {
             var x = { saying: speechOutput, 
                       cardTitle: cardTitle,
-                      cardCotent: cardContent};
+                      cardContent: cardContent};
             console.log("TELLING WITH CARD: " + JSON.stringify(x,null,2));
             this._context.succeed(buildSpeechletResponse({
                 session: this._session,

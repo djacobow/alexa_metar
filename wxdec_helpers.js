@@ -328,7 +328,7 @@ var reversePhonetics = function() {
 var dateToMonthDayZulu = function(dt, last_dt) {
     last_dt = util.definedNonNull(last_dt) ? last_dt : null;
     var date  = dt.getUTCDate();
-    console.log(last_dt);
+    // console.log(last_dt);
     var different_dates = (!util.definedNonNull(last_dt)) ||
                           (last_dt.getUTCDate() !== date);
 
