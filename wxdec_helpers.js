@@ -630,6 +630,7 @@ var processTAF = function(cbctx, data) {
         taf = data.response.data[0].TAF[0];
     }
     if (taf) {
+        console.log('-d- processTAF: __TAF_OK__');
         // console.log(taf);
         var prefs = cbctx.session.user_info.preferences;
         var issue_time = new Date(taf.issue_time[0]);
@@ -688,6 +689,7 @@ var processTAF = function(cbctx, data) {
                         }
         );
     } else {
+        console.log('-d- processTAF: __TAF_NOT_OK__');
         var rp      = reversePhonetics();
         var letters = cbctx.letters.map(function(l) {
             return rp[l.toLowerCase()];
