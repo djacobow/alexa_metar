@@ -71,6 +71,8 @@ A real ATIS recording is a continuous loop. Alexa can mimic that. Set a repetiti
 
 (This does not affect TAF.)
 
+Check out the "instruction manual" at http://toolsofourtools.org/alexa-metars-and-tafs
+
 Contact me with suggestions: dave@toolsofourtools.org
 
 Check out the code on github: https://github.com/djacobow/alexa_metar
