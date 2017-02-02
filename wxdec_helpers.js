@@ -125,7 +125,11 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
 
     blobs.push(m_pause);
 
-    vis2text(period.visibility_statute_mi, preferences, blobs);
+    // note: note passing in the raw string because we need to parse
+    // out the specific section, which I have not gotten around to
+    // and for which doing so completely ruins the point of having
+    // the XML :-(
+    vis2text(period.visibility_statute_mi, '', preferences, blobs);
 
     preferences.wind_reference = 'true'; // TAF should always be true
     wind2text(period.wind_dir_degrees, period.wind_speed_kt,
@@ -144,10 +148,18 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
     return blobs;
 };
 
-var vis2text = function(vis_mi, preferences, blobs) {
+var vis2text = function(vis_mi, raw_text, preferences, blobs) {
     // report the visibility information
     if (util.definedNonNull(vis_mi)) {
         blobs.push('visibility');
+
+        // console.log(raw_text[0]); process.exit();
+        if (util.definedNonNull(raw_text) &&
+            util.definedNonNull(raw_text[0]) &&
+            raw_text[0].match(/\b(P6SM|9999)\b/)) {
+            blobs.push.apply(blobs,['better','than']);
+        }
+
         var use_km =
             util.stringInIgnoreCase(preferences.distance_unit,
                                     ['kilometer','kilometers','km']);
@@ -519,7 +531,7 @@ function metar2text(metar,preferences) {
         blobs.push(m_pause);
     }
 
-    vis2text(metar.visibility_statute_mi, preferences, blobs);
+    vis2text(metar.visibility_statute_mi, metar.raw_text, preferences, blobs);
 
     wind2text(metar.wind_dir_degrees, metar.wind_speed_kt,
               metar.wind_gust_kt, metar.raw_text, sta_dat,
