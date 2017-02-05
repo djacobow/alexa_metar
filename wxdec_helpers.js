@@ -211,6 +211,10 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
                    wind_dir_pref += wind_dir_true;
                }
 
+               // console.log(preferences);
+               // console.log('USE_TRUE: ' + use_true);
+               // console.log('SAY_TRUE: ' + say_true);
+
                // adjustment can leave you with non 0-360 results
                while (wind_dir_pref < 0)   wind_dir_pref += 360;
                while (wind_dir_pref > 360) wind_dir_pref -= 360;
@@ -220,6 +224,7 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
                    blobs.push(x.toString());
                });
                if (use_true && say_true) {
+                   // console.log('SAYING TRUE');
                    blobs.push('true');
                }
            }
