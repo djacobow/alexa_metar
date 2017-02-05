@@ -219,7 +219,7 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
                wind_digits.forEach(function(x) {
                    blobs.push(x.toString());
                });
-               if (say_true) {
+               if (use_true && say_true) {
                    blobs.push('true');
                }
            }
