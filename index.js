@@ -501,10 +501,10 @@ if (require.main == module) {
 
     if (1) {
         var slots = {
-            sa: { value: 'p' },
-            sb: { value: 'p'} ,
-            sc: { value: 'P' },
-            sd: { value: 'P' },
+            sa: { value: 'k' },
+            sb: { value: 'k'} ,
+            sc: { value: 'b' },
+            sd: { value: 'f' },
         };
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
