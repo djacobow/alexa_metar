@@ -711,10 +711,10 @@ var processTAF = function(cbctx, data) {
         var letters = cbctx.letters.map(function(l) {
             return rp[l.toLowerCase()];
         });
-        to_say = 'When trying to download the taf for ' +
+        to_say = 'When trying to download the forecast for ' +
 	        letters.join(' ') +
 
-` The weather server returned an empty response. This almost always \
+`, the weather server returned an empty response. This almost always \
 indicates that the airport does not exist or that it does not have a \
 terminal forecast. However, it is possible that the A D D S weather server \
 is having trouble right now and that trying again later would work.`;
