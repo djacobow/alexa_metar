@@ -41,8 +41,8 @@ airport_wx_app.prototype.eventHandlers.onLaunch =
 `Welcome to the mee-tar reader app. I will read you airport weather \
 reports. You can say "get San Francisco" to get the weather at San \
 Francisco airport. You can say "get kilo oscar romeo delta" to get \
-the weather for at Chicago O'Hare airport. Please note that the data \
-I read is advisory and you should consult official sources for a legal \
+the weather at Chicago O'Hare airport. Please note that the data \
+I read is advisory and pilots should consult official sources for a legal \
 weather briefing.`;
 
         var repromptText =
