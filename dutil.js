@@ -2,20 +2,28 @@
 /*jshint -W097 */
 "use strict";
 
-function defined(x) { 
+function defined(x) {
     return typeof(x) !== 'undefined';
 }
 
 function definedNonNull(x) {
     return(
-        (typeof x !== 'undefined') && 
+        (typeof x !== 'undefined') &&
         (x !== null)
+    );
+}
+
+function definedNonNullTrue(x) {
+    return(
+        (typeof x !== 'undefined') &&
+        (x !== null) &&
+        (x)
     );
 }
 
 function definedHasLength(x) {
     return(
-        (typeof x !== 'undefined') && 
+        (typeof x !== 'undefined') &&
         (x !== null) &&
         x.length
     );
@@ -44,10 +52,10 @@ function stringInIgnoreCase(str, ary) {
 
 function stringIs(str,compare) {
     return (
-        (typeof str !== 'undefined') && 
-        str && 
-	    (str !== '') && 
-	    str.length && 
+        (typeof str !== 'undefined') &&
+        str &&
+	    (str !== '') &&
+	    str.length &&
 	    (str == compare)
     );
 }
@@ -119,6 +127,7 @@ module.exports = {
     defined:                  defined,
     definedHasLength:         definedHasLength,
     definedNonNull:           definedNonNull,
+    definedNonNullTrue:       definedNonNullTrue,
     stringIs:                 stringIs,
     stringIsIgnoreCase:       stringIsIgnoreCase,
     stringInIgnoreCase:       stringInIgnoreCase,
