@@ -103,7 +103,7 @@ airport.`;
 
          } else {
              ask = "I couldn't make sense of your request. I heard " +
-	         sr.orig.join(' ');
+                   sr.orig.join(' ');
          }
          repromptText =
 
@@ -124,6 +124,36 @@ function joinWithAnd(a) {
         return a[0];
     } else {
         return '';
+    }
+}
+
+function airportSetter(kind, intent, session, response) {
+    // kind must be weather or forecast
+    var do_taf = util.stringIsIgnoreCase(kind,'taf');
+
+    logBasic('airportSetter',session,intent);
+    var last_airport = session.user_info.stats.last_airport;
+    if (util.definedHasLength(last_airport)) {
+        var pref_to_set = do_taf ?
+                           'default_taf_airport' :
+                           'default_airport';
+        session.user_info.preferences[pref_to_set] = last_airport;
+        console.log('-d- __setAirport SAVING ' + pref_to_set);
+        console.log(session.user);
+        console.log(session.user_info);
+        pdb.setUserInfo(session.user.userId,session.user_info,function() {
+            var rstring = 'I set your default airport for ' +
+            (do_taf ? 'terminal forecasts' : 'mee tars') +
+            ' to ';
+            last_airport.split('').forEach(function(l) {
+                rstring += l + ' ';
+            });
+            response.tell(rstring);
+        });
+    } else {
+        response.tell('the previous query did not succeed. Query an ' +
+            'airport first, then say "set local airport" or ' +
+            '"set local forecast airport"');
     }
 }
 
@@ -205,8 +235,11 @@ airport_wx_app.prototype.intentHandlers = {
     },
     metarDeflt: function(intent, session, response) {
         logBasic('metarDeflt',session,intent);
-        weatherById(adds.validateDefaultAirport(session.user_info),session,
-            response
+        weatherById(
+            adds.validateDefaultAirport('weather',session.user_info),
+            session,
+            response,
+            false
         );
     },
 
@@ -225,8 +258,11 @@ airport_wx_app.prototype.intentHandlers = {
     },
     tafDeflt: function(intent, session, response) {
         logBasic('tafDeflt',session,intent);
-        weatherById(adds.validateDefaultAirport(session.user_info),session,
-            response,true
+        weatherById(
+            adds.validateDefaultAirport('forecast', session.user_info),
+            session,
+            response,
+            true
         );
     },
 
@@ -236,34 +272,20 @@ airport_wx_app.prototype.intentHandlers = {
         logBasic('getTime',session,intent);
         var now = new Date();
         var r = 'The time is now ' +
-	            util.numberToZeroPaddedString(now.getUTCHours(),2) +
-	            ' ' +
-	            util.numberToZeroPaddedString(now.getUTCMinutes(),2) +
-	            ' zulu';
+                util.numberToZeroPaddedString(now.getUTCHours(),2) +
+                ' ' +
+                util.numberToZeroPaddedString(now.getUTCMinutes(),2) +
+               ' zulu';
         response.tell(r);
     },
 
     // an intent for setting and storing the user's preferred default
     // airport
     setAirport: function(intent, session, response) {
-        logBasic('setAirport',session,intent);
-        var last_airport = session.user_info.stats.last_airport;
-        if (util.definedHasLength(last_airport)) {
-            session.user_info.preferences.default_airport = last_airport;
-	        console.log('-d- __setAirport SAVING');
-	        console.log(session.user);
-	        console.log(session.user_info);
-            pdb.setUserInfo(session.user.userId,session.user_info,function() {
-                var rstring = 'I set your default airport to ';
-                last_airport.split('').forEach(function(l) {
-                    rstring += l + ' ';
-                });
-                response.tell(rstring);
-	       });
-        } else {
-            response.tell('the previous query did not succeed. Query an ' +
-                'airport first, then say "set default airport" ');
-        }
+        airportSetter('metar', intent, session, response);
+    },
+    setTAFAirport: function(intent, session, response) {
+        airportSetter('taf', intent, session, response);
     },
 
     setRepeat: function(intent,session,response) {
@@ -339,7 +361,8 @@ if (require.main == module) {
             },
             user_info: {
                 preferences: {
-                    default_airport: 'KLAX',
+                    default_airport: 'KSMF',
+                    default_taf_airport: 'KIAD',
                     wind_reference: 'magnetic',
                     // pressure_unit: 'millibar',
                     // distance_unit: 'kilometers',
@@ -407,10 +430,18 @@ if (require.main == module) {
 
 
     if (1) {
-        var sr    = adds.validateDefaultAirport(test_ctx.session.user_info);
+        var sr    = adds.validateDefaultAirport('metar',test_ctx.session.user_info);
         test_ctx.letters = sr.letters;
         if (sr.valid) {
             adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
+        }
+    }
+
+    if (1) {
+        var sr    = adds.validateDefaultAirport('taf',test_ctx.session.user_info);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            adds.getCachedMETAR_TAF(test_ctx, 'taf', wxdec.processTAF);
         }
     }
 

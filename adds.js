@@ -161,14 +161,24 @@ function validateSlots(slots) {
 }
 
 
-function validateDefaultAirport(user_info) {
+function validateDefaultAirport(kind,user_info) {
+
+    var try_forecast_city = util.stringIsIgnoreCase(kind, 'taf');
+
     if (false) {
         console.log('-d- validateDefaultAirport');
         console.log(user_info);
     }
 
-    var da = user_info.preferences.default_airport;
+    var pref_name = try_forecast_city ? 'default_taf_airport' :
+                                        'default_airport';
+
+    var da = user_info.preferences[pref_name];
     var sr = { mode: 'default_airport', valid: false, };
+
+    if (try_forecast_city && !util.definedHasLength(da)) {
+        da = user_info.preferences.default_airport;
+    }
 
     if (util.definedHasLength(da)) {
         sr.valid = true;
