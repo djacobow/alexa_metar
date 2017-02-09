@@ -65,7 +65,7 @@ weather. You can say get forecast San Francisco or get forecast  \
 kilo sierra foxtrot oscar. This will return the terminal forecast.`;
 
 function weatherById(sr, session, response, do_taf) {
-    do_taf = util.definedNonNull(do_taf);
+    do_taf = util.definedNonNullTrue(do_taf);
     if (sr.valid) {
         var ctx = {
             session: session,
@@ -143,7 +143,7 @@ function airportSetter(kind, intent, session, response) {
         console.log(session.user_info);
         pdb.setUserInfo(session.user.userId,session.user_info,function() {
             var rstring = 'I set your default airport for ' +
-            (do_taf ? 'terminal forecasts' : 'mee tars') +
+            (do_taf ? 'terminal forecasts' : 'weather reports') +
             ' to ';
             last_airport.split('').forEach(function(l) {
                 rstring += l + ' ';
@@ -151,9 +151,12 @@ function airportSetter(kind, intent, session, response) {
             response.tell(rstring);
         });
     } else {
-        response.tell('the previous query did not succeed. Query an ' +
-            'airport first, then say "set local airport" or ' +
-            '"set local forecast airport"');
+        response.tell(
+` The previous query did not succeed. Query an airport first, then \
+say "store local airport" to store that airport as your default. \
+If you want to set a different airport to be used as your default \
+for terminal forecasts, say "store airport for forecasts.`
+        );
     }
 }
 
@@ -236,7 +239,7 @@ airport_wx_app.prototype.intentHandlers = {
     metarDeflt: function(intent, session, response) {
         logBasic('metarDeflt',session,intent);
         weatherById(
-            adds.validateDefaultAirport('weather',session.user_info),
+            adds.validateDefaultAirport('metar',session.user_info),
             session,
             response,
             false
@@ -259,7 +262,7 @@ airport_wx_app.prototype.intentHandlers = {
     tafDeflt: function(intent, session, response) {
         logBasic('tafDeflt',session,intent);
         weatherById(
-            adds.validateDefaultAirport('forecast', session.user_info),
+            adds.validateDefaultAirport('taf', session.user_info),
             session,
             response,
             true
