@@ -125,12 +125,6 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
 
     blobs.push(m_pause);
 
-    // note: note passing in the raw string because we need to parse
-    // out the specific section, which I have not gotten around to
-    // and for which doing so completely ruins the point of having
-    // the XML :-(
-    vis2text(period.visibility_statute_mi, '', preferences, blobs);
-
     preferences.wind_reference = 'true'; // TAF should always be true
     wind2text(period.wind_dir_degrees, period.wind_speed_kt,
               period.hasOwnProperty('wind_gust_kt') ?
@@ -138,6 +132,11 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
                   null,
               [''], sta_dat, preferences, false, blobs);
 
+    // note: note passing in the raw string because we need to parse
+    // out the specific section, which I have not gotten around to
+    // and for which doing so completely ruins the point of having
+    // the XML :-(
+    vis2text(period.visibility_statute_mi, '', preferences, blobs);
 
     wx2text(period.hasOwnProperty('wx_string') ? period.wx_string : null,
             preferences, blobs);
@@ -536,11 +535,11 @@ function metar2text(metar,preferences) {
         blobs.push(m_pause);
     }
 
-    vis2text(metar.visibility_statute_mi, metar.raw_text, preferences, blobs);
-
     wind2text(metar.wind_dir_degrees, metar.wind_speed_kt,
               metar.wind_gust_kt, metar.raw_text, sta_dat,
               preferences, true, blobs);
+
+    vis2text(metar.visibility_statute_mi, metar.raw_text, preferences, blobs);
 
     wx2text(metar.wx_string, preferences, blobs);
 
