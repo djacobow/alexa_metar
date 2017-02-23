@@ -141,7 +141,7 @@ var taf2text = function(period, last_dt, sta_dat, preferences) {
     wx2text(period.hasOwnProperty('wx_string') ? period.wx_string : null,
             preferences, blobs);
 
-    sky2text(period.sky_condition, preferences, blobs);
+    sky2text(period.sky_condition, [''], preferences, blobs);
 
     blobs.push(s_pause);
     return blobs;
@@ -297,7 +297,7 @@ var wx2text = function(wx_string, preferences, blobs) {
    }
 };
 
-var sky2text = function(sky_condition, preferences, blobs) {
+var sky2text = function(sky_condition, raw_text, preferences, blobs) {
     // sky condition (clouds)
     if (util.definedNonNull(sky_condition)) {
         blobs.push('sky condition');
@@ -310,7 +310,32 @@ var sky2text = function(sky_condition, preferences, blobs) {
 	                         layer_type_short == 'SCT' ? 'scattered' :
 		                     layer_type_short == 'BKN' ? 'broken' :
 		                     layer_type_short == 'OVC' ? 'overcast' : '';
+
+
             blobs.push(layer_type);
+
+            // ADDS nicely decodes the clouds for us, except for the TCU/CB
+            // modifier, which it does for TAFS but not for METARS. This
+            // code uses the decoded value if present, or searches for it
+            // in the raw string if not present.
+            var ctype = null;
+            if (layer.$.hasOwnProperty('cloud_type')) {
+                ctype = layer.$.cloud_type;
+            } else {
+                var base_str = Math.floor(parseInt(layer_base) / 100).toString();
+                if (base_str.length < 3) base_str = '0' + base_str;
+                var re_str = '(CLR|SKC|FEW|SCT|BKN|OVC)' + base_str +
+                             '(TCU|CB)';
+                var modifier_regex = new RegExp(re_str); // not 'g'
+                var have_cloud_modifier = modifier_regex.exec(raw_text[0]);
+
+                if (have_cloud_modifier) {
+                    ctype = have_cloud_modifier[2];
+                }
+            }
+            if (ctype === 'TCU') blobs.push('towering cumulus');
+            if (ctype === 'CB')  blobs.push('cumulonimbus');
+
             if ((layer_type != 'clear') && (layer_type.length)) {
                 layer_base = parseInt(layer_base);
                 var layer_base_thousands = Math.floor(layer_base / 1000);
@@ -543,7 +568,7 @@ function metar2text(metar,preferences) {
 
     wx2text(metar.wx_string, preferences, blobs);
 
-    sky2text(metar.sky_condition, preferences, blobs);
+    sky2text(metar.sky_condition, metar.raw_text, preferences, blobs);
 
     temp2text(metar.temp_c, metar.dewpoint_c, preferences, blobs);
 
