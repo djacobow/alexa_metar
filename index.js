@@ -501,10 +501,16 @@ if (require.main == module) {
 
     if (1) {
         var slots = {
+            /*
             sa: { value: 'k' },
             sb: { value: 'p'} ,
             sc: { value: 'a' },
             sd: { value: 'o' },
+            */
+            sa: { value: 'u' },
+            sb: { value: 'r'} ,
+            sc: { value: 'k' },
+            sd: { value: 'k' },
         };
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
@@ -535,10 +541,16 @@ if (require.main == module) {
 
     if (1) {
         var slots = {
+            /*
             sa: { value: 'k' },
             sb: { value: 'k'} ,
             sc: { value: 'b' },
             sd: { value: 'f' },
+            */
+            sa: { value: 'u' },
+            sb: { value: 'r'} ,
+            sc: { value: 'k' },
+            sd: { value: 'k' },
         };
         var sr = adds.validateSlots(slots);
         test_ctx.letters = sr.letters;
@@ -550,5 +562,23 @@ if (require.main == module) {
         }
     }
 
+    if (1) {
+        var slots = {
+            sa: { value: 'k' },
+            sb: { value: 's'} ,
+            sc: { value: 'e' },
+            sd: { value: 't' },
+        };
+        var sr = adds.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        if (sr.valid) {
+            adds.getCachedMETAR_TAF(test_ctx, 'metar', wxdec.processMETAR);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
 }
+
 
