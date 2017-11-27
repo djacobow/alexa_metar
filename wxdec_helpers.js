@@ -76,7 +76,7 @@ var makeAirportName = function(id, blobs) {
                 .replace(/\bvly\b/,'valley')
                 .replace(/\breg\b/,'regional')
                 .replace(/\bpt\b/,'point')
-                .replace(/\bst\b/,'saint')
+                .replace(/\bst\.?\b/,'saint')
                 .replace(/\bmt\b/,'mount')
                 .replace(/\bmtn\b/,'mountain')
                 .replace(/\brgnl\b/,'regional')
@@ -87,6 +87,7 @@ var makeAirportName = function(id, blobs) {
                 .replace(/\barpt\b/,'airport')
                 .replace('apt','airport')
                 .replace(/\barp\b/,'airport')
+                .replace(/\./,'')
                 .replace('/',' ');
             blobs.push(n);
             if (n.match(/\bairport|base|station|field|airfield\b/)) {
@@ -324,7 +325,7 @@ var sky2text = function(sky_condition, raw_text, preferences, blobs) {
             } else {
                 var base_str = Math.floor(parseInt(layer_base) / 100).toString();
                 if (base_str.length < 3) base_str = '0' + base_str;
-                var re_str = '(CLR|SKC|FEW|SCT|BKN|OVC)' + base_str +
+                var re_str = '(FEW|SCT|BKN|OVC)' + base_str +
                              '(TCU|CB)';
                 var modifier_regex = new RegExp(re_str); // not 'g'
                 var have_cloud_modifier = modifier_regex.exec(raw_text[0]);
