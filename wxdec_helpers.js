@@ -449,7 +449,6 @@ var temp2text = function(temp_c, dewp_c, preferences, blobs) {
         var dp = parseFloat(dewp_c);
         if (use_f) {
             dp = Math.floor((dp * 9.0 / 5.0) + 32.5);
-            if (dp < 0) blobs.push('minus');
         } else {
             dp = Math.floor(dp + 0.5);
         }
