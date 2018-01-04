@@ -298,6 +298,41 @@ var wx2text = function(wx_string, preferences, blobs) {
    }
 };
 
+var flightcat2text = function(flight_cat, preferences, blobs) {
+    if (util.definedNonNull(flight_cat)) {
+        blobs.push('flight category');
+        switch (flight_cat[0]) {
+            case 'VFR':  blobs.push('V');
+                         blobs.push('F');
+                         blobs.push('R');
+                         break;
+            case 'MVFR': blobs.push('marginal');
+                         blobs.push('V');
+                         blobs.push('F');
+                         blobs.push('R');
+                         break;
+            case 'IFR':  blobs.push('I');
+                         blobs.push('F');
+                         blobs.push('R');
+                         break;
+            case 'LIFR': blobs.push('low');
+                         blobs.push('I');
+                         blobs.push('F');
+                         blobs.push('R');
+                         break;
+        }
+        blobs.push(s_pause);
+    }
+};
+
+var vertvis2text = function(vert_vis, preferences, blobs) {
+    if (util.definedNonNull(vert_vis)) {
+        blobs.push('vertical visibility');
+        blobs.push(vert_vis[0]);
+        blobs.push(s_pause);
+    }
+};
+
 var sky2text = function(sky_condition, raw_text, preferences, blobs) {
     // sky condition (clouds)
     if (util.definedNonNull(sky_condition)) {
@@ -310,7 +345,8 @@ var sky2text = function(sky_condition, raw_text, preferences, blobs) {
 	                         layer_type_short == 'FEW' ? 'few clouds' :
 	                         layer_type_short == 'SCT' ? 'scattered' :
 		                     layer_type_short == 'BKN' ? 'broken' :
-		                     layer_type_short == 'OVC' ? 'overcast' : '';
+		                     layer_type_short == 'OVC' ? 'overcast' : 
+                             layer_type_short == 'OVX' ? 'obscured' : '';
 
 
             blobs.push(layer_type);
@@ -536,6 +572,7 @@ function metar2text(metar,preferences) {
         was_speci = util.stringIs(metar.metar_type,'SPECI');
     } catch (e1) { }
 
+    // console.log(JSON.stringify(metar,null,2));
 
     // ADDS returns a lot of reports that are simultanesouly automated
     // and SPECI, which seems very fishy to me. Wikipedia says that an ASOS
@@ -570,6 +607,8 @@ function metar2text(metar,preferences) {
 
     sky2text(metar.sky_condition, metar.raw_text, preferences, blobs);
 
+    vertvis2text(metar.vert_vis_ft, preferences, blobs);
+
     temp2text(metar.temp_c, metar.dewpoint_c, preferences, blobs);
 
     press2text(metar.altim_in_hg, preferences, blobs);
@@ -578,6 +617,11 @@ function metar2text(metar,preferences) {
     // adding the period helps alexa determine the ending inflection
     // of the 'sentence'
     blobs.push('.');
+
+    if (false) {
+        flightcat2text(metar.flight_category, preferences, blobs);
+        blobs.push('.');
+    }
 
     return blobs;
 }
