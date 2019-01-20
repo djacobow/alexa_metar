@@ -180,6 +180,7 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
         util.definedNonNull(wspd_kt)) {
         blobs.push('wind');
         // METARs have true directions
+        var wdir_is_zero  = parseInt(wdir_deg[0]) === 0;
         var wind_dir_true = parseFloat(wdir_deg[0]);
 
         var mag_var = 0;
@@ -196,6 +197,12 @@ var wind2text = function(wdir_deg, wspd_kt, wgst_kt, raw_text,
            blobs.push('calm');
        } else {
            if (raw_text[0].match(/\sVRB/)) {
+               blobs.push('variable');
+           } else if (wdir_is_zero && (wind_speed_int > 0)) {
+               // A windspeed of 000nn should be variable and nn knots.
+               // Documentation on the Interwebs is unclear whether 000
+               // can ever mean north, but it looks like it does not just
+               // from looking at TAFs and METARs.
                blobs.push('variable');
            } else {
                var wind_dir_pref  = mag_var;
