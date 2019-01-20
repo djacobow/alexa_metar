@@ -71987,7 +71987,7 @@ var station_data = {
  'KSGR': {
   'icao': 'KSGR',
   'lon': -95.65,
-  'name': 'houston/sugar la',
+  'name': 'houston sugar land',
   'country': 'US',
   'lat': 29.6166666666667,
   'iata': 'SGR ',
