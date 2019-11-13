@@ -1,10 +1,15 @@
 {
   "name": "alexa_metar",
-  "version": "0.0.1",
-  "description": "Read ADDS METARs out loud on an Amazon Echo",
+  "version": "1.0.1",
+  "description": "This skill is live on Amazon right now. (as of 6/2016). It is called \"Dave's Airport METAR Reader\" and is free. It may be slightly behind this repo at any given time.",
   "main": "index.js",
+  "dependencies": {
+    "async": "^3.1.0",
+    "aws-sdk": "^2.570.0"
+  },
+  "devDependencies": {},
   "scripts": {
-    "test": "test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -15,10 +20,5 @@
   "bugs": {
     "url": "https://github.com/djacobow/alexa_metar/issues"
   },
-  "homepage": "https://github.com/djacobow/alexa_metar#readme",
-  "dependencies": {
-    "async": "^1.5.2",
-    "aws-sdk": "^2.2.38",
-    "xml2js": "^0.4.16"
-  }
+  "homepage": "https://github.com/djacobow/alexa_metar#readme"
 }
