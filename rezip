@@ -1,3 +1,2 @@
-zip -r foo.zip *.js node_modules etc aws_config.json
-
+zip -r foo.zip *.js *.json node_modules etc aws_config.json
 

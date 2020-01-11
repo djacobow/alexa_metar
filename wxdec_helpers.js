@@ -15,8 +15,9 @@ var l_pause = '<break time="400ms"/>';
 
 var nowToMagYear = function() {
     var now = new Date();
-    var start = new Date("January 1, 2015 00:00:00 GMT");
-    return (2015 + (now - start) / (1000*60*60*24*365.25));
+    var start = new Date("January 1, 2020 00:00:00 GMT");
+    magyear = (2020 + (now - start) / (1000*60*60*24*365.25));
+    return magyear;
 };
 
 // This is hopefully consistent with European usage, where
