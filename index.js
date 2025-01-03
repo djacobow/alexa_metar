@@ -597,6 +597,24 @@ if (require.main == module) {
         }
     }
 
+    if (1) {
+        var slots = {
+            sa: { value: 'k' },
+            sb: { value: 'o'} ,
+            sc: { value: 'a' },
+            sd: { value: 'k' },
+        };
+        var sr = adds.validateSlots(slots);
+        test_ctx.letters = sr.letters;
+        console.log(test_ctx.session.user_info.preferences);
+        if (sr.valid) {
+            adds.getCachedMETAR_TAF(test_ctx, 'taf', wxdec.processTAF);
+        } else {
+            console.log('uh-oh');
+            console.log(sr);
+        }
+    }
+
 }
 
 

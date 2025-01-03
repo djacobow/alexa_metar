@@ -1,13 +1,14 @@
 {
   "name": "alexa_metar",
-  "version": "1.0.1",
+  "version": "2.0.1",
   "description": "This skill is live on Amazon right now. (as of 6/2016). It is called \"Dave's Airport METAR Reader\" and is free. It may be slightly behind this repo at any given time.",
   "main": "index.js",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.429.0",
+    "@aws-sdk/lib-dynamodb": "^3.429.0",
     "async": "^3.1.0",
-    "aws-sdk": "^2.570.0"
+    "xml2js": "^0.6.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

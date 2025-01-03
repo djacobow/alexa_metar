@@ -711,7 +711,7 @@ in a few minuts would help.`;
 
 
 var processTAF = function(cbctx, data) {
-    if (false) {
+    if (true) {
         console.log('processTAF DATA IS');
         console.log(JSON.stringify(data,null,2));
     }

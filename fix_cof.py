@@ -3,7 +3,7 @@
 import json
 
 a = []
-with open('WMM2020COF/WMM.COF','r') as ifh:
+with open('tools/WMM2025COF/WMM.COF','r') as ifh:
     l = ifh.readline().strip()
     while l:
         l = ifh.readline().strip().split()

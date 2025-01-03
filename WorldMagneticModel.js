@@ -1,4 +1,4 @@
-﻿/* Note: modified to 2015 coefficients by Dave J */
+﻿/* Note: modified to 2025 coefficients by Dave J */
 
 /* DOD World Magnetic Model 2010-2015 
 
@@ -33,11 +33,11 @@ email: w.chadwick<at>sky.com
 
 */
 
-var coffs_2020 = require('./cofs_2020.json')
+coffs_2025 = require('./cofs_2025.json')
 
 function WorldMagneticModel (){
 
-this.coff = coffs_2020;
+this.coff = coffs_2025;
 
 /* static variables */
 
@@ -180,7 +180,7 @@ var glat = latitudeDegrees;
 
 /*************************************************************************/
 
-dt = yearFloat - 2020.0;
+dt = yearFloat - 2025.0;
 //if more then 5 years has passed since last epoch update then return invalid
 if ((dt < 0.0) || (dt > 5.0)) 
     return -999;

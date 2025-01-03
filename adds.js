@@ -48,15 +48,13 @@ var getRawMETAR_TAF = function(taf, cbctx, id, cb) {
     taf = (taf !== undefined) && taf;
 
     var url =
-       'https://www.aviationweather.gov/adds/dataserver_current/httpparam' +
-	   '?dataSource=' + (taf ? 'tafs' : 'metars') +
-	   '&requestType=retrieve' +
-	   '&format=xml' +
-	   '&hoursBeforeNow=3' +
-	   '&mostRecent=true' +
-	   '&stationString=' + id;
+       'https://aviationweather.gov/api/data/' +
+           (taf ? 'taf' : 'metar') +
+	   '?format=xml' +
+           (taf ? '' : '&taf=false&hours=1') + 
+	   '&ids=' + id;
 
-    // console.log('-d- url: ' + url);
+    console.log('-d- url: ' + url);
     var req = https.get(url, function(res) {
         var body = '';
         res.on('data', function(data) { body += data; });

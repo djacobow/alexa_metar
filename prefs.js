@@ -4,7 +4,10 @@
 "use strict";
 
 var async = require('async');
-var aws   = require('aws-sdk');
+
+const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDB }         = require("@aws-sdk/client-dynamodb");
+
 
 var config = {
     aws_credentials: './aws_config.json',
@@ -28,8 +31,6 @@ var config = {
     }
 };
 
-// set up to use database
-aws.config.loadFromPath(config.aws_credentials);
 
 function sta_get(id,type,cb) {
     var tname = type === 'taf' ?
@@ -47,7 +48,7 @@ function sta_get(id,type,cb) {
         },
     };
 
-    var docClient = new aws.DynamoDB.DocumentClient();
+    var docClient = DynamoDBDocument.from(new DynamoDB());
     var five_minutes_ago = Math.floor(Date.now() / 1000) -
         config.cache_db.max_age;
 
@@ -92,7 +93,7 @@ function sta_store(id,type,data,cb) {
         },
     };
 
-    var docClient = new aws.DynamoDB.DocumentClient();
+    var docClient = DynamoDBDocument.from(new DynamoDB());
     docClient.put(p,function(e,d) {
         if (e) {
             console.error('-err- unable to put station data ',
@@ -119,7 +120,7 @@ function setUserInfo(userId,info,cb) {
             }
         };
 
-        var docClient = new aws.DynamoDB.DocumentClient();
+        var docClient = DynamoDBDocument.from(new DynamoDB());
         docClient.put(p,function(e,d) {
             if (e) {
                 console.error('-err- unable to put user info data ',
@@ -153,7 +154,7 @@ function getUserInfo(userId,cb) {
             }
         };
 
-        var docClient = new aws.DynamoDB.DocumentClient();
+        var docClient = DynamoDBDocument.from(new DynamoDB());
         docClient.query(p,function(e,d) {
             if (e) {
                 console.error('-err- unable to query: ',
